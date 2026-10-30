@@ -15,7 +15,10 @@
     --bg: #f4f6f8; --panel: #ffffff; --fg: #16202b; --muted: #5a6676; --line: #dde2e8; --hover: #eef1f5;
     --accent: #2b5a8c; --accent-2: #c07a1c; --bad: #b8372b; --ok: #2c7a4d; --surplus: #b3bcc7;
     --grid: #e9edf2; --axis: #9aa4b1; --ref: #6f7b8a;
-    --n1: #2b5a8c; --n2: #c07a1c; --n3: #3d8a59; --n4: #b03a5b;
+    --n1: #2b5a8c; --n2: #c07a1c; --n3: #3d8a59; --n4: #b03a5b; --n5: #7a4fa3;
+    --hot: #d9822b; --cool: #3d7cc9; --warn: #b7791f;
+    --truck: #c0392b; --truck-2: #a93226; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #2f6fd6;
+    --pickup: #e4e8ec; --pickup-line: #a9b2bc; --stripe: #f2c94c; --helm1: #e9b949; --helm2: #d9632b;
     --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
     --r: 8px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1.0625rem; --title: 1.875rem;
@@ -26,7 +29,10 @@
       --bg: #0e1319; --panel: #151c24; --fg: #e7ecf1; --muted: #98a4b2; --line: #26303b; --hover: #1c2530;
       --accent: #6ea2da; --accent-2: #e2a64c; --bad: #ee6a5b; --ok: #5cc189; --surplus: #4a5562;
       --grid: #202a35; --axis: #5d6876; --ref: #8e9aa9;
-      --n1: #6ea2da; --n2: #e2a64c; --n3: #6cc08d; --n4: #e27393;
+      --n1: #6ea2da; --n2: #e2a64c; --n3: #6cc08d; --n4: #e27393; --n5: #b48ae0;
+      --hot: #f0a04b; --cool: #6aa6ea; --warn: #e0a548;
+      --truck: #d9483a; --truck-2: #b83a2e; --glass: #9ec3df; --metal: #8b96a3; --tire: #07090c; --light: #5b9bff;
+      --pickup: #cfd5db; --pickup-line: #8c96a1; --stripe: #f2c94c; --helm1: #f2c757; --helm2: #ef7a43;
       color-scheme: dark;
     }
   }
@@ -194,12 +200,138 @@
   .mo-tn td:nth-child(3), .mo-tn th:nth-child(3), .mo-tn td:nth-child(4), .mo-tn th:nth-child(4) { text-align: left; }
   .mo-tn td:nth-child(6), .mo-tn th:nth-child(6) { border-left: 1px solid var(--line); }
   .mo-tn td.is-cur { font-weight: 700; color: var(--fg); }
+  /* ---- Ícones de viatura ---- */
+  .mo-ic { display: inline-block; width: 22px; height: 13px; fill: currentColor; flex: none; }
+  .mo-vt { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px 2px 5px; border-radius: 999px; font-weight: 600; font-size: var(--cap); line-height: 1.3; white-space: nowrap; color: var(--fg);
+    background: color-mix(in srgb, var(--vc) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--vc) 38%, var(--panel)); }
+  .mo-vt .mo-ic { color: var(--vc); }
+  .f-aph { --vc: var(--n1); } .f-agua { --vc: var(--truck); } .f-multi { --vc: var(--n2); } .f-altura { --vc: var(--n5); } .f-apoio { --vc: var(--n3); } .f-outro { --vc: var(--muted); }
+  .mo-flag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cap); font-weight: 700; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)); }
+
+  /* ---- Tabela Absoluto ---- */
+  .ta-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+  .ta-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; font-size: var(--cap); color: var(--muted); }
+  .ta-legend .ta-scale { display: inline-flex; align-items: center; gap: 6px; }
+  .ta-grad { display: inline-block; width: 72px; height: 10px; border-radius: 3px; border: 1px solid var(--line); }
+  .ta-grad-saldo { background: linear-gradient(90deg, color-mix(in srgb, var(--bad) 60%, var(--panel)), var(--panel), color-mix(in srgb, var(--ok) 60%, var(--panel))); }
+  .ta-grad-dem { background: linear-gradient(90deg, color-mix(in srgb, var(--cool) 55%, var(--panel)), var(--panel), color-mix(in srgb, var(--hot) 55%, var(--panel))); }
+  .ta-vlegend { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mo-ta-wrap { max-height: 72vh; }
+  .mo-ta td, .mo-ta th { padding: 7px 10px; }
+  .mo-ta thead tr.mo-groups th { font-size: var(--cap); }
+  .mo-ta thead tr.mo-cols th { white-space: normal; min-width: 4.5rem; max-width: 8rem; }
+  .mo-ta .c-numero { min-width: 2.75rem; max-width: 2.75rem; width: 2.75rem; color: var(--muted); }
+  .mo-ta td.c-gbm, .mo-ta th.c-gbm { position: sticky; left: 2.75rem; z-index: 1; text-align: left; font-weight: 600; min-width: 11rem; box-shadow: 1px 0 0 var(--line); }
+  .mo-ta thead tr.mo-cols th.c-gbm { z-index: 3; }
+  .mo-ta thead tr.mo-groups th:first-child { position: sticky; left: 0; z-index: 3; }
+  .mo-ta .t-l { text-align: left; }
+  .mo-ta td.g-start, .mo-ta th.g-start { border-left: 1px solid var(--line); }
+  .mo-ta td.is-saldo { font-weight: 700; }
+  .mo-ta tfoot td { position: sticky; bottom: 0; background: var(--bg); font-weight: 700; border-top: 2px solid var(--line); z-index: 1; }
+  .mo-ta tfoot td.c-gbm { z-index: 2; }
+  .mo-ta tbody tr.is-sel td { box-shadow: inset 0 2px 0 var(--accent), inset 0 -2px 0 var(--accent); }
+  .mo-ta.h-viat .g-viat, .mo-ta.h-efet .g-efet, .mo-ta.h-equal .g-equal, .mo-ta.h-risco .g-risco, .mo-ta.h-rank .g-rank { display: none; }
+
+  /* ---- Poder operacional ---- */
+  .po-total { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: var(--cap); color: var(--muted); }
+  .po-num { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--bg); }
+  .po-num button { appearance: none; border: 0; background: none; font: inherit; font-size: 1rem; width: 32px; height: 32px; color: var(--fg); cursor: pointer; }
+  .po-num button:hover { background: var(--hover); }
+  .po-num input { width: 4rem; height: 32px; border: 0; border-inline: 1px solid var(--line); text-align: center; font: inherit; font-weight: 700; font-size: 1rem; color: var(--fg); background: var(--panel); -moz-appearance: textfield; }
+  .po-num input::-webkit-outer-spin-button, .po-num input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .po-stack { display: flex; height: 48px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
+  .po-seg { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 0 4px; font-size: 12px; line-height: 1.15; color: var(--fg); background: var(--sc); border-right: 2px solid var(--panel); overflow: hidden; white-space: nowrap; }
+  .po-seg:last-child { border-right: 0; }
+  .po-seg b { font-size: 14px; }
+  .po-seg span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  button.po-seg { appearance: none; border-top: 0; border-bottom: 0; border-left: 0; font: inherit; cursor: pointer; }
+  button.po-seg:hover { filter: brightness(1.06); }
+  button.po-seg[aria-pressed="true"] { box-shadow: inset 0 -4px 0 var(--fg); }
+  .po-sum { font-size: var(--cap); color: var(--muted); line-height: 1.5; }
+  .po-sum b { color: var(--fg); }
+  .po-ctrl { display: grid; gap: 12px; }
+  .po-n-row { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 6px 18px; }
+  .po-n-big { display: flex; align-items: baseline; gap: 8px; }
+  .po-n-big output { font-family: var(--font-serif); font-size: 3.25rem; line-height: 1; font-variant-numeric: tabular-nums; min-width: 2ch; }
+  .po-n-big span { font-size: var(--cap); color: var(--muted); }
+  .po-headline { font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.2; text-wrap: balance; }
+  .po-range { width: 100%; accent-color: var(--accent); height: 28px; }
+  .po-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: var(--cap); color: var(--muted); }
+  .po-sub label { display: inline-flex; align-items: center; gap: 8px; }
+  .po-sub input[type=range] { width: 9rem; accent-color: var(--helm2); }
+  .po-sub output { font-weight: 700; color: var(--fg); min-width: 1ch; }
+  .po-steps { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: thin; }
+  .po-step { flex: 0 0 auto; display: grid; justify-items: center; gap: 3px; min-width: 5.25rem; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); cursor: pointer; font: inherit; color: var(--fg); }
+  .po-step:hover { background: var(--hover); }
+  .po-step[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); }
+  .po-step b { font-size: var(--head); font-variant-numeric: tabular-nums; }
+  .po-step .po-step-ic { display: flex; gap: 2px; min-height: 13px; }
+  .po-step .po-step-ic .mo-ic.ase { color: var(--truck); } .po-step .po-step-ic .mo-ic.ar { color: var(--n2); }
+  .po-step small { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .po-stage { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; min-height: 16rem; }
+  .po-veh { flex: 1 1 15rem; max-width: 24rem; display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); }
+  .po-veh.is-reserva, .po-veh.is-vazio { border-style: dashed; background: transparent; }
+  .po-ill { display: block; width: 100%; max-width: 210px; height: auto; aspect-ratio: 128 / 60; }
+  .po-veh-h { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; font-weight: 700; font-size: var(--head); }
+  .po-badge { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; color: var(--bc); background: color-mix(in srgb, var(--bc) 15%, var(--panel)); }
+  .po-badge.ok { --bc: var(--ok); } .po-badge.warn { --bc: var(--warn); } .po-badge.muted { --bc: var(--muted); }
+  .po-crew { display: flex; flex-wrap: wrap; gap: 2px; }
+  .po-helm { width: 28px; height: 24px; fill: currentColor; }
+  .po-helm.h1 { color: var(--helm1); } .po-helm.h2 { color: var(--helm2); }
+  .po-cap { font-size: var(--cap); color: var(--muted); line-height: 1.45; }
+  .po-msgs { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .po-msgs li { display: flex; gap: 8px; font-size: var(--cap); line-height: 1.45; color: var(--fg); }
+  .po-msgs li::before { content: ""; flex: none; width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: var(--mc, var(--accent)); }
+  .po-msgs li.warn { --mc: var(--warn); } .po-msgs li.ok { --mc: var(--ok); } .po-msgs li.bad { --mc: var(--bad); }
+  .po-key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--cap); color: var(--muted); }
+  .po-key span { display: inline-flex; align-items: center; gap: 4px; }
+  .po-key .po-helm { width: 20px; height: 17px; }
+  @keyframes po-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: no-preference) { .po-veh.is-new { animation: po-in .35s ease-out; } .po-helm.is-new { animation: po-in .3s ease-out; } }
   .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
   .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
   .mo-btn:hover { background: var(--hover); }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-ur" viewBox="0 0 24 14"><path d="M1 2.5h14v9H1z"/><path d="M15.5 4.5h3.6l3.4 3.4v3.6h-7z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><path d="M7.2 4.2h1.6v2.1h2.1v1.6H8.8V10H7.2V7.9H5.1V6.3h2.1z" style="fill:var(--panel)"/></symbol>
+    <symbol id="i-ase" viewBox="0 0 24 14"><path d="M1 3.6h15v7.9H1z"/><path d="M16.5 5h3l3 3v3.5h-6z"/><path d="M2 1.2h12.5v1.3H2z"/><path d="M3 5.4h3.2v4H3zM7.4 5.4h3.2v4H7.4zM11.8 5.4H15v4h-3.2z" style="fill:var(--panel);opacity:.45"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-abt" viewBox="0 0 24 14"><rect x="1" y="3" width="15" height="7.4" rx="3.7"/><path d="M1 9.3h15.5v2.2H1z"/><path d="M17 4.6h2.6l2.9 3.1v3.8H17z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-absl" viewBox="0 0 24 14"><path d="M1 1.8h14.6v9.7H1z"/><path d="M16.1 4.4h3.2l3.2 3.3v3.8h-6.4z"/><path d="M16.9 3h3.2v1h-3.2z"/><path d="M2.4 5.5h11.8v1.6H2.4z" style="fill:var(--panel);opacity:.5"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-ar" viewBox="0 0 24 14"><path d="M1 7h10.6v4.5H1z"/><path d="M11.6 11.5V4.6q0-1.1 1.1-1.1h4.4l3 3.4h1.4q1 0 1 1v3.6z"/><path d="M13 4.6h3.6l2.1 2.3H13z" style="fill:var(--panel);opacity:.6"/><path d="M13 1.9h4.4v.9H13z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-aem" viewBox="0 0 24 14"><path d="M1 6.2h15v5.3H1z"/><path d="M16.5 6.2h3l3 2.6v2.7h-6z"/><path d="M2.4 5.4 17.3.7l.5 1.4-15 4.7z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-at" viewBox="0 0 24 14"><rect x="1" y="3.6" width="14" height="6.4" rx="3.2"/><path d="M1 9.4h14.6v1.6H1z"/><path d="M16 5h3.3l3.2 3v3.5H16z"/><circle cx="4" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/><circle cx="9.6" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.8" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-helm" viewBox="0 0 24 20"><path d="M4 13.4a8 8 0 0 1 16 0z"/><path d="M1 13.2q11 3.8 22 0v2.4q-11 3.8-22 0z"/><path d="M10.2 6.2h3.6v5.2h-3.6z" style="fill:var(--panel);opacity:.4"/></symbol>
+    <symbol id="i-ase-lg" viewBox="0 0 128 60">
+      <rect x="4" y="13" width="86" height="34" rx="3" style="fill:var(--truck)"/>
+      <path d="M90 21h17l13 15v11H90z" style="fill:var(--truck)"/>
+      <path d="M95 24h10.5l10 12H95z" style="fill:var(--glass)"/>
+      <rect x="9" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/><rect x="36" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/><rect x="63" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/>
+      <path d="M9 23h23M9 28h23M9 33h23M36 23h23M36 28h23M36 33h23M63 23h23M63 28h23M63 33h23" style="stroke:var(--truck);stroke-width:1;opacity:.7"/>
+      <rect x="4" y="41" width="118" height="3" style="fill:var(--stripe)"/>
+      <rect x="8" y="6" width="74" height="3" rx="1" style="fill:var(--metal)"/>
+      <path d="M14 6v7M26 6v7M38 6v7M50 6v7M62 6v7M74 6v7" style="stroke:var(--metal);stroke-width:2"/>
+      <rect x="95" y="16.5" width="14" height="4" rx="1.5" style="fill:var(--light)"/>
+      <rect x="116" y="44" width="9" height="4" rx="1" style="fill:var(--metal)"/>
+      <circle cx="24" cy="49" r="8" style="fill:var(--tire)"/><circle cx="24" cy="49" r="3.4" style="fill:var(--metal)"/>
+      <circle cx="104" cy="49" r="8" style="fill:var(--tire)"/><circle cx="104" cy="49" r="3.4" style="fill:var(--metal)"/>
+    </symbol>
+    <symbol id="i-ar-lg" viewBox="0 0 128 60">
+      <path d="M6 28h58v18H6z" style="fill:var(--pickup);stroke:var(--pickup-line);stroke-width:1"/>
+      <path d="M64 46V17q0-4 4-4h22l13 14h15q4 0 4 4v15z" style="fill:var(--pickup);stroke:var(--pickup-line);stroke-width:1"/>
+      <path d="M70 17h19l9.5 10H70z" style="fill:var(--glass)"/>
+      <rect x="83" y="17" width="2.5" height="10" style="fill:var(--pickup)"/>
+      <rect x="72" y="8" width="20" height="4" rx="1.5" style="fill:var(--light)"/>
+      <rect x="6" y="35" width="116" height="3" style="fill:var(--truck)"/>
+      <path d="M14 28v-8h40v8" style="fill:none;stroke:var(--metal);stroke-width:2.5"/>
+      <rect x="118" y="38" width="7" height="6" rx="1" style="fill:var(--metal)"/>
+      <circle cx="28" cy="47" r="8" style="fill:var(--tire)"/><circle cx="28" cy="47" r="3.4" style="fill:var(--metal)"/>
+      <circle cx="102" cy="47" r="8" style="fill:var(--tire)"/><circle cx="102" cy="47" r="3.4" style="fill:var(--metal)"/>
+    </symbol>
+  </defs>
+</svg>
 <div class="mo is-loading" id="mo">
   <header class="mo-head" id="topo">
     <div class="mo-titlebar">
@@ -217,7 +349,9 @@
     </div>
     <nav class="mo-pages" role="tablist" aria-label="Páginas">
       <button type="button" role="tab" data-page="matriz" aria-selected="true">Matriz operacional</button>
+      <button type="button" role="tab" data-page="tabela" aria-selected="false">Tabela Absoluto</button>
       <button type="button" role="tab" data-page="natureza" aria-selected="false">Ranking por natureza</button>
+      <button type="button" role="tab" data-page="poder" aria-selected="false">Poder operacional</button>
     </nav>
   </header>
 
@@ -406,64 +540,6 @@
     </article>
   </div>
 
-  <article class="mo-card" id="tabela">
-    <div class="mo-tools">
-      <div class="mo-card-head">
-        <h2>Tabela absoluta</h2>
-        <p class="mo-note">Todas as colunas da aba Absoluto, na ordem da matriz de risco. Clique em um cabeçalho para ordenar e em uma linha para abrir a ficha.</p>
-      </div>
-      <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
-    </div>
-    <div class="mo-table-wrap">
-      <table class="mo-table mo-tm">
-        <thead>
-          <tr class="mo-groups">
-            <th colspan="2"></th>
-            <th colspan="5">Socorro base</th>
-            <th colspan="5">Intermediário</th>
-            <th colspan="6">Efetivo e saldos</th>
-            <th colspan="3">Equalização de efetivo</th>
-            <th colspan="3">Risco e carga</th>
-            <th colspan="5">Ranking de ocorrências (12 meses)</th>
-          </tr>
-          <tr class="mo-cols">
-            <th data-field="gbm" aria-sort="none"><button type="button" class="mo-sort">GBM</button></th>
-            <th data-field="comar" aria-sort="none"><button type="button" class="mo-sort">COMAR</button></th>
-            <th data-field="ur" aria-sort="none"><button type="button" class="mo-sort">UR</button></th>
-            <th data-field="ur_gsv" aria-sort="none"><button type="button" class="mo-sort">UR (GSV) / Reforço</button></th>
-            <th data-field="vme" aria-sort="none"><button type="button" class="mo-sort">VME</button></th>
-            <th data-field="vme2" aria-sort="none"><button type="button" class="mo-sort">2ª VME</button></th>
-            <th data-field="apoio_ar" aria-sort="none"><button type="button" class="mo-sort">Apoio AR</button></th>
-            <th data-field="vci" aria-sort="none"><button type="button" class="mo-sort">VCI</button></th>
-            <th data-field="vs" aria-sort="none"><button type="button" class="mo-sort">VS</button></th>
-            <th data-field="vpa" aria-sort="none"><button type="button" class="mo-sort">VPA</button></th>
-            <th data-field="ve" aria-sort="none"><button type="button" class="mo-sort">VE</button></th>
-            <th data-field="apoio" aria-sort="none"><button type="button" class="mo-sort">Apoio</button></th>
-            <th data-field="efetivo_necessario" aria-sort="none"><button type="button" class="mo-sort">Efetivo necessário</button></th>
-            <th data-field="efetivo_atual" aria-sort="none"><button type="button" class="mo-sort">Efetivo atual</button></th>
-            <th data-field="saldo_efetivo" aria-sort="none"><button type="button" class="mo-sort">Saldo efetivo</button></th>
-            <th data-field="oficial_dia" aria-sort="none"><button type="button" class="mo-sort">Oficial de dia</button></th>
-            <th data-field="cotas_gsv" aria-sort="none"><button type="button" class="mo-sort">Cotas GSV 12h</button></th>
-            <th data-field="saldo_considerado" aria-sort="none"><button type="button" class="mo-sort">Saldo considerado</button></th>
-            <th data-field="coef_ajuste" aria-sort="none"><button type="button" class="mo-sort">Coef. de ajuste</button></th>
-            <th data-field="novo_efetivo" aria-sort="none"><button type="button" class="mo-sort">Novo efetivo necessário</button></th>
-            <th data-field="saldo_carga" aria-sort="none"><button type="button" class="mo-sort">Saldo pela carga</button></th>
-            <th data-field="matriz_risco" aria-sort="none"><button type="button" class="mo-sort">Matriz de risco</button></th>
-            <th data-field="carga_atual" aria-sort="none"><button type="button" class="mo-sort">Carga com efetivo atual</button></th>
-            <th data-field="carga_atualizada" aria-sort="none"><button type="button" class="mo-sort">Carga atualizada</button></th>
-            <th data-field="rk_ocorrencias" aria-sort="none"><button type="button" class="mo-sort">Ocorrências</button></th>
-            <th data-field="rk_ur" aria-sort="none"><button type="button" class="mo-sort">UR</button></th>
-            <th data-field="rk_multiemprego" aria-sort="none"><button type="button" class="mo-sort">Multiemprego</button></th>
-            <th data-field="rk_multiemprego_florestal" aria-sort="none"><button type="button" class="mo-sort">Multiemprego c/ florestal</button></th>
-            <th data-field="rk_incendio" aria-sort="none"><button type="button" class="mo-sort">Incêndio estrutural</button></th>
-          </tr>
-        </thead>
-        <tbody id="mo-tbody"></tbody>
-      </table>
-      <p class="mo-empty" id="mo-empty" hidden>Nenhum GBM corresponde à busca.</p>
-    </div>
-  </article>
-
   </div>
 
   <div class="mo-page" id="pg-natureza" hidden>
@@ -550,6 +626,92 @@
     </article>
   </div>
 
+  <div class="mo-page" id="pg-tabela" hidden>
+    <p class="mo-lede">Todas as colunas da aba Absoluto, como chegam da planilha. Os saldos vão do vermelho (déficit) ao verde (sobra); os critérios de demanda, do azul (menor) ao laranja (maior). Clique em um cabeçalho para ordenar e em uma linha para destacá-la.</p>
+    <article class="mo-card" id="tabela-absoluto">
+      <div class="ta-tools">
+        <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
+        <div class="mo-tabs" role="group" aria-label="Grupos de colunas visíveis">
+          <button type="button" data-grp="viat" aria-pressed="true">Viaturas</button>
+          <button type="button" data-grp="efet" aria-pressed="true">Efetivo e saldos</button>
+          <button type="button" data-grp="equal" aria-pressed="true">Equalização</button>
+          <button type="button" data-grp="risco" aria-pressed="true">Risco e carga</button>
+          <button type="button" data-grp="rank" aria-pressed="true">Ranking de ocorrências</button>
+        </div>
+      </div>
+      <div class="ta-legend">
+        <span class="ta-scale">Saldo <i class="ta-grad ta-grad-saldo"></i> déficit → sobra</span>
+        <span class="ta-scale">Demanda <i class="ta-grad ta-grad-dem"></i> menor → maior</span>
+        <span class="ta-vlegend"><span class="mo-vt f-aph"><svg class="mo-ic" aria-hidden="true"><use href="#i-ur"></use></svg>UR</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-abt"></use></svg>ABT</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-absl"></use></svg>ABSL</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>AR</span><span class="mo-vt f-altura"><svg class="mo-ic" aria-hidden="true"><use href="#i-aem"></use></svg>AEM</span><span class="mo-vt f-apoio"><svg class="mo-ic" aria-hidden="true"><use href="#i-at"></use></svg>AT-APSG</span></span>
+      </div>
+      <div class="mo-table-wrap mo-ta-wrap">
+        <table class="mo-table mo-ta" id="mo-ta">
+          <thead id="mo-ta-head"></thead>
+          <tbody id="mo-ta-body"></tbody>
+          <tfoot id="mo-ta-foot"></tfoot>
+        </table>
+        <p class="mo-empty" id="mo-ta-empty" hidden>Nenhum GBM corresponde à busca.</p>
+      </div>
+      <p class="mo-note">Cores calculadas sobre os 24 GBMs. Demanda considera matriz de risco, carga operacional, coeficiente de ajuste e as posições no ranking de ocorrências (1º é a maior demanda). A linha de total soma os GBMs visíveis.</p>
+    </article>
+  </div>
+
+  <div class="mo-page" id="pg-poder" hidden>
+    <p class="mo-lede">O que um quartel consegue colocar na rua a cada plantão. O exemplo parte do menor GBM da matriz, com <b data-po="total">69</b> bombeiros; mude o efetivo do GBM ou o número de bombeiros na ala de serviço para ver o socorro que dá para ativar.</p>
+
+    <article class="mo-card" id="po-composicao">
+      <div class="mo-card-head">
+        <h2>Para onde vai o efetivo do GBM</h2>
+        <p class="mo-note">Expediente, SECOM e escala de UR saem primeiro; o restante se divide nas quatro alas. Toque em uma ala para simular o plantão dela.</p>
+      </div>
+      <div class="po-total">
+        <label for="po-total">Efetivo do GBM</label>
+        <span class="po-num"><button type="button" data-po-step="-1" aria-label="Diminuir efetivo">−</button><input id="po-total" type="number" min="30" max="200" step="1" value="69" inputmode="numeric"><button type="button" data-po-step="1" aria-label="Aumentar efetivo">+</button></span>
+        <button type="button" class="mo-btn" id="po-reset">Voltar para 69</button>
+      </div>
+      <div class="po-stack" id="po-stack" role="group" aria-label="Divisão do efetivo"></div>
+      <p class="po-sum" id="po-sum"></p>
+    </article>
+
+    <article class="mo-card" id="po-simulador">
+      <div class="mo-card-head">
+        <h2>O que a ala de serviço consegue ativar</h2>
+        <p class="mo-note">Arraste o controle ou toque em uma faixa. Capacete laranja: condutor (QBMG-2). Capacete amarelo: operacional (QBMG-1).</p>
+      </div>
+      <div class="po-ctrl">
+        <div class="po-n-row">
+          <div class="po-n-big"><output id="po-n-out" for="po-n">10</output><span>bombeiros na ala</span></div>
+          <p class="po-headline" id="po-headline">—</p>
+        </div>
+        <input class="po-range" id="po-n" type="range" min="2" max="14" step="1" value="10" aria-label="Bombeiros na ala de serviço">
+        <div class="po-steps" id="po-steps" role="group" aria-label="Faixas de efetivo"></div>
+        <div class="po-sub">
+          <label for="po-c">Condutores (QBMG-2) na ala <input id="po-c" type="range" min="0" max="3" step="1" value="2"> <output id="po-c-out" for="po-c">2</output></label>
+          <span id="po-c-auto">automático: um por viatura possível</span>
+          <button type="button" class="mo-btn" id="po-c-reset" hidden>Voltar ao automático</button>
+          <button type="button" class="mo-btn" id="po-play">Percorrer de 3 a 12</button>
+        </div>
+      </div>
+      <div class="po-stage" id="po-stage" aria-live="polite"></div>
+      <ul class="po-msgs" id="po-msgs"></ul>
+      <div class="po-key">
+        <span><svg class="po-helm h2" aria-hidden="true"><use href="#i-helm"></use></svg>Condutor (QBMG-2)</span>
+        <span><svg class="po-helm h1" aria-hidden="true"><use href="#i-helm"></use></svg>Operacional (QBMG-1)</span>
+      </div>
+    </article>
+
+    <article class="mo-card" id="po-regras">
+      <div class="mo-card-head"><h2>Regras de guarnição usadas</h2></div>
+      <dl class="mo-crit">
+        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE no padrão</dt><dd><b>5 bombeiros</b>: 1 condutor (QBMG-2) e 4 operacionais (QBMG-1).</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--warn)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE em exceção</dt><dd><b>4 bombeiros</b>: 1 condutor (QBMG-2) e 3 operacionais (QBMG-1). É o mínimo para ativar o ASE.</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--n2)" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Pode ser conduzida por QBMG-1 em deslocamentos não emergenciais, como prevenções, lavagem de pista e averiguação para captura de insetos.</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>, idealmente <b>10</b>, com um condutor (QBMG-2) para cada caminhão.</dd></div>
+      </dl>
+      <p class="mo-note">Ordem de ativação usada na simulação: primeiro o ASE; com 6 ou 7, ASE e AR; com 8 ou mais, o segundo ASE; o que sobra completa os ASE até o padrão e depois a AR. Lugares de operacional podem ser ocupados por um condutor quando faltam QBMG-1. GBMs com viaturas do intermediário (VCI, VS, VPA, VE) têm escalas próprias para elas, que não entram nesta conta.</p>
+    </article>
+  </div>
+
   <footer class="mo-foot">
     <span>Dados da aba Absoluto da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
     <button type="button" class="mo-btn" id="mo-recarregar">Recarregar dados</button>
@@ -613,6 +775,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     const hi = grid.findIndex((r) => r.some((c) => norm(c) === 'GBM') && r.some((c) => norm(c) === 'COMAR'));
     if (hi < 0) throw new Error('O cabeçalho da aba Absoluto (colunas GBM e COMAR) não foi encontrado no CSV.');
     const header = grid[hi].map(chave);
+    const iNum = grid[hi].findIndex((c) => ['#', 'nº', 'n°', 'no', 'num', 'número', 'numero'].includes(norm(c).toLowerCase()));
     const pos = {}, faltam = [];
     for (const [rotulo, k] of Object.entries(nomes)) {
       const i = header.indexOf(chave(rotulo));
@@ -637,6 +800,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
           else if (icone.has(c)) o[c] = semIcone(cel);
           else o[c] = num(cel);
         }
+        o.numero = iNum >= 0 ? num(r[iNum]) : null;
         return o;
       });
   }
@@ -926,44 +1090,6 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     }
   }
 
-  function drawTable() {
-    const tb = document.getElementById('mo-tbody');
-    const vazio = document.getElementById('mo-empty');
-    if (S.status !== 'ok') { tb.replaceChildren(); vazio.hidden = true; return; }
-    let rs = rows().slice();
-    const q = fold(document.getElementById('mo-busca').value).trim();
-    if (q) rs = rs.filter((r) => fold(COLS.map((c) => r[c] ?? '').join(' ')).includes(q));
-    const { field, dir } = S.sort;
-    if (field) {
-      const s = dir === 'asc' ? 1 : -1;
-      rs.sort((a, b) => {
-        const va = a[field], vb = b[field];
-        const ea = va == null || va === '', eb = vb == null || vb === '';
-        if (ea && eb) return 0;
-        if (ea) return 1;
-        if (eb) return -1;
-        return typeof va === 'number' && typeof vb === 'number' ? s * (va - vb) : s * String(va).localeCompare(String(vb), 'pt-BR', { numeric: true });
-      });
-    }
-    const sel = selGbm();
-    const frag = document.createDocumentFragment();
-    rs.forEach((r) => {
-      const tr = document.createElement('tr');
-      tr.dataset.key = r.gbm;
-      if (r.gbm === sel) tr.className = 'is-sel';
-      COLS.forEach((c) => {
-        const td = document.createElement('td');
-        const v = r[c];
-        td.textContent = fmt(kindOf(c), v);
-        if (kindOf(c) === 'signed' && typeof v === 'number') td.className = v < 0 ? 'is-neg' : v > 0 ? 'is-pos' : '';
-        tr.appendChild(td);
-      });
-      frag.appendChild(tr);
-    });
-    tb.replaceChildren(frag);
-    vazio.hidden = rs.length > 0;
-  }
-
   /* ---- Render geral ---- */
   function render() {
     document.getElementById('mo').classList.toggle('is-loading', S.status === 'loading');
@@ -973,8 +1099,8 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
     document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
     document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
-    document.getElementById('pg-matriz').hidden = S.page !== 'matriz';
-    document.getElementById('pg-natureza').hidden = S.page !== 'natureza';
+    ['matriz', 'tabela', 'natureza', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
+    document.querySelectorAll('.mo-seg').forEach((el) => { el.hidden = S.page === 'poder'; });
     document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
     if (S.page === 'matriz') {
@@ -982,12 +1108,382 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
       drawSaldos(document.getElementById('ch-saldos'));
       drawCarga(document.getElementById('ch-carga'));
       drawBullet(document.getElementById('ch-bullet'));
-      drawTable();
-    } else {
+    } else if (S.page === 'tabela') {
+      drawAbs();
+    } else if (S.page === 'natureza') {
       fillNatureza();
       drawNatDots(document.getElementById('ch-nat'));
       drawNatTable();
+    } else {
+      renderPoder();
     }
+  }
+
+  /* ---- Página: tabela Absoluto ---- */
+  const GRUPOS = [
+    { id: 'id', nome: '', cols: ['numero', 'gbm', 'comar'] },
+    { id: 'viat', nome: 'Viaturas', cols: ['ur', 'ur_gsv', 'vme', 'vme2', 'apoio_ar', 'vci', 'vs', 'vpa', 've', 'apoio'] },
+    { id: 'efet', nome: 'Efetivo e saldos', cols: ['efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'oficial_dia', 'cotas_gsv', 'saldo_considerado'] },
+    { id: 'equal', nome: 'Equalização de efetivo', cols: ['ralvo', 'coef_ajuste', 'novo_efetivo', 'saldo_carga'] },
+    { id: 'risco', nome: 'Risco e carga', cols: ['matriz_risco', 'carga_atual', 'carga_atualizada'] },
+    { id: 'rank', nome: 'Ranking de ocorrências (12 meses)', cols: ['rk_ocorrencias', 'rk_ur', 'rk_multiemprego', 'rk_multiemprego_florestal', 'rk_incendio'] },
+  ];
+  const ROT = {
+    numero: 'Nº', gbm: 'GBM', comar: 'COMAR', ur: 'UR', ur_gsv: 'UR (GSV) / Reforço', vme: 'VME', vme2: '2ª VME', apoio_ar: 'Apoio AR',
+    vci: 'VCI', vs: 'VS', vpa: 'VPA', ve: 'VE', apoio: 'Apoio', efetivo_necessario: 'Efetivo necessário (30% afast.)', efetivo_atual: 'Efetivo atual',
+    saldo_efetivo: 'Saldo efetivo', oficial_dia: 'Oficial de dia', cotas_gsv: 'Cotas GSV 12h', saldo_considerado: 'Saldo considerado',
+    ralvo: 'Ralvo', coef_ajuste: 'Coef. de ajuste', novo_efetivo: 'Novo efetivo necessário', saldo_carga: 'Saldo pela carga',
+    matriz_risco: 'Matriz de risco', carga_atual: 'Carga com efetivo atual', carga_atualizada: 'Carga atualizada',
+    rk_ocorrencias: 'Ocorrências', rk_ur: 'UR', rk_multiemprego: 'Multiemprego', rk_multiemprego_florestal: 'Multiemprego c/ florestal', rk_incendio: 'Incêndio estrutural',
+  };
+  const ABS_COLS = GRUPOS.flatMap((g) => g.cols);
+  const GRP_OF = Object.fromEntries(GRUPOS.flatMap((g) => g.cols.map((c, i) => [c, { g: g.id, first: i === 0 }])));
+  const VIATS = new Set(GRUPOS[1].cols);
+  const SALDOS = new Set(['saldo_efetivo', 'saldo_considerado', 'saldo_carga']);
+  const DEMANDA = new Set(['matriz_risco', 'carga_atual', 'carga_atualizada', 'coef_ajuste']);
+  const RANKS = new Set(GRUPOS[5].cols);
+  const SOMA = new Set(['efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'cotas_gsv', 'saldo_considerado', 'novo_efetivo', 'saldo_carga']);
+  const modelo = (m) => {
+    const u = String(m).toUpperCase();
+    if (u.startsWith('UR')) return { ic: 'i-ur', fam: 'aph' };
+    if (u === 'ASE') return { ic: 'i-ase', fam: 'agua' };
+    if (u === 'ABT') return { ic: 'i-abt', fam: 'agua' };
+    if (u === 'ABSL') return { ic: 'i-absl', fam: 'multi' };
+    if (u === 'AR') return { ic: 'i-ar', fam: 'multi' };
+    if (u === 'AEM') return { ic: 'i-aem', fam: 'altura' };
+    if (u.startsWith('AT')) return { ic: 'i-at', fam: 'apoio' };
+    return { ic: 'i-ase', fam: 'outro' };
+  };
+  const icon = (id, cls) => {
+    const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    sv.setAttribute('class', cls);
+    sv.setAttribute('aria-hidden', 'true');
+    const u = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    u.setAttribute('href', '#' + id);
+    sv.appendChild(u);
+    return sv;
+  };
+  const chip = (m) => {
+    const { ic, fam } = modelo(m);
+    const sp = document.createElement('span');
+    sp.className = 'mo-vt f-' + fam;
+    sp.append(icon(ic, 'mo-ic'), document.createTextNode(m));
+    return sp;
+  };
+  const sortA = { field: null, dir: null };
+  const hideGrp = new Set();
+  function buildAbsHead() {
+    const head = document.getElementById('mo-ta-head');
+    const trg = document.createElement('tr');
+    trg.className = 'mo-groups';
+    GRUPOS.forEach((g) => {
+      const th = document.createElement('th');
+      th.colSpan = g.cols.length;
+      th.className = 'g-' + g.id + (g.id !== 'id' ? ' g-start' : '');
+      th.textContent = g.nome;
+      trg.appendChild(th);
+    });
+    const trc = document.createElement('tr');
+    trc.className = 'mo-cols';
+    ABS_COLS.forEach((c) => {
+      const th = document.createElement('th');
+      const gi = GRP_OF[c];
+      th.className = ['c-' + c, 'g-' + gi.g, gi.first && gi.g !== 'id' ? 'g-start' : '', VIATS.has(c) || c === 'comar' || c === 'oficial_dia' ? 't-l' : ''].filter(Boolean).join(' ');
+      th.dataset.field = c;
+      th.setAttribute('aria-sort', 'none');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mo-sort';
+      b.textContent = ROT[c];
+      b.addEventListener('click', () => {
+        const asc = !(KIND[c] && KIND[c] !== 'ord') || RANKS.has(c);
+        const first = asc ? 'asc' : 'desc';
+        if (sortA.field === c) {
+          if (sortA.dir === first) sortA.dir = asc ? 'desc' : 'asc';
+          else { sortA.field = null; sortA.dir = null; }
+        } else { sortA.field = c; sortA.dir = first; }
+        head.querySelectorAll('th[data-field]').forEach((o) => o.setAttribute('aria-sort', sortA.field === o.dataset.field ? (sortA.dir === 'asc' ? 'ascending' : 'descending') : 'none'));
+        drawAbs();
+      });
+      th.appendChild(b);
+      trc.appendChild(th);
+    });
+    head.replaceChildren(trg, trc);
+  }
+  function drawAbs() {
+    const tb = document.getElementById('mo-ta-body'), tf = document.getElementById('mo-ta-foot'), vazio = document.getElementById('mo-ta-empty');
+    const table = document.getElementById('mo-ta');
+    ['viat', 'efet', 'equal', 'risco', 'rank'].forEach((g) => table.classList.toggle('h-' + g, hideGrp.has(g)));
+    if (S.status !== 'ok') { tb.replaceChildren(); tf.replaceChildren(); vazio.hidden = true; return; }
+    let rs = rows().slice();
+    const q = fold(document.getElementById('mo-busca').value).trim();
+    if (q) rs = rs.filter((r) => fold(ABS_COLS.map((c) => r[c] ?? '').join(' ')).includes(q));
+    if (sortA.field) {
+      const f = sortA.field, sg = sortA.dir === 'asc' ? 1 : -1;
+      rs.sort((a, b) => {
+        const va = a[f], vb = b[f];
+        const ea = va == null || va === '', eb = vb == null || vb === '';
+        if (ea && eb) return 0;
+        if (ea) return 1;
+        if (eb) return -1;
+        return typeof va === 'number' && typeof vb === 'number' ? sg * (va - vb) : sg * String(va).localeCompare(String(vb), 'pt-BR', { numeric: true });
+      });
+    }
+    const ext = {};
+    [...DEMANDA, ...RANKS].forEach((c) => { ext[c] = d3.extent(S.all, (d) => d[c]); });
+    const maxAbs = {};
+    SALDOS.forEach((c) => { maxAbs[c] = d3.max(S.all, (d) => Math.abs(d[c] ?? 0)) || 1; });
+    const bgDem = (c, v) => {
+      if (v == null) return '';
+      const [lo, hi] = ext[c];
+      if (lo == null || hi === lo) return '';
+      let t = (v - lo) / (hi - lo);
+      if (RANKS.has(c)) t = 1 - t;
+      const d = t - 0.5, pct = Math.round(Math.abs(d) * 2 * 58);
+      return pct < 5 ? '' : `color-mix(in srgb, var(${d > 0 ? '--hot' : '--cool'}) ${pct}%, var(--panel))`;
+    };
+    const bgSaldo = (c, v) => (v == null || v === 0 ? '' : `color-mix(in srgb, var(${v < 0 ? '--bad' : '--ok'}) ${Math.round(14 + 50 * Math.abs(v) / maxAbs[c])}%, var(--panel))`);
+    const cell = (c, cls) => {
+      const td = document.createElement('td');
+      const gi = GRP_OF[c];
+      td.className = ['c-' + c, 'g-' + gi.g, gi.first && gi.g !== 'id' ? 'g-start' : '', VIATS.has(c) || c === 'comar' || c === 'oficial_dia' ? 't-l' : '', cls || ''].filter(Boolean).join(' ');
+      return td;
+    };
+    const sel = selGbm();
+    const frag = document.createDocumentFragment();
+    rs.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gbm;
+      if (r.gbm === sel) tr.className = 'is-sel';
+      ABS_COLS.forEach((c) => {
+        const v = r[c];
+        const td = cell(c, SALDOS.has(c) ? 'is-saldo' : '');
+        if (VIATS.has(c)) { if (v) td.appendChild(chip(v)); }
+        else if (c === 'oficial_dia') { if (v) { const f = document.createElement('span'); f.className = 'mo-flag'; f.textContent = v; td.appendChild(f); } }
+        else if (c === 'numero') td.textContent = v == null ? '' : String(v);
+        else td.textContent = fmt(kindOf(c), v);
+        const bg = SALDOS.has(c) ? bgSaldo(c, v) : (DEMANDA.has(c) || RANKS.has(c)) ? bgDem(c, v) : '';
+        if (bg) td.style.background = bg;
+        tr.appendChild(td);
+      });
+      frag.appendChild(tr);
+    });
+    tb.replaceChildren(frag);
+    vazio.hidden = rs.length > 0;
+    const tr = document.createElement('tr');
+    ABS_COLS.forEach((c) => {
+      const td = cell(c, SALDOS.has(c) ? 'is-saldo' : '');
+      if (c === 'gbm') td.textContent = `Total (${fmt('int', rs.length)} GBMs)`;
+      else if (VIATS.has(c)) td.textContent = fmt('int', rs.filter((r) => r[c]).length);
+      else if (c === 'oficial_dia') td.textContent = fmt('int', rs.filter((r) => r[c]).length);
+      else if (SOMA.has(c)) td.textContent = fmt(kindOf(c), rs.reduce((a, r) => a + (r[c] ?? 0), 0));
+      tr.appendChild(td);
+    });
+    tf.replaceChildren(rs.length ? tr : document.createElement('tr'));
+  }
+  buildAbsHead();
+
+  /* ---- Página: poder operacional ---- */
+  const PO = { EXP: 6, SECOM: 5, UR: 15, PADRAO: 69, ALAS: ['Alfa', 'Bravo', 'Charlie', 'Delta'] };
+  const P = { total: 69, n: 10, c: 2, cAuto: true, timer: null, prevKeys: new Set() };
+  const alas = (total) => {
+    const resto = Math.max(0, total - PO.EXP - PO.SECOM - PO.UR);
+    const base = Math.floor(resto / 4), x = resto % 4;
+    return { resto, lista: PO.ALAS.map((nome, i) => ({ nome, n: base + (i < x ? 1 : 0) })) };
+  };
+  function guarnicao(n, c) {
+    c = Math.max(0, Math.min(c, n));
+    let k = 0;
+    while (k < 2 && k + 1 <= c && 4 * (k + 1) <= n) k++;
+    let R = n - 4 * k;
+    const ase = Array.from({ length: k }, () => 4);
+    let ar = 0;
+    if (k <= 1 && R >= 2) { ar = 2; R -= 2; }
+    for (let i = 0; i < k && R > 0; i++) { ase[i]++; R--; }
+    if (k === 2 && ar === 0 && R >= 2) { ar = 2; R -= 2; }
+    if (ar > 0) { const add = Math.min(R, 4 - ar); ar += add; R -= add; }
+    const arCond = ar > 0 && c - k > 0;
+    let condLivre = c - k - (arCond ? 1 : 0);
+    let q1Livre = n - c;
+    const seat = () => { if (q1Livre > 0) { q1Livre--; return 'h1'; } condLivre--; return 'h2'; };
+    const asesCrew = ase.map((tot) => ['h2', ...Array.from({ length: tot - 1 }, seat)]);
+    const arCrew = ar ? [arCond ? 'h2' : seat(), ...Array.from({ length: ar - 1 }, seat)] : [];
+    const reservaCrew = [...Array.from({ length: Math.max(0, condLivre) }, () => 'h2'), ...Array.from({ length: Math.max(0, q1Livre) }, () => 'h1')];
+    return { n, c, k, ase, asesCrew, ar, arCond, arCrew, reserva: R, reservaCrew, falta2Cond: k < 2 && n >= 4 * (k + 1) && c <= k };
+  }
+  const autoC = (n) => { const g = guarnicao(n, 3); return g.k + (g.ar ? 1 : 0); };
+  const condutores = (n) => (P.cAuto ? autoC(n) : P.c);
+  const resumoG = (g) => {
+    if (!g.k) return g.ar ? 'Só a AR, sem ASE' : 'Sem ASE';
+    const exc = g.ase.filter((t) => t < 5).length;
+    const ases = g.k === 2 ? (exc === 0 ? '2 ASE no padrão' : exc === 1 ? '2 ASE, um em exceção' : '2 ASE em exceção') : (exc ? 'ASE em exceção' : 'ASE no padrão');
+    return g.ar ? `${ases} e AR` : ases;
+  };
+  const curto = (g) => {
+    if (!g.k) return g.ar ? 'só AR' : 'sem ASE';
+    const exc = g.ase.filter((t) => t < 5).length;
+    const s = g.k === 2 ? (exc === 2 ? '2 ASE exc.' : '2 ASE') : exc ? 'ASE exc.' : 'ASE';
+    return g.ar ? s + ' + AR' : s;
+  };
+  function helmets(crew, prev, key) {
+    const wrap = document.createElement('div');
+    wrap.className = 'po-crew';
+    crew.forEach((h, i) => {
+      const sv = icon('i-helm', 'po-helm ' + h + (prev && !prev.has(key + i) ? ' is-new' : ''));
+      sv.setAttribute('role', 'img');
+      sv.setAttribute('aria-label', h === 'h2' ? 'condutor' : 'operacional');
+      wrap.appendChild(sv);
+    });
+    return wrap;
+  }
+  function renderPoder() {
+    const { resto, lista } = alas(P.total);
+    document.querySelectorAll('[data-po="total"]').forEach((el) => { el.textContent = fmt('int', P.total); });
+    const inp = document.getElementById('po-total');
+    if (document.activeElement !== inp) inp.value = P.total;
+    const stack = document.getElementById('po-stack');
+    const segs = [
+      { k: 'Expediente', n: Math.min(PO.EXP, P.total), sc: 'color-mix(in srgb, var(--muted) 22%, var(--panel))' },
+      { k: 'SECOM', n: Math.min(PO.SECOM, Math.max(0, P.total - PO.EXP)), sc: 'color-mix(in srgb, var(--n3) 30%, var(--panel))' },
+      { k: 'Escala de UR', n: Math.min(PO.UR, Math.max(0, P.total - PO.EXP - PO.SECOM)), sc: 'color-mix(in srgb, var(--n1) 32%, var(--panel))' },
+      ...lista.map((a, i) => ({ k: a.nome, n: a.n, ala: true, sc: `color-mix(in srgb, var(--truck) ${44 - i * 6}%, var(--panel))` })),
+    ];
+    stack.replaceChildren(...segs.filter((sg) => sg.n > 0).map((sg) => {
+      const el = document.createElement(sg.ala ? 'button' : 'div');
+      el.className = 'po-seg';
+      el.style.flex = `${sg.n} 1 0`;
+      el.style.setProperty('--sc', sg.sc);
+      el.title = `${sg.k}: ${sg.n}`;
+      const b = document.createElement('b'); b.textContent = fmt('int', sg.n);
+      const t = document.createElement('span'); t.textContent = sg.k;
+      el.append(b, t);
+      if (sg.ala) {
+        el.type = 'button';
+        el.setAttribute('aria-pressed', String(P.n === sg.n));
+        el.setAttribute('aria-label', `Ala ${sg.k}, ${sg.n} bombeiros: simular`);
+        el.addEventListener('click', () => { stopPlay(); P.n = Math.max(2, Math.min(14, sg.n)); renderPoder(); });
+      }
+      return el;
+    }));
+    const tamanhos = [...new Set(lista.map((a) => a.n))].sort((a, b) => a - b);
+    const sum = document.getElementById('po-sum');
+    sum.replaceChildren();
+    const add = (txt, bold) => { const e = document.createElement(bold ? 'b' : 'span'); e.textContent = txt; sum.appendChild(e); };
+    add(fmt('int', P.total), true); add(' bombeiros: '); add(fmt('int', PO.EXP), true); add(' no expediente, '); add(fmt('int', PO.SECOM), true); add(' na SECOM, ');
+    add(fmt('int', PO.UR), true); add(' na escala de UR e '); add(fmt('int', resto), true); add(' nas quatro alas, com ');
+    add(tamanhos.length > 1 ? `${tamanhos[0]} ou ${tamanhos[tamanhos.length - 1]}` : String(tamanhos[0] ?? 0), true); add(' bombeiros cada ('); add(lista.map((a) => `${a.nome} ${a.n}`).join(', ')); add(').');
+
+    const rng = document.getElementById('po-n');
+    rng.value = P.n;
+    document.getElementById('po-n-out').textContent = P.n;
+    const cEf = condutores(P.n);
+    const cr = document.getElementById('po-c');
+    cr.value = cEf;
+    document.getElementById('po-c-out').textContent = cEf;
+    document.getElementById('po-c-auto').hidden = !P.cAuto;
+    document.getElementById('po-c-reset').hidden = P.cAuto;
+    const g = guarnicao(P.n, cEf);
+    document.getElementById('po-headline').textContent = resumoG(g);
+
+    const steps = document.getElementById('po-steps');
+    steps.replaceChildren(...Array.from({ length: 11 }, (_, i) => i + 3).map((n) => {
+      const gg = guarnicao(n, condutores(n));
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'po-step';
+      b.setAttribute('aria-pressed', String(n === P.n));
+      b.setAttribute('aria-label', `${n} bombeiros: ${resumoG(gg)}`);
+      const nb = document.createElement('b'); nb.textContent = n;
+      const ics = document.createElement('span'); ics.className = 'po-step-ic';
+      gg.ase.forEach(() => ics.appendChild(icon('i-ase', 'mo-ic ase')));
+      if (gg.ar) ics.appendChild(icon('i-ar', 'mo-ic ar'));
+      const sm = document.createElement('small'); sm.textContent = curto(gg);
+      b.append(nb, ics, sm);
+      b.addEventListener('click', () => { stopPlay(); P.n = n; renderPoder(); });
+      return b;
+    }));
+    const on = steps.querySelector('[aria-pressed="true"]');
+    if (on) { const l = on.offsetLeft - steps.offsetLeft, w = steps.clientWidth; if (l < steps.scrollLeft || l + on.offsetWidth > steps.scrollLeft + w) steps.scrollLeft = l - w / 2 + on.offsetWidth / 2; }
+
+    const stage = document.getElementById('po-stage');
+    const prev = P.prevKeys, keys = new Set();
+    const card = (key, cls) => {
+      const el = document.createElement('div');
+      el.className = 'po-veh' + (cls ? ' ' + cls : '') + (prev.has(key) ? '' : ' is-new');
+      keys.add(key);
+      return el;
+    };
+    const cards = [];
+    g.ase.forEach((tot, i) => {
+      const el = card('ase' + i);
+      const h = document.createElement('div'); h.className = 'po-veh-h';
+      const t = document.createElement('span'); t.textContent = g.k === 2 ? `ASE ${i + 1}` : 'ASE';
+      const bd = document.createElement('span'); bd.className = 'po-badge ' + (tot >= 5 ? 'ok' : 'warn'); bd.textContent = tot >= 5 ? 'padrão' : 'exceção';
+      h.append(t, bd);
+      const crew = g.asesCrew[i];
+      crew.forEach((_, j) => keys.add('ase' + i + 'h' + j));
+      const cap = document.createElement('p'); cap.className = 'po-cap';
+      const q1 = crew.filter((x) => x === 'h1').length, c2 = crew.length - q1;
+      cap.textContent = `${tot} bombeiros: ${c2 === 1 ? '1 condutor' : c2 + ' QBMG-2 (1 conduz)'} e ${q1} operacionais`;
+      el.append(icon('i-ase-lg', 'po-ill'), h, helmets(crew, prev, 'ase' + i + 'h'), cap);
+      cards.push(el);
+    });
+    if (g.ar) {
+      const el = card('ar');
+      const h = document.createElement('div'); h.className = 'po-veh-h';
+      const t = document.createElement('span'); t.textContent = 'AR';
+      const bd = document.createElement('span'); bd.className = 'po-badge ' + (g.arCond ? 'ok' : 'warn'); bd.textContent = g.arCond ? 'pode atender emergência' : 'só não emergencial';
+      h.append(t, bd);
+      g.arCrew.forEach((_, j) => keys.add('arh' + j));
+      const cap = document.createElement('p'); cap.className = 'po-cap';
+      cap.textContent = g.arCond ? `${g.ar} ocupantes, conduzida por QBMG-2.` : `${g.ar} ocupantes, conduzida por QBMG-1: prevenções, lavagem de pista, averiguação e captura de insetos.`;
+      el.append(icon('i-ar-lg', 'po-ill'), h, helmets(g.arCrew, prev, 'arh'), cap);
+      cards.push(el);
+    }
+    if (g.reserva > 0) {
+      const el = card('res', 'is-reserva');
+      const h = document.createElement('div'); h.className = 'po-veh-h';
+      const t = document.createElement('span'); t.textContent = g.reserva === 1 ? '1 sem viatura' : `${g.reserva} sem viatura`;
+      h.append(t);
+      g.reservaCrew.forEach((_, j) => keys.add('resh' + j));
+      const cap = document.createElement('p'); cap.className = 'po-cap';
+      cap.textContent = g.reserva === 1 ? 'Não completa outra guarnição; fica de reserva na ala.' : 'Não completam outra guarnição; ficam de reserva na ala.';
+      el.append(h, helmets(g.reservaCrew, prev, 'resh'), cap);
+      cards.push(el);
+    }
+    if (!g.k && !g.ar && !g.reserva) {
+      const el = card('vazio', 'is-vazio');
+      const cap = document.createElement('p'); cap.className = 'po-cap'; cap.textContent = 'Nenhuma viatura pode ser ativada.';
+      el.append(cap);
+      cards.push(el);
+    }
+    stage.replaceChildren(...cards);
+    P.prevKeys = keys;
+
+    const msgs = [];
+    if (!g.k && P.n < 4) msgs.push(['bad', `Com ${P.n} bombeiros a ala não ativa o ASE: o mínimo é 4, sendo 1 condutor (QBMG-2).`]);
+    else if (!g.k && cEf === 0) msgs.push(['bad', 'Sem condutor (QBMG-2) na ala, o ASE não sai.']);
+    if (g.ase.some((t) => t < 5)) msgs.push(['warn', g.k === 2 && g.ase.every((t) => t < 5) ? 'Os dois ASE saem em condição de exceção, com 4 bombeiros cada. O padrão é 5.' : 'Um ASE sai em condição de exceção, com 4 bombeiros. O padrão é 5.']);
+    if (g.ar && !g.arCond) msgs.push(['warn', 'A AR é conduzida por um QBMG-1, então fica restrita a deslocamentos não emergenciais.']);
+    if (g.falta2Cond) msgs.push(['bad', 'Há gente para o segundo ASE, mas falta um segundo condutor (QBMG-2).']);
+    if (g.k === 2 && g.ase.every((t) => t >= 5)) msgs.push(['ok', 'Configuração ideal: dois ASE com 5 bombeiros cada.']);
+    if (g.k === 1 && g.ase[0] >= 5 && !g.ar && P.n === 5) msgs.push(['ok', 'ASE no padrão: 1 condutor e 4 operacionais.']);
+    const ul = document.getElementById('po-msgs');
+    ul.replaceChildren(...msgs.map(([cls, txt]) => { const li = document.createElement('li'); li.className = cls; li.textContent = txt; return li; }));
+    const play = document.getElementById('po-play');
+    play.textContent = P.timer ? 'Pausar' : 'Percorrer de 3 a 12';
+  }
+  function stopPlay() { if (P.timer) { clearInterval(P.timer); P.timer = null; } }
+  function togglePlay() {
+    if (P.timer) { stopPlay(); renderPoder(); return; }
+    P.n = 3;
+    renderPoder();
+    P.timer = setInterval(() => {
+      if (P.n >= 12) { stopPlay(); renderPoder(); return; }
+      P.n++;
+      renderPoder();
+    }, 1500);
+    renderPoder();
   }
 
   /* ---- Página: ranking por natureza ---- */
@@ -1119,13 +1615,14 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
   const readHash = () => {
     decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
       if (COMARS.includes(t)) S.comar = t;
-      else if (t === 'natureza') S.page = 'natureza';
+      else if (t === 'natureza' || t === 'tabela' || t === 'poder') S.page = t;
       else { const n = NATS.find((o) => o.slug === t); if (n) { S.nat = n.k; S.page = 'natureza'; } }
     });
   };
   const writeHash = () => {
     const parts = [];
     if (S.page === 'natureza') parts.push(S.nat === NATS[0].k ? 'natureza' : natOf(S.nat).slug);
+    else if (S.page !== 'matriz') parts.push(S.page);
     if (S.comar !== 'Todos') parts.push(S.comar);
     history.replaceState(null, '', parts.length ? '#' + parts.join('-') : location.pathname + location.search);
   };
@@ -1135,20 +1632,24 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
   document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.addEventListener('click', () => { S.nat = b.dataset.nat; writeHash(); render(); }));
   document.getElementById('mo-nat-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; render(); } });
   document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.addEventListener('click', () => { S.saldo = b.dataset.saldo; render(); }));
-  document.querySelectorAll('.mo-table thead th[data-field] .mo-sort').forEach((btn) => btn.addEventListener('click', () => {
-    const f = btn.closest('th').dataset.field;
-    const texto = !KIND[f] || KIND[f] === 'ord';
-    if (S.sort.field === f) {
-      if (S.sort.dir === (texto ? 'asc' : 'desc')) S.sort.dir = texto ? 'desc' : 'asc';
-      else S.sort = { field: null, dir: null };
-    } else S.sort = { field: f, dir: texto ? 'asc' : 'desc' };
-    document.querySelectorAll('.mo-table thead th[data-field]').forEach((o) => {
-      o.setAttribute('aria-sort', S.sort.field === o.dataset.field ? (S.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
-    });
-    drawTable();
+  document.getElementById('mo-busca').addEventListener('input', drawAbs);
+  document.getElementById('mo-ta-body').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; drawAbs(); } });
+  document.querySelectorAll('.ta-tools [data-grp]').forEach((b) => b.addEventListener('click', () => {
+    const g = b.dataset.grp;
+    if (hideGrp.has(g)) hideGrp.delete(g); else hideGrp.add(g);
+    b.setAttribute('aria-pressed', String(!hideGrp.has(g)));
+    drawAbs();
   }));
-  document.getElementById('mo-busca').addEventListener('input', drawTable);
-  document.getElementById('mo-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pick(tr.dataset.key); });
+  const poTotal = document.getElementById('po-total');
+  const setTotal = (v) => { if (Number.isFinite(v)) { P.total = Math.max(30, Math.min(200, Math.round(v))); renderPoder(); } };
+  poTotal.addEventListener('change', () => setTotal(Number(poTotal.value)));
+  poTotal.addEventListener('input', () => { const v = Number(poTotal.value); if (v >= 30 && v <= 200) setTotal(v); });
+  document.querySelectorAll('[data-po-step]').forEach((b) => b.addEventListener('click', () => setTotal(P.total + Number(b.dataset.poStep))));
+  document.getElementById('po-reset').addEventListener('click', () => { stopPlay(); P.total = PO.PADRAO; P.n = 10; P.cAuto = true; renderPoder(); });
+  document.getElementById('po-c-reset').addEventListener('click', () => { P.cAuto = true; renderPoder(); });
+  document.getElementById('po-n').addEventListener('input', (ev) => { stopPlay(); P.n = Number(ev.target.value); renderPoder(); });
+  document.getElementById('po-c').addEventListener('input', (ev) => { P.cAuto = false; P.c = Number(ev.target.value); renderPoder(); });
+  document.getElementById('po-play').addEventListener('click', togglePlay);
   document.getElementById('mo-recarregar').addEventListener('click', load);
   let rz, lastW = 0;
   new ResizeObserver((entries) => {
@@ -1156,7 +1657,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     if (w === lastW) return;
     lastW = w;
     clearTimeout(rz);
-    rz = setTimeout(() => { if (S.status === 'ok') render(); }, 120);
+    rz = setTimeout(() => { if (S.status === 'ok' || S.page === 'poder') render(); }, 120);
   }).observe(document.getElementById('mo'));
 
   load();
