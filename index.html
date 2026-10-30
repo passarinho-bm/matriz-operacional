@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matriz Operacional · CBMDF</title>
+<meta name="description" content="Viaturas, efetivo, saldos, matriz de risco e carga operacional dos GBMs do CBMDF, lidos da aba Absoluto da Matriz Operacional.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  /* Layout: cabeçalho com filtro, faixa de indicadores, depois cartões em grade de 2 colunas que viram 1 no celular. */
+  :root {
+    --bg: #f4f6f8; --panel: #ffffff; --fg: #16202b; --muted: #5a6676; --line: #dde2e8; --hover: #eef1f5;
+    --accent: #2b5a8c; --accent-2: #c07a1c; --bad: #b8372b; --ok: #2c7a4d; --surplus: #b3bcc7;
+    --grid: #e9edf2; --axis: #9aa4b1; --ref: #6f7b8a;
+    --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --r: 8px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1.0625rem; --title: 1.875rem;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1319; --panel: #151c24; --fg: #e7ecf1; --muted: #98a4b2; --line: #26303b; --hover: #1c2530;
+      --accent: #6ea2da; --accent-2: #e2a64c; --bad: #ee6a5b; --ok: #5cc189; --surplus: #4a5562;
+      --grid: #202a35; --axis: #5d6876; --ref: #8e9aa9;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: var(--body); line-height: 1.5; }
+  .mo { container-type: inline-size; display: grid; gap: 24px; max-width: 1440px; margin-inline: auto; padding-block: max(24px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  @media (min-width: 900px) { .mo { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+  .mo p { margin: 0; }
+  .mo-head { display: grid; gap: 12px; }
+  .mo-titlebar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .mo-titles { display: grid; gap: 4px; min-width: 0; }
+  .mo-eyebrow { font-size: var(--cap); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .mo-title { margin: 0; font-family: var(--font-serif); font-weight: 400; font-size: var(--title); line-height: 1.15; text-wrap: balance; }
+  .mo-lede { max-width: 78ch; line-height: 1.55; color: var(--muted); }
+  .mo-lede b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .mo-seg, .mo-tabs { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); }
+  .mo-tabs { background: var(--bg); justify-self: start; }
+  .mo-seg button, .mo-tabs button { appearance: none; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: var(--cap); padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .mo-seg button:hover, .mo-tabs button:hover { color: var(--fg); }
+  .mo-seg button[aria-pressed="true"], .mo-tabs button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 0 0 1px var(--line); font-weight: 600; }
+  .mo-tabs button[aria-pressed="true"] { background: var(--panel); }
+  .mo button:focus-visible, .mo input:focus-visible, .mo-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .mo-status { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); font-size: var(--cap); color: var(--muted); }
+  .mo-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); flex: none; }
+  .mo-status b { color: var(--fg); }
+
+  .mo-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 12px; }
+  .mo-kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px; display: grid; gap: 4px; align-content: start; }
+  .mo-kpi-label { font-size: var(--cap); color: var(--muted); }
+  .mo-kpi-value { font-family: var(--font-serif); font-weight: 400; font-size: var(--title); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .mo-kpi-note { font-size: var(--cap); color: var(--muted); line-height: 1.45; }
+  .mo-kpi-note b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .is-neg { color: var(--bad); }
+  .is-pos { color: var(--ok); }
+
+  .mo-row2 { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @container (min-width: 56rem) {
+    .mo-row2 { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+    .mo-row2.is-even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .mo-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .mo-card-head { display: grid; gap: 4px; }
+  .mo-card h2 { margin: 0; font-size: var(--head); font-weight: 600; text-wrap: balance; }
+  .mo-note { font-size: var(--cap); color: var(--muted); line-height: 1.45; max-width: 70ch; }
+
+  .mo-chart { position: relative; min-height: 12rem; }
+  .is-loading .mo-chart, .is-loading .mo-bullet { background: linear-gradient(90deg, var(--grid), var(--hover), var(--grid)); background-size: 200% 100%; border-radius: var(--r); animation: mo-shimmer 1.4s linear infinite; }
+  @keyframes mo-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .is-loading .mo-chart, .is-loading .mo-bullet { animation: none; } }
+  .mo-svg { display: block; overflow: visible; }
+  .mo-svg text { font-family: var(--font-sans); font-size: 12px; fill: var(--fg); }
+  .mo-svg .mo-t-muted { fill: var(--muted); font-variant-numeric: tabular-nums; }
+  .mo-row { cursor: pointer; outline: none; }
+  .mo-hit { fill: transparent; }
+  .mo-row:hover .mo-hit, .mo-row:focus-visible .mo-hit { fill: var(--hover); }
+  .mo-row.is-sel .mo-t { font-weight: 700; }
+  .mo-row.is-sel .mo-bar { stroke: var(--fg); stroke-width: 1.5; }
+  .mo-bar-acc { fill: var(--accent); }
+  .mo-bar-neg { fill: var(--bad); }
+  .mo-bar-pos { fill: var(--surplus); }
+  .mo-dot-1 { fill: var(--accent); }
+  .mo-dot-2 { fill: var(--accent-2); }
+  .mo-axis { stroke: var(--axis); stroke-width: 1; }
+  .mo-gl { stroke: var(--grid); stroke-width: 1; }
+  .mo-ref { stroke: var(--ref); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .mo-link { stroke: var(--surplus); stroke-width: 2; stroke-linecap: round; }
+  .mo-tick-nec { stroke: var(--fg); stroke-width: 2; }
+  .mo-track { fill: var(--grid); }
+
+  .mo-tip { position: absolute; z-index: 3; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: 0 6px 20px rgba(10, 20, 30, .14); padding: 6px 10px; font-size: var(--cap); line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .mo-tip-h { color: var(--muted); }
+  .mo-tip-b { font-weight: 600; }
+  .mo-tip-sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  .mo-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--cap); color: var(--muted); }
+  .mo-key { display: inline-flex; align-items: center; gap: 6px; }
+  .mo-sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--surplus); }
+  .mo-sw.is-acc { background: var(--accent); }
+  .mo-sw.is-acc2 { background: var(--accent-2); }
+  .mo-sw.is-dot { border-radius: 50%; }
+  .mo-sw.is-neg { background: var(--bad); }
+  .mo-sw.is-line { width: 16px; height: 0; border-top: 2px solid var(--fg); border-radius: 0; background: none; }
+  .mo-sw.is-dash { width: 16px; height: 0; border-top: 2px dashed var(--ref); border-radius: 0; background: none; }
+
+  .mo-ficha-nome { font-family: var(--font-serif); font-weight: 400; font-size: var(--title); line-height: 1.15; }
+  .mo-card h2.mo-ficha-nome { font-size: var(--title); font-weight: 400; }
+  .mo-sub { font-size: var(--cap); color: var(--muted); }
+  .mo-vtr { display: grid; gap: 10px; }
+  .mo-vtr-group { display: grid; gap: 6px; }
+  .mo-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .mo-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .mo-chip-v { font-weight: 600; }
+  .mo-chip-k { font-size: var(--cap); color: var(--muted); }
+  .mo-bullet { position: relative; min-height: 68px; }
+  .mo-dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr)); gap: 10px 14px; margin: 0; }
+  .mo-dl > div { display: grid; gap: 2px; padding-top: 6px; border-top: 1px solid var(--line); }
+  .mo-dl dt { font-size: var(--cap); color: var(--muted); }
+  .mo-dl dd { margin: 0; font-size: var(--head); font-variant-numeric: tabular-nums; }
+
+  .mo-frota { display: grid; }
+  .mo-frota-grp { margin-top: 8px; padding-bottom: 6px; font-size: var(--cap); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .mo-frota-row { display: grid; grid-template-columns: minmax(5.5rem, 8.5rem) minmax(0, 1fr) auto; align-items: center; gap: 2px 10px; padding-block: 6px; border-top: 1px solid var(--line); }
+  .mo-frota-cat { font-weight: 600; font-size: var(--cap); }
+  .mo-frota-bar { display: block; height: 8px; border-radius: 4px; background: var(--grid); overflow: hidden; }
+  .mo-frota-bar > i { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+  .mo-frota-qtd { text-align: right; font-size: var(--cap); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .mo-frota-qtd b { color: var(--fg); font-weight: 600; }
+  .mo-frota-mod { grid-column: 2 / -1; font-size: var(--cap); color: var(--muted); }
+
+  .mo-defs { display: grid; gap: 10px; margin: 0; }
+  .mo-defs > div { display: grid; gap: 2px; }
+  .mo-defs dt { font-weight: 600; font-size: var(--cap); }
+  .mo-defs dd { margin: 0; font-size: var(--cap); color: var(--muted); line-height: 1.45; }
+  .mo-defs b { color: var(--fg); font-weight: 600; }
+
+  .mo-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+  .mo-search { font: inherit; font-size: var(--cap); padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); color: var(--fg); width: min(100%, 18rem); min-width: 0; }
+  .mo-table-wrap { overflow: auto; max-height: 38rem; border: 1px solid var(--line); border-radius: var(--r); }
+  .mo-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: var(--cap); font-variant-numeric: tabular-nums; }
+  .mo-table th, .mo-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; background: var(--panel); }
+  .mo-table thead th { color: var(--muted); font-weight: 500; vertical-align: bottom; }
+  .mo-table thead tr.mo-cols th { position: sticky; top: 0; z-index: 2; white-space: normal; min-width: 4.25rem; max-width: 7.5rem; }
+  .mo-table thead tr.mo-groups th { text-align: center; color: var(--fg); font-weight: 600; }
+  .mo-table th:first-child, .mo-table td:first-child { position: sticky; left: 0; z-index: 1; text-align: left; }
+  .mo-table thead tr.mo-cols th:first-child { z-index: 3; }
+  .mo-table td:first-child { font-weight: 600; color: var(--fg); }
+  .mo-table td:nth-child(n+2):nth-child(-n+12), .mo-table thead tr.mo-cols th:nth-child(n+2):nth-child(-n+12) { text-align: left; }
+  .mo-table td:nth-child(3), .mo-table td:nth-child(8), .mo-table td:nth-child(13), .mo-table td:nth-child(19), .mo-table td:nth-child(22), .mo-table td:nth-child(25),
+  .mo-table thead tr.mo-cols th:nth-child(3), .mo-table thead tr.mo-cols th:nth-child(8), .mo-table thead tr.mo-cols th:nth-child(13), .mo-table thead tr.mo-cols th:nth-child(19), .mo-table thead tr.mo-cols th:nth-child(22), .mo-table thead tr.mo-cols th:nth-child(25),
+  .mo-table thead tr.mo-groups th + th { border-left: 1px solid var(--line); }
+  .mo-table tbody tr { cursor: pointer; }
+  .mo-table tbody tr:hover td, .mo-table tbody tr.is-sel td { background: var(--hover); }
+  .mo-table tbody tr.is-sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  .mo-sort { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: inherit; text-align: inherit; cursor: pointer; }
+  .mo-sort:hover { color: var(--fg); }
+  .mo-table th[aria-sort="ascending"] .mo-sort::after { content: " ↑"; }
+  .mo-table th[aria-sort="descending"] .mo-sort::after { content: " ↓"; }
+  .mo-table th[aria-sort="ascending"], .mo-table th[aria-sort="descending"] { color: var(--fg); }
+  .mo-empty { padding: 14px; font-size: var(--cap); color: var(--muted); }
+
+  .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+  .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
+  .mo-btn:hover { background: var(--hover); }
+</style>
+</head>
+<body>
+<div class="mo is-loading" id="mo">
+  <header class="mo-head" id="topo">
+    <div class="mo-titlebar">
+      <div class="mo-titles">
+        <p class="mo-eyebrow">CBMDF · Comando Operacional</p>
+        <h1 class="mo-title">Matriz Operacional — <span id="mo-periodo">novembro de 2026</span></h1>
+      </div>
+      <div class="mo-seg" role="group" aria-label="Filtrar por COMAR">
+        <button type="button" data-comar="Todos" aria-pressed="true">Todos</button>
+        <button type="button" data-comar="I" aria-pressed="false">COMAR I</button>
+        <button type="button" data-comar="II" aria-pressed="false">COMAR II</button>
+        <button type="button" data-comar="III" aria-pressed="false">COMAR III</button>
+        <button type="button" data-comar="IV" aria-pressed="false">COMAR IV</button>
+      </div>
+    </div>
+    <p class="mo-lede" id="mo-lede">
+      <span class="mo-rec" data-rec="todos">Na matriz completa,</span><span class="mo-rec" data-rec="comar" hidden>No COMAR <span data-comar-nome>—</span>,</span>
+      <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> de <b data-src="resumo" data-col="gbms">—</b> GBMs estão com saldo considerado negativo, um déficit somado de
+      <b data-src="resumo" data-col="deficit_considerado">—</b> militares.
+      <span class="mo-pior" data-pior="sim">Pelo índice de carga operacional, o maior déficit é do <b data-src="resumo" data-col="pior_gbm_carga" data-fmt="text">—</b> (<b data-src="resumo" data-col="pior_saldo_carga" data-fmt="signed">—</b>).</span><span class="mo-pior" data-pior="nao" hidden>Pelo índice de carga operacional, nenhum GBM do recorte fica com déficit.</span>
+    </p>
+  </header>
+
+  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o link na constante <code>CSV_URL</code> no início do script deste arquivo.</span></div>
+  <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a planilha publicada.</b> <span id="mo-status-msg"></span></span></div>
+
+  <section class="mo-kpis" id="indicadores" aria-label="Indicadores do recorte">
+    <div class="mo-kpi">
+      <p class="mo-kpi-label">Efetivo atual</p>
+      <p class="mo-kpi-value"><span data-src="resumo" data-col="efetivo_atual">—</span></p>
+      <p class="mo-kpi-note">de <b data-src="resumo" data-col="efetivo_necessario">—</b> necessários, com 30% de afastamento</p>
+    </div>
+    <div class="mo-kpi">
+      <p class="mo-kpi-label">Saldo efetivo</p>
+      <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_efetivo" data-tone="sign">—</span></p>
+      <p class="mo-kpi-note"><b data-src="resumo" data-col="gbms_deficit_efetivo">—</b> GBMs abaixo do efetivo necessário</p>
+    </div>
+    <div class="mo-kpi">
+      <p class="mo-kpi-label">Saldo considerado</p>
+      <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_considerado" data-tone="sign">—</span></p>
+      <p class="mo-kpi-note">com oficial de dia e cotas de GSV 12h · <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> GBMs negativos</p>
+    </div>
+    <div class="mo-kpi">
+      <p class="mo-kpi-label">Saldo pelo índice de carga</p>
+      <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_carga" data-tone="sign">—</span></p>
+      <p class="mo-kpi-note">novo efetivo necessário: <b data-src="resumo" data-col="novo_efetivo">—</b> · <b data-src="resumo" data-col="gbms_deficit_carga">—</b> GBMs negativos</p>
+    </div>
+    <div class="mo-kpi">
+      <p class="mo-kpi-label">Viaturas na matriz</p>
+      <p class="mo-kpi-value"><span data-src="resumo" data-col="viaturas">—</span></p>
+      <p class="mo-kpi-note"><b data-src="resumo" data-col="viaturas_base">—</b> no socorro base · <b data-src="resumo" data-col="viaturas_intermediario">—</b> no intermediário</p>
+    </div>
+  </section>
+
+  <div class="mo-row2">
+    <article class="mo-card" id="ranking">
+      <div class="mo-card-head">
+        <h2>Ranking da matriz de risco</h2>
+        <p class="mo-note">Pontuação ponderada de demanda operacional, isolamento geográfico, potencial de demanda e riscos estruturais da área. Toque em um GBM para abrir a ficha.</p>
+      </div>
+      <div class="mo-chart" id="ch-ranking"></div>
+    </article>
+
+    <article class="mo-card" id="ficha">
+      <div class="mo-card-head">
+        <p class="mo-eyebrow">Ficha do GBM</p>
+        <h2 class="mo-ficha-nome"><span data-src="gbm" data-col="gbm" data-fmt="text">—</span></h2>
+        <p class="mo-sub">COMAR <span data-src="gbm" data-col="comar" data-fmt="text">—</span> · <span data-src="gbm" data-col="posicao_risco">—</span>º lugar entre <span data-src="resumo-todos" data-col="gbms">—</span> na matriz de risco</p>
+      </div>
+
+      <div class="mo-vtr">
+        <div class="mo-vtr-group">
+          <p class="mo-sub">Socorro base</p>
+          <ul class="mo-chips">
+            <li class="mo-chip" data-chip="ur" hidden><span class="mo-chip-v" data-src="gbm" data-col="ur" data-fmt="text">—</span><span class="mo-chip-k">VAPH</span></li>
+            <li class="mo-chip" data-chip="ur_gsv" hidden><span class="mo-chip-v" data-src="gbm" data-col="ur_gsv" data-fmt="text">—</span><span class="mo-chip-k">VAPH reforço</span></li>
+            <li class="mo-chip" data-chip="vme" hidden><span class="mo-chip-v" data-src="gbm" data-col="vme" data-fmt="text">—</span><span class="mo-chip-k">VME</span></li>
+            <li class="mo-chip" data-chip="vme2" hidden><span class="mo-chip-v" data-src="gbm" data-col="vme2" data-fmt="text">—</span><span class="mo-chip-k">2ª VME</span></li>
+            <li class="mo-chip" data-chip="apoio_ar" hidden><span class="mo-chip-v" data-src="gbm" data-col="apoio_ar" data-fmt="text">—</span><span class="mo-chip-k">Apoio sem efetivo</span></li>
+          </ul>
+        </div>
+        <div class="mo-vtr-group">
+          <p class="mo-sub">Intermediário</p>
+          <ul class="mo-chips">
+            <li class="mo-chip" data-chip="vci" hidden><span class="mo-chip-v" data-src="gbm" data-col="vci" data-fmt="text">—</span><span class="mo-chip-k">VCI</span></li>
+            <li class="mo-chip" data-chip="vs" hidden><span class="mo-chip-v" data-src="gbm" data-col="vs" data-fmt="text">—</span><span class="mo-chip-k">VS</span></li>
+            <li class="mo-chip" data-chip="vpa" hidden><span class="mo-chip-v" data-src="gbm" data-col="vpa" data-fmt="text">—</span><span class="mo-chip-k">VPA</span></li>
+            <li class="mo-chip" data-chip="ve" hidden><span class="mo-chip-v" data-src="gbm" data-col="ve" data-fmt="text">—</span><span class="mo-chip-k">VE</span></li>
+            <li class="mo-chip" data-chip="apoio" hidden><span class="mo-chip-v" data-src="gbm" data-col="apoio" data-fmt="text">—</span><span class="mo-chip-k">Apoio</span></li>
+          </ul>
+          <p class="mo-sub" id="mo-vtr-none" hidden>Sem viaturas no intermediário.</p>
+        </div>
+      </div>
+
+      <div class="mo-bullet" id="ch-bullet"></div>
+      <div class="mo-legend">
+        <span class="mo-key"><i class="mo-sw is-acc"></i>Efetivo atual</span>
+        <span class="mo-key"><i class="mo-sw is-line"></i>Necessário (30% de afastamento)</span>
+        <span class="mo-key"><i class="mo-sw is-dash"></i>Novo necessário pela carga</span>
+      </div>
+
+      <dl class="mo-dl">
+        <div><dt>Efetivo necessário</dt><dd><span data-src="gbm" data-col="efetivo_necessario">—</span></dd></div>
+        <div><dt>Efetivo atual</dt><dd><span data-src="gbm" data-col="efetivo_atual">—</span></dd></div>
+        <div><dt>Novo efetivo necessário</dt><dd><span data-src="gbm" data-col="novo_efetivo">—</span></dd></div>
+        <div><dt>Saldo efetivo</dt><dd><span data-src="gbm" data-col="saldo_efetivo" data-tone="sign">—</span></dd></div>
+        <div><dt>Saldo considerado</dt><dd><span data-src="gbm" data-col="saldo_considerado" data-tone="sign">—</span></dd></div>
+        <div><dt>Saldo pelo índice de carga</dt><dd><span data-src="gbm" data-col="saldo_carga" data-tone="sign">—</span></dd></div>
+        <div><dt>Oficial de dia</dt><dd><span data-src="gbm" data-col="oficial_dia" data-fmt="text" data-empty="Não">—</span></dd></div>
+        <div><dt>Cotas diárias de GSV 12h</dt><dd><span data-src="gbm" data-col="cotas_gsv" data-empty="Nenhuma">—</span></dd></div>
+        <div><dt>Coeficiente de ajuste</dt><dd><span data-src="gbm" data-col="coef_ajuste">—</span></dd></div>
+        <div><dt>Matriz de risco</dt><dd><span data-src="gbm" data-col="matriz_risco">—</span></dd></div>
+        <div><dt>Carga com efetivo atual</dt><dd><span data-src="gbm" data-col="carga_atual">—</span></dd></div>
+        <div><dt>Carga atualizada</dt><dd><span data-src="gbm" data-col="carga_atualizada">—</span></dd></div>
+      </dl>
+      <p class="mo-sub">Ranking de ocorrências, últimos 12 meses</p>
+      <dl class="mo-dl">
+        <div><dt>Ocorrências</dt><dd><span data-src="gbm" data-col="rk_ocorrencias" data-fmt="text">—</span></dd></div>
+        <div><dt>UR</dt><dd><span data-src="gbm" data-col="rk_ur" data-fmt="text">—</span></dd></div>
+        <div><dt>Multiemprego</dt><dd><span data-src="gbm" data-col="rk_multiemprego" data-fmt="text">—</span></dd></div>
+        <div><dt>Multiemprego c/ florestal</dt><dd><span data-src="gbm" data-col="rk_multiemprego_florestal" data-fmt="text">—</span></dd></div>
+        <div><dt>Incêndio estrutural</dt><dd><span data-src="gbm" data-col="rk_incendio" data-fmt="text">—</span></dd></div>
+      </dl>
+    </article>
+  </div>
+
+  <div class="mo-row2 is-even">
+    <article class="mo-card" id="saldos">
+      <div class="mo-card-head">
+        <h2>Saldo de efetivo por GBM</h2>
+        <p class="mo-note mo-saldo-note" data-for="saldo_efetivo" hidden>Efetivo atual menos o efetivo necessário, com 30% de afastamento.</p>
+        <p class="mo-note mo-saldo-note" data-for="saldo_considerado">Saldo efetivo ajustado pelo oficial de dia e pelas cotas diárias de GSV 12h.</p>
+        <p class="mo-note mo-saldo-note" data-for="saldo_carga" hidden>Efetivo atual menos o novo efetivo necessário, calculado pela relação alvo de ocorrências por militar.</p>
+      </div>
+      <div class="mo-tabs" role="group" aria-label="Medida de saldo">
+        <button type="button" data-saldo="saldo_efetivo" aria-pressed="false">Saldo efetivo</button>
+        <button type="button" data-saldo="saldo_considerado" aria-pressed="true">Saldo considerado</button>
+        <button type="button" data-saldo="saldo_carga" aria-pressed="false">Pelo índice de carga</button>
+      </div>
+      <div class="mo-chart" id="ch-saldos"></div>
+      <div class="mo-legend">
+        <span class="mo-key"><i class="mo-sw is-neg"></i>Déficit</span>
+        <span class="mo-key"><i class="mo-sw"></i>Sobra</span>
+      </div>
+    </article>
+
+    <article class="mo-card" id="carga">
+      <div class="mo-card-head">
+        <h2>Carga operacional por militar</h2>
+        <p class="mo-note">Ocorrências por militar lotado com o efetivo atual e na carga atualizada. A linha tracejada é a relação alvo (Ralvo) usada na equalização.</p>
+      </div>
+      <div class="mo-chart" id="ch-carga"></div>
+      <div class="mo-legend">
+        <span class="mo-key"><i class="mo-sw is-dot is-acc"></i>Com efetivo atual</span>
+        <span class="mo-key"><i class="mo-sw is-dot is-acc2"></i>Atualizada</span>
+        <span class="mo-key"><i class="mo-sw is-dash"></i>Ralvo</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="mo-row2 is-even">
+    <article class="mo-card" id="frota">
+      <div class="mo-card-head">
+        <h2>Frota na matriz</h2>
+        <p class="mo-note">Viaturas previstas em cada posição da matriz, quantos GBMs do recorte as têm e com quais modelos.</p>
+      </div>
+      <div class="mo-frota">
+        <p class="mo-frota-grp">Socorro base</p>
+        <div class="mo-frota-row" data-cat="ur"><span class="mo-frota-cat">UR</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="ur_gsv"><span class="mo-frota-cat">UR (GSV) / Reforço</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="vme"><span class="mo-frota-cat">VME</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="vme2"><span class="mo-frota-cat">2ª VME</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="apoio_ar"><span class="mo-frota-cat">Apoio AR</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <p class="mo-frota-grp">Intermediário</p>
+        <div class="mo-frota-row" data-cat="vci"><span class="mo-frota-cat">VCI</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="vs"><span class="mo-frota-cat">VS</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="vpa"><span class="mo-frota-cat">VPA</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="ve"><span class="mo-frota-cat">VE</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+        <div class="mo-frota-row" data-cat="apoio"><span class="mo-frota-cat">Apoio</span><span class="mo-frota-bar"><i></i></span><span class="mo-frota-qtd"><b data-src="frota" data-col="qtd">—</b> de <span data-src="frota" data-col="gbms">—</span></span><span class="mo-frota-mod" data-src="frota" data-col="modelos" data-fmt="text" data-empty="">—</span></div>
+      </div>
+    </article>
+
+    <article class="mo-card" id="como-ler">
+      <div class="mo-card-head">
+        <h2>Como ler</h2>
+        <p class="mo-note">Termos das colunas da aba Absoluto.</p>
+      </div>
+      <dl class="mo-defs">
+        <div><dt>Efetivo necessário</dt><dd>Militares para guarnecer as viaturas previstas na matriz, já com 30% de afastamento.</dd></div>
+        <div><dt>Saldo efetivo</dt><dd>Efetivo atual menos o efetivo necessário. Negativo indica falta de militares.</dd></div>
+        <div><dt>Saldo considerado</dt><dd>Saldo efetivo ajustado pelo oficial de dia e pelas cotas diárias de GSV 12h.</dd></div>
+        <div><dt>Relação alvo (Ralvo)</dt><dd><b data-src="ralvo" data-col="ralvo">—</b> ocorrências por militar lotado, referência da equalização de efetivo.</dd></div>
+        <div><dt>Coeficiente de ajuste</dt><dd>Carga operacional com efetivo atual dividida pela Ralvo. Acima de 1, o GBM atende mais ocorrências por militar do que o alvo.</dd></div>
+        <div><dt>Novo efetivo necessário</dt><dd>Efetivo atual multiplicado pelo coeficiente de ajuste, respeitado o efetivo mínimo do quartel.</dd></div>
+        <div><dt>Saldo pelo índice de carga</dt><dd>Efetivo atual menos o novo efetivo necessário.</dd></div>
+        <div><dt>Matriz de risco</dt><dd>Pontuação ponderada de quatro critérios: demanda operacional, isolamento geográfico, potencial de demanda operacional e riscos estruturais da área.</dd></div>
+      </dl>
+    </article>
+  </div>
+
+  <article class="mo-card" id="tabela">
+    <div class="mo-tools">
+      <div class="mo-card-head">
+        <h2>Tabela absoluta</h2>
+        <p class="mo-note">Todas as colunas da aba Absoluto, na ordem da matriz de risco. Clique em um cabeçalho para ordenar e em uma linha para abrir a ficha.</p>
+      </div>
+      <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
+    </div>
+    <div class="mo-table-wrap">
+      <table class="mo-table">
+        <thead>
+          <tr class="mo-groups">
+            <th colspan="2"></th>
+            <th colspan="5">Socorro base</th>
+            <th colspan="5">Intermediário</th>
+            <th colspan="6">Efetivo e saldos</th>
+            <th colspan="3">Equalização de efetivo</th>
+            <th colspan="3">Risco e carga</th>
+            <th colspan="5">Ranking de ocorrências (12 meses)</th>
+          </tr>
+          <tr class="mo-cols">
+            <th data-field="gbm" aria-sort="none"><button type="button" class="mo-sort">GBM</button></th>
+            <th data-field="comar" aria-sort="none"><button type="button" class="mo-sort">COMAR</button></th>
+            <th data-field="ur" aria-sort="none"><button type="button" class="mo-sort">UR</button></th>
+            <th data-field="ur_gsv" aria-sort="none"><button type="button" class="mo-sort">UR (GSV) / Reforço</button></th>
+            <th data-field="vme" aria-sort="none"><button type="button" class="mo-sort">VME</button></th>
+            <th data-field="vme2" aria-sort="none"><button type="button" class="mo-sort">2ª VME</button></th>
+            <th data-field="apoio_ar" aria-sort="none"><button type="button" class="mo-sort">Apoio AR</button></th>
+            <th data-field="vci" aria-sort="none"><button type="button" class="mo-sort">VCI</button></th>
+            <th data-field="vs" aria-sort="none"><button type="button" class="mo-sort">VS</button></th>
+            <th data-field="vpa" aria-sort="none"><button type="button" class="mo-sort">VPA</button></th>
+            <th data-field="ve" aria-sort="none"><button type="button" class="mo-sort">VE</button></th>
+            <th data-field="apoio" aria-sort="none"><button type="button" class="mo-sort">Apoio</button></th>
+            <th data-field="efetivo_necessario" aria-sort="none"><button type="button" class="mo-sort">Efetivo necessário</button></th>
+            <th data-field="efetivo_atual" aria-sort="none"><button type="button" class="mo-sort">Efetivo atual</button></th>
+            <th data-field="saldo_efetivo" aria-sort="none"><button type="button" class="mo-sort">Saldo efetivo</button></th>
+            <th data-field="oficial_dia" aria-sort="none"><button type="button" class="mo-sort">Oficial de dia</button></th>
+            <th data-field="cotas_gsv" aria-sort="none"><button type="button" class="mo-sort">Cotas GSV 12h</button></th>
+            <th data-field="saldo_considerado" aria-sort="none"><button type="button" class="mo-sort">Saldo considerado</button></th>
+            <th data-field="coef_ajuste" aria-sort="none"><button type="button" class="mo-sort">Coef. de ajuste</button></th>
+            <th data-field="novo_efetivo" aria-sort="none"><button type="button" class="mo-sort">Novo efetivo necessário</button></th>
+            <th data-field="saldo_carga" aria-sort="none"><button type="button" class="mo-sort">Saldo pela carga</button></th>
+            <th data-field="matriz_risco" aria-sort="none"><button type="button" class="mo-sort">Matriz de risco</button></th>
+            <th data-field="carga_atual" aria-sort="none"><button type="button" class="mo-sort">Carga com efetivo atual</button></th>
+            <th data-field="carga_atualizada" aria-sort="none"><button type="button" class="mo-sort">Carga atualizada</button></th>
+            <th data-field="rk_ocorrencias" aria-sort="none"><button type="button" class="mo-sort">Ocorrências</button></th>
+            <th data-field="rk_ur" aria-sort="none"><button type="button" class="mo-sort">UR</button></th>
+            <th data-field="rk_multiemprego" aria-sort="none"><button type="button" class="mo-sort">Multiemprego</button></th>
+            <th data-field="rk_multiemprego_florestal" aria-sort="none"><button type="button" class="mo-sort">Multiemprego c/ florestal</button></th>
+            <th data-field="rk_incendio" aria-sort="none"><button type="button" class="mo-sort">Incêndio estrutural</button></th>
+          </tr>
+        </thead>
+        <tbody id="mo-tbody"></tbody>
+      </table>
+      <p class="mo-empty" id="mo-empty" hidden>Nenhum GBM corresponde à busca.</p>
+    </div>
+  </article>
+
+  <footer class="mo-foot">
+    <span>Dados da aba Absoluto da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
+    <button type="button" class="mo-btn" id="mo-recarregar">Recarregar dados</button>
+  </footer>
+</div>
+
+<script>
+/* ===== CONFIGURAÇÃO =====
+   CSV_URL: link da aba Absoluto publicada na Web em formato CSV
+   (Arquivo → Compartilhar → Publicar na Web → aba Absoluto → CSV). */
+const CSV_URL = '';
+/* ======================== */
+
+(() => {
+  const loc = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['R$ ', ''], minus: '−' });
+  const fInt = loc.format(',d'), fSig = loc.format('+,d'), f2 = loc.format(',.2f');
+  const KIND = {
+    efetivo_necessario: 'int', efetivo_atual: 'int', novo_efetivo: 'int', cotas_gsv: 'int', ralvo: 'int',
+    saldo_efetivo: 'signed', saldo_considerado: 'signed', saldo_carga: 'signed', pior_saldo_carga: 'signed',
+    coef_ajuste: 'dec2', matriz_risco: 'dec2', carga_atual: 'dec2', carga_atualizada: 'dec2',
+  };
+  const COLS = ['gbm', 'comar', 'ur', 'ur_gsv', 'vme', 'vme2', 'apoio_ar', 'vci', 'vs', 'vpa', 've', 'apoio',
+    'efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'oficial_dia', 'cotas_gsv', 'saldo_considerado',
+    'coef_ajuste', 'novo_efetivo', 'saldo_carga', 'matriz_risco', 'carga_atual', 'carga_atualizada',
+    'rk_ocorrencias', 'rk_ur', 'rk_multiemprego', 'rk_multiemprego_florestal', 'rk_incendio'];
+  const BASE = ['ur', 'ur_gsv', 'vme', 'vme2', 'apoio_ar'];
+  const INTER = ['vci', 'vs', 'vpa', 've', 'apoio'];
+  const COMARS = ['Todos', 'I', 'II', 'III', 'IV'];
+
+  const fmt = (kind, v) => {
+    if (v == null || v === '') return '';
+    if (kind === 'signed') return v === 0 ? '0' : fSig(v);
+    if (kind === 'dec2') return f2(v);
+    if (typeof v === 'number') return Number.isInteger(v) ? fInt(v) : f2(v);
+    return String(v);
+  };
+  const kindOf = (c) => KIND[c] || 'text';
+  const norm = (s) => String(s ?? '').replace(/[\s​﻿]+/g, ' ').trim();
+  const fold = (s) => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+  /* ---- Leitura da aba: acha cada coluna pelo nome do cabeçalho ---- */
+  function parse(grid) {
+    const nomes = {
+      'GBM': 'gbm', 'COMAR': 'comar', 'UR': 'ur', 'UR (GSV) / Reforço': 'ur_gsv', 'VME': 'vme', '2ª VME': 'vme2',
+      'Apoio AR': 'apoio_ar', 'VCI': 'vci', 'VS': 'vs', 'VPA': 'vpa', 'VE': 've', 'Apoio': 'apoio',
+      'Efetivo Necessário (com 30% de afast.)': 'efetivo_necessario', 'Efetivo Atual': 'efetivo_atual',
+      'Saldo Efetivo': 'saldo_efetivo', 'Oficial de Dia': 'oficial_dia', 'Cotas diárias de GSV 12h': 'cotas_gsv',
+      'Saldo Considerado': 'saldo_considerado', 'Relação Alvo (Ralvo)': 'ralvo', 'Coeficiente de Ajuste': 'coef_ajuste',
+      'Novo Efetivo Necessário': 'novo_efetivo', 'Saldo Efetivo pelo Índice de Carga Operacional': 'saldo_carga',
+      'Matriz de Risco': 'matriz_risco', 'Carga Operacional com Efetivo Atual': 'carga_atual',
+      'Carga Operacional - Atualizada': 'carga_atualizada',
+      'Ranking Ocorrências': 'rk_ocorrencias', 'Ranking UR': 'rk_ur', 'Ranking Multiemprego': 'rk_multiemprego',
+      'Ranking Multiemprego c/ florestal': 'rk_multiemprego_florestal', 'Ranking Incêndio estrutural': 'rk_incendio',
+    };
+    const opcionais = new Set(['rk_ocorrencias', 'rk_ur', 'rk_multiemprego', 'rk_multiemprego_florestal', 'rk_incendio']);
+    const texto = new Set(['gbm', 'comar', ...opcionais]);
+    const icone = new Set([...BASE, ...INTER, 'oficial_dia']);
+    const chave = (s) => fold(norm(s)).replace(/[^a-z0-9]+/g, '');
+    const hi = grid.findIndex((r) => r.some((c) => norm(c) === 'GBM') && r.some((c) => norm(c) === 'COMAR'));
+    if (hi < 0) throw new Error('O cabeçalho da aba Absoluto (colunas GBM e COMAR) não foi encontrado no CSV.');
+    const header = grid[hi].map(chave);
+    const pos = {}, faltam = [];
+    for (const [rotulo, k] of Object.entries(nomes)) {
+      const i = header.indexOf(chave(rotulo));
+      if (i >= 0) pos[k] = i; else if (!opcionais.has(k)) faltam.push(rotulo);
+    }
+    if (faltam.length) throw new Error('Colunas não encontradas: ' + faltam.join('; ') + '.');
+    const num = (s) => {
+      const t = norm(s).replace(/\./g, '').replace(',', '.').replace(/^\+/, '').replace('−', '-');
+      if (t === '') return null;
+      const v = Number(t);
+      return Number.isFinite(v) ? v : null;
+    };
+    const semIcone = (s) => norm(s).replace(/^[^\p{L}\p{N}]+/u, '').trim();
+    return grid.slice(hi + 1)
+      .filter((r) => norm(r[pos.gbm]) !== '' && norm(r[pos.gbm]).toUpperCase() !== 'TOTAL')
+      .map((r) => {
+        const o = {};
+        for (const c of Object.values(nomes)) {
+          const cel = pos[c] == null ? '' : r[pos[c]];
+          if (texto.has(c)) o[c] = pos[c] == null ? null : norm(cel);
+          else if (icone.has(c)) o[c] = semIcone(cel);
+          else o[c] = num(cel);
+        }
+        return o;
+      });
+  }
+
+  /* ---- Agregados ---- */
+  function resumo(all) {
+    const soma = (rs, c) => rs.reduce((s, r) => s + (r[c] ?? 0), 0);
+    const conta = (rs, cols) => cols.reduce((s, c) => s + rs.filter((r) => r[c]).length, 0);
+    return COMARS.map((comar) => {
+      const rs = comar === 'Todos' ? all : all.filter((r) => r.comar === comar);
+      const pior = rs.filter((r) => r.saldo_carga != null).reduce((a, r) => (a == null || r.saldo_carga < a.saldo_carga ? r : a), null);
+      return {
+        comar, gbms: rs.length,
+        efetivo_necessario: soma(rs, 'efetivo_necessario'), efetivo_atual: soma(rs, 'efetivo_atual'), novo_efetivo: soma(rs, 'novo_efetivo'),
+        saldo_efetivo: soma(rs, 'saldo_efetivo'), saldo_considerado: soma(rs, 'saldo_considerado'), saldo_carga: soma(rs, 'saldo_carga'),
+        gbms_deficit_efetivo: rs.filter((r) => r.saldo_efetivo < 0).length,
+        gbms_deficit_considerado: rs.filter((r) => r.saldo_considerado < 0).length,
+        gbms_deficit_carga: rs.filter((r) => r.saldo_carga < 0).length,
+        deficit_considerado: -rs.reduce((s, r) => s + Math.min(0, r.saldo_considerado ?? 0), 0),
+        viaturas_base: conta(rs, BASE), viaturas_intermediario: conta(rs, INTER), viaturas: conta(rs, BASE) + conta(rs, INTER),
+        pior_gbm_carga: pior ? pior.gbm : null, pior_saldo_carga: pior ? pior.saldo_carga : null,
+      };
+    });
+  }
+  function frota(all) {
+    const out = [];
+    for (const comar of COMARS) {
+      const rs = comar === 'Todos' ? all : all.filter((r) => r.comar === comar);
+      for (const categoria of [...BASE, ...INTER]) {
+        const ms = rs.map((r) => r[categoria]).filter(Boolean);
+        const por = {};
+        ms.forEach((m) => { por[m] = (por[m] || 0) + 1; });
+        const modelos = Object.entries(por).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([m, n]) => m + ' ' + n).join(' · ');
+        out.push({ comar, categoria, qtd: ms.length, gbms: rs.length, modelos: modelos || null });
+      }
+    }
+    return out;
+  }
+
+  /* ---- Estado ---- */
+  const S = { all: [], resumo: [], frota: [], status: 'loading', comar: 'Todos', saldo: 'saldo_considerado', gbm: null, sort: { field: null, dir: null } };
+  const rows = () => {
+    const rs = S.all.filter((r) => S.comar === 'Todos' || r.comar === S.comar);
+    return rs.map((r, i) => [r, i]).sort((a, b) => (b[0].matriz_risco ?? -1) - (a[0].matriz_risco ?? -1) || a[1] - b[1]).map((p) => p[0]);
+  };
+  const selGbm = () => { const rs = rows(); const hit = rs.find((r) => r.gbm === S.gbm); return hit ? hit.gbm : (rs[0] ? rs[0].gbm : null); };
+  const selRow = () => { const g = selGbm(); return S.all.find((r) => r.gbm === g) || null; };
+  const pick = (g) => {
+    S.gbm = g;
+    render();
+    const f = document.getElementById('ficha');
+    if (f && f.getBoundingClientRect().top < 0) f.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  };
+
+  /* ---- Valores únicos ---- */
+  function fillValues() {
+    const ok = S.status === 'ok';
+    const res = S.resumo.find((r) => r.comar === S.comar);
+    const resTodos = S.resumo.find((r) => r.comar === 'Todos');
+    const g = selRow();
+    const ralvoRow = S.all.find((r) => r.ralvo != null);
+    document.querySelectorAll('[data-src]').forEach((el) => {
+      const src = el.dataset.src, col = el.dataset.col;
+      let row = null;
+      if (src === 'resumo') row = res;
+      else if (src === 'resumo-todos') row = resTodos;
+      else if (src === 'gbm') row = g ? Object.assign({ posicao_risco: 1 + S.all.filter((o) => (o.matriz_risco ?? -1) > (g.matriz_risco ?? -1)).length }, g) : null;
+      else if (src === 'ralvo') row = ralvoRow;
+      else if (src === 'frota') { const cat = el.closest('[data-cat]')?.dataset.cat; row = S.frota.find((r) => r.comar === S.comar && r.categoria === cat); }
+      el.classList.remove('is-neg', 'is-pos');
+      const v = ok && row ? row[col] : null;
+      if (!ok) { el.textContent = '—'; return; }
+      if (v == null || v === '') { el.textContent = el.dataset.empty ?? '—'; return; }
+      el.textContent = fmt(el.dataset.fmt || kindOf(col), v);
+      if (el.dataset.tone === 'sign' && typeof v === 'number') { if (v < 0) el.classList.add('is-neg'); else if (v > 0) el.classList.add('is-pos'); }
+    });
+    document.querySelectorAll('[data-comar-nome]').forEach((el) => { el.textContent = S.comar; });
+    document.querySelectorAll('.mo-frota-row[data-cat]').forEach((el) => {
+      const r = S.frota.find((o) => o.comar === S.comar && o.categoria === el.dataset.cat);
+      const i = el.querySelector('.mo-frota-bar > i');
+      if (i) i.style.width = (ok && r && r.gbms ? Math.min(100, (100 * r.qtd) / r.gbms) : 0) + '%';
+    });
+    document.querySelectorAll('.mo-rec').forEach((s) => { s.hidden = (s.dataset.rec === 'todos') !== (S.comar === 'Todos'); });
+    const semDeficit = ok && !!res && (res.pior_saldo_carga == null || res.pior_saldo_carga >= 0);
+    document.querySelectorAll('.mo-pior').forEach((s) => { s.hidden = (s.dataset.pior === 'nao') !== semDeficit; });
+    document.querySelectorAll('.mo-chip[data-chip]').forEach((li) => { li.hidden = !(ok && g && g[li.dataset.chip]); });
+    const none = document.getElementById('mo-vtr-none');
+    if (none) none.hidden = !(ok && g) || INTER.some((k) => g[k]);
+  }
+
+  /* ---- Gráficos ---- */
+  const makeSvg = (el, W, H, label) => {
+    const svg = d3.create('svg').attr('class', 'mo-svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', label);
+    el.replaceChildren(svg.node());
+    return svg;
+  };
+  const measure = (svg, texts, cls) => {
+    const g = svg.append('g');
+    let w = 0;
+    texts.forEach((t) => { const n = g.append('text').attr('class', cls || null).text(t).node(); w = Math.max(w, n.getComputedTextLength()); });
+    g.remove();
+    return Math.ceil(w);
+  };
+  const tipFor = (el) => {
+    const t = document.createElement('div');
+    t.className = 'mo-tip';
+    t.hidden = true;
+    el.appendChild(t);
+    return {
+      show(lines, x, y) {
+        t.replaceChildren(...lines.map((ln) => {
+          const d = document.createElement('div');
+          if (ln.cls) d.className = ln.cls;
+          if (ln.sw) { const s = document.createElement('span'); s.className = 'mo-tip-sw'; s.style.background = `var(${ln.sw})`; d.appendChild(s); }
+          d.appendChild(document.createTextNode(ln.t));
+          return d;
+        }));
+        t.hidden = false;
+        const w = t.offsetWidth, h = t.offsetHeight, W = el.clientWidth;
+        let left = x + 14;
+        if (left + w > W) left = x - w - 14;
+        if (left < 0) left = Math.max(0, Math.min(W - w, x - w / 2));
+        let top = y - h - 10;
+        if (top < 0) top = y + 14;
+        t.style.left = left + 'px';
+        t.style.top = top + 'px';
+      },
+      hide() { t.hidden = true; },
+    };
+  };
+  const rowEvents = (sel, el, tip, lines) => {
+    sel.attr('tabindex', 0).attr('role', 'button')
+      .on('click', (ev, d) => pick(d.gbm))
+      .on('keydown', (ev, d) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pick(d.gbm); } })
+      .on('mousemove', (ev, d) => { const [px, py] = d3.pointer(ev, el); tip.show(lines(d), px, py); })
+      .on('mouseleave blur', () => tip.hide());
+  };
+
+  function drawRanking(el) {
+    if (S.status !== 'ok') { el.replaceChildren(); return; }
+    const rs = rows(), sel = selGbm();
+    const W = Math.max(260, el.clientWidth), rowH = 26, barH = 16, padT = 2;
+    const H = rs.length * rowH + padT * 2;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Ranking dos GBMs pela pontuação da matriz de risco');
+    const comarW = measure(svg, rs.map((r) => r.comar), 'mo-t-muted') + 10;
+    const nameW = Math.min(W * 0.48, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const valW = measure(svg, rs.map((r) => fmt('dec2', r.matriz_risco)), 'mo-t-muted') + 8;
+    const x0 = comarW + nameW + 10;
+    const x = d3.scaleLinear([0, d3.max(S.all, (d) => d.matriz_risco) || 1], [x0, W - valW]);
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (d.gbm === sel ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${padT + i * rowH})`)
+      .attr('aria-label', (d) => `${d.gbm}, matriz de risco ${fmt('dec2', d.matriz_risco)}`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t-muted').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.comar);
+    g.append('text').attr('class', 'mo-t').attr('x', comarW).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    g.append('rect').attr('class', 'mo-bar mo-bar-acc').attr('x', x0).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', 3)
+      .attr('width', (d) => Math.max(0, x(d.matriz_risco ?? 0) - x0));
+    g.append('text').attr('class', 'mo-t-muted').attr('x', (d) => x(d.matriz_risco ?? 0) + 6).attr('y', rowH / 2).attr('dy', '0.35em')
+      .text((d) => fmt('dec2', d.matriz_risco));
+    rowEvents(g, el, tip, (d) => [
+      { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+      { t: 'Matriz de risco: ' + fmt('dec2', d.matriz_risco) },
+      { t: 'Carga com efetivo atual: ' + fmt('dec2', d.carga_atual) },
+      { t: 'Saldo considerado: ' + fmt('signed', d.saldo_considerado) },
+    ]);
+  }
+
+  function drawSaldos(el) {
+    if (S.status !== 'ok') { el.replaceChildren(); return; }
+    const m = S.saldo, sel = selGbm();
+    const rs = rows().filter((r) => r[m] != null).sort((a, b) => a[m] - b[m] || a.gbm.localeCompare(b.gbm));
+    const W = Math.max(260, el.clientWidth), rowH = 24, barH = 14, padT = 2;
+    const H = rs.length * rowH + padT * 2;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Saldo de efetivo por GBM');
+    const nameW = Math.min(W * 0.45, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const valW = measure(svg, S.all.map((r) => fmt('signed', r[m])), 'mo-t-muted') + 8;
+    const x0 = nameW + 12;
+    const M = d3.max(S.all, (d) => Math.abs(d[m] ?? 0)) || 1;
+    const x = d3.scaleLinear([-M, M], [x0 + valW, W - valW]);
+    svg.append('line').attr('class', 'mo-axis').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H);
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (d.gbm === sel ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${padT + i * rowH})`)
+      .attr('aria-label', (d) => `${d.gbm}, ${fmt('signed', d[m])}`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    g.append('rect').attr('class', (d) => 'mo-bar ' + (d[m] < 0 ? 'mo-bar-neg' : 'mo-bar-pos'))
+      .attr('x', (d) => Math.min(x(0), x(d[m]))).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', 3)
+      .attr('width', (d) => Math.abs(x(d[m]) - x(0)));
+    g.append('text').attr('class', 'mo-t-muted').attr('y', rowH / 2).attr('dy', '0.35em')
+      .attr('x', (d) => (d[m] < 0 ? x(d[m]) - 5 : x(d[m]) + 5)).attr('text-anchor', (d) => (d[m] < 0 ? 'end' : 'start'))
+      .text((d) => fmt('signed', d[m]));
+    rowEvents(g, el, tip, (d) => [
+      { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+      { t: 'Saldo efetivo: ' + fmt('signed', d.saldo_efetivo) },
+      { t: 'Saldo considerado: ' + fmt('signed', d.saldo_considerado) },
+      { t: 'Saldo pelo índice de carga: ' + fmt('signed', d.saldo_carga) },
+    ]);
+  }
+
+  function drawCarga(el) {
+    if (S.status !== 'ok') { el.replaceChildren(); return; }
+    const sel = selGbm();
+    const rs = rows().filter((r) => r.carga_atual != null).sort((a, b) => b.carga_atual - a.carga_atual);
+    const ralvoRow = S.all.find((r) => r.ralvo != null);
+    const ralvo = ralvoRow ? ralvoRow.ralvo : null;
+    const W = Math.max(260, el.clientWidth), rowH = 24, top = 24, bottom = 24;
+    const H = top + rs.length * rowH + bottom;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Carga operacional por militar em cada GBM');
+    const nameW = Math.min(W * 0.45, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const x0 = nameW + 16;
+    const max = d3.max(S.all, (d) => Math.max(d.carga_atual ?? 0, d.carga_atualizada ?? 0, ralvo ?? 0)) || 1;
+    const x = d3.scaleLinear([0, max], [x0, W - 16]).nice();
+    const ticks = x.ticks(Math.max(2, Math.floor((W - x0) / 72)));
+    const axis = svg.append('g');
+    axis.selectAll('line').data(ticks).join('line').attr('class', 'mo-gl')
+      .attr('x1', (t) => x(t)).attr('x2', (t) => x(t)).attr('y1', top - 6).attr('y2', H - bottom + 4);
+    axis.selectAll('text').data(ticks).join('text').attr('class', 'mo-t-muted')
+      .attr('x', (t) => x(t)).attr('y', 10).attr('dy', '0.35em')
+      .attr('text-anchor', (t, i) => (i === ticks.length - 1 && x(t) > W - 24 ? 'end' : 'middle'))
+      .text((t) => fmt('int', t));
+    if (ralvo != null) {
+      svg.append('line').attr('class', 'mo-ref').attr('x1', x(ralvo)).attr('x2', x(ralvo)).attr('y1', top - 6).attr('y2', H - bottom + 4);
+      const lab = 'Ralvo ' + fmt('int', ralvo);
+      const lw = measure(svg, [lab], 'mo-t-muted');
+      const lx = Math.max(x0 + lw / 2, Math.min(W - lw / 2, x(ralvo)));
+      svg.append('text').attr('class', 'mo-t-muted').attr('x', lx).attr('y', H - 8).attr('text-anchor', 'middle').text(lab);
+    }
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (d.gbm === sel ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${top + i * rowH})`)
+      .attr('aria-label', (d) => `${d.gbm}, carga ${fmt('dec2', d.carga_atual)}, atualizada ${fmt('dec2', d.carga_atualizada)}`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    const comAt = g.filter((d) => d.carga_atualizada != null);
+    comAt.append('line').attr('class', 'mo-link').attr('x1', (d) => x(d.carga_atual)).attr('x2', (d) => x(d.carga_atualizada)).attr('y1', rowH / 2).attr('y2', rowH / 2);
+    comAt.append('circle').attr('class', 'mo-dot-2').attr('cx', (d) => x(d.carga_atualizada)).attr('cy', rowH / 2).attr('r', 4.5);
+    g.append('circle').attr('class', 'mo-bar mo-dot-1').attr('cx', (d) => x(d.carga_atual)).attr('cy', rowH / 2).attr('r', 4.5);
+    rowEvents(g, el, tip, (d) => [
+      { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+      { t: 'Com efetivo atual: ' + fmt('dec2', d.carga_atual), sw: '--accent' },
+      { t: 'Atualizada: ' + fmt('dec2', d.carga_atualizada), sw: '--accent-2' },
+      { t: 'Coeficiente de ajuste: ' + fmt('dec2', d.coef_ajuste) },
+    ]);
+  }
+
+  function drawBullet(el) {
+    const r = selRow();
+    if (S.status !== 'ok' || !r) { el.replaceChildren(); return; }
+    const W = Math.max(220, el.clientWidth), H = 68;
+    const svg = makeSvg(el, W, H, 'Efetivo atual, necessário e novo necessário de ' + r.gbm);
+    const max = d3.max(S.all, (d) => Math.max(d.efetivo_atual ?? 0, d.efetivo_necessario ?? 0, d.novo_efetivo ?? 0)) || 1;
+    const x = d3.scaleLinear([0, max], [1, W - 1]);
+    const yb = 26, bh = 16;
+    svg.append('rect').attr('class', 'mo-track').attr('x', 1).attr('y', yb).attr('width', W - 2).attr('height', bh).attr('rx', 3);
+    if (r.efetivo_atual != null) svg.append('rect').attr('class', 'mo-bar-acc').attr('x', 1).attr('y', yb).attr('width', Math.max(0, x(r.efetivo_atual) - 1)).attr('height', bh).attr('rx', 3);
+    const label = (txt, xv, y) => {
+      const w = measure(svg, [txt], 'mo-t-muted');
+      svg.append('text').attr('class', 'mo-t-muted').attr('x', Math.max(1, Math.min(W - w - 1, xv - w / 2))).attr('y', y).text(txt);
+    };
+    if (r.efetivo_necessario != null) {
+      svg.append('line').attr('class', 'mo-tick-nec').attr('x1', x(r.efetivo_necessario)).attr('x2', x(r.efetivo_necessario)).attr('y1', yb - 6).attr('y2', yb + bh + 2);
+      label('Necessário ' + fmt('int', r.efetivo_necessario), x(r.efetivo_necessario), 14);
+    }
+    if (r.novo_efetivo != null) {
+      svg.append('line').attr('class', 'mo-ref').attr('x1', x(r.novo_efetivo)).attr('x2', x(r.novo_efetivo)).attr('y1', yb - 2).attr('y2', yb + bh + 8);
+      label('Pela carga ' + fmt('int', r.novo_efetivo), x(r.novo_efetivo), H - 4);
+    }
+  }
+
+  function drawTable() {
+    const tb = document.getElementById('mo-tbody');
+    const vazio = document.getElementById('mo-empty');
+    if (S.status !== 'ok') { tb.replaceChildren(); vazio.hidden = true; return; }
+    let rs = rows().slice();
+    const q = fold(document.getElementById('mo-busca').value).trim();
+    if (q) rs = rs.filter((r) => fold(COLS.map((c) => r[c] ?? '').join(' ')).includes(q));
+    const { field, dir } = S.sort;
+    if (field) {
+      const s = dir === 'asc' ? 1 : -1;
+      rs.sort((a, b) => {
+        const va = a[field], vb = b[field];
+        const ea = va == null || va === '', eb = vb == null || vb === '';
+        if (ea && eb) return 0;
+        if (ea) return 1;
+        if (eb) return -1;
+        return typeof va === 'number' && typeof vb === 'number' ? s * (va - vb) : s * String(va).localeCompare(String(vb), 'pt-BR', { numeric: true });
+      });
+    }
+    const sel = selGbm();
+    const frag = document.createDocumentFragment();
+    rs.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gbm;
+      if (r.gbm === sel) tr.className = 'is-sel';
+      COLS.forEach((c) => {
+        const td = document.createElement('td');
+        const v = r[c];
+        td.textContent = fmt(kindOf(c), v);
+        if (kindOf(c) === 'signed' && typeof v === 'number') td.className = v < 0 ? 'is-neg' : v > 0 ? 'is-pos' : '';
+        tr.appendChild(td);
+      });
+      frag.appendChild(tr);
+    });
+    tb.replaceChildren(frag);
+    vazio.hidden = rs.length > 0;
+  }
+
+  /* ---- Render geral ---- */
+  function render() {
+    document.getElementById('mo').classList.toggle('is-loading', S.status === 'loading');
+    document.getElementById('mo-status-config').hidden = S.status !== 'config';
+    document.getElementById('mo-status-error').hidden = S.status !== 'error';
+    document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.comar === S.comar)));
+    document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
+    document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
+    fillValues();
+    drawRanking(document.getElementById('ch-ranking'));
+    drawSaldos(document.getElementById('ch-saldos'));
+    drawCarga(document.getElementById('ch-carga'));
+    drawBullet(document.getElementById('ch-bullet'));
+    drawTable();
+  }
+
+  async function load() {
+    const url = new URLSearchParams(location.search).get('csv') || CSV_URL;
+    if (!url) { S.status = 'config'; render(); return; }
+    S.status = 'loading';
+    render();
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('O Google respondeu com o código ' + res.status + '. Confira se a aba continua publicada na Web.');
+      const text = await res.text();
+      if (/^\s*<(!doctype|html)/i.test(text)) throw new Error('O link não devolveu um CSV. Confira se a aba foi publicada no formato "Valores separados por vírgula (.csv)".');
+      S.all = parse(d3.csvParseRows(text));
+      S.resumo = resumo(S.all);
+      S.frota = frota(S.all);
+      S.status = 'ok';
+      const agora = new Date();
+      document.getElementById('mo-atualizado').textContent = 'Última leitura: ' + agora.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
+    } catch (e) {
+      S.status = 'error';
+      document.getElementById('mo-status-msg').textContent = e.message || String(e);
+    }
+    render();
+  }
+
+  /* ---- Controles ---- */
+  const hashComar = decodeURIComponent(location.hash.slice(1));
+  if (COMARS.includes(hashComar)) S.comar = hashComar;
+  document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.addEventListener('click', () => {
+    S.comar = b.dataset.comar;
+    history.replaceState(null, '', S.comar === 'Todos' ? location.pathname + location.search : '#' + S.comar);
+    render();
+  }));
+  document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.addEventListener('click', () => { S.saldo = b.dataset.saldo; render(); }));
+  document.querySelectorAll('.mo-table thead th[data-field] .mo-sort').forEach((btn) => btn.addEventListener('click', () => {
+    const f = btn.closest('th').dataset.field;
+    const texto = !KIND[f];
+    if (S.sort.field === f) {
+      if (S.sort.dir === (texto ? 'asc' : 'desc')) S.sort.dir = texto ? 'desc' : 'asc';
+      else S.sort = { field: null, dir: null };
+    } else S.sort = { field: f, dir: texto ? 'asc' : 'desc' };
+    document.querySelectorAll('.mo-table thead th[data-field]').forEach((o) => {
+      o.setAttribute('aria-sort', S.sort.field === o.dataset.field ? (S.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+    });
+    drawTable();
+  }));
+  document.getElementById('mo-busca').addEventListener('input', drawTable);
+  document.getElementById('mo-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pick(tr.dataset.key); });
+  document.getElementById('mo-recarregar').addEventListener('click', load);
+  let rz, lastW = 0;
+  new ResizeObserver((entries) => {
+    const w = Math.round(entries[0].contentRect.width);
+    if (w === lastW) return;
+    lastW = w;
+    clearTimeout(rz);
+    rz = setTimeout(() => { if (S.status === 'ok') render(); }, 120);
+  }).observe(document.getElementById('mo'));
+
+  load();
+})();
+</script>
+</body>
+</html>
