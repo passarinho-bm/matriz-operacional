@@ -15,6 +15,7 @@
     --bg: #f4f6f8; --panel: #ffffff; --fg: #16202b; --muted: #5a6676; --line: #dde2e8; --hover: #eef1f5;
     --accent: #2b5a8c; --accent-2: #c07a1c; --bad: #b8372b; --ok: #2c7a4d; --surplus: #b3bcc7;
     --grid: #e9edf2; --axis: #9aa4b1; --ref: #6f7b8a;
+    --n1: #2b5a8c; --n2: #c07a1c; --n3: #3d8a59; --n4: #b03a5b;
     --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
     --r: 8px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1.0625rem; --title: 1.875rem;
@@ -25,6 +26,7 @@
       --bg: #0e1319; --panel: #151c24; --fg: #e7ecf1; --muted: #98a4b2; --line: #26303b; --hover: #1c2530;
       --accent: #6ea2da; --accent-2: #e2a64c; --bad: #ee6a5b; --ok: #5cc189; --surplus: #4a5562;
       --grid: #202a35; --axis: #5d6876; --ref: #8e9aa9;
+      --n1: #6ea2da; --n2: #e2a64c; --n3: #6cc08d; --n4: #e27393;
       color-scheme: dark;
     }
   }
@@ -155,10 +157,10 @@
   .mo-table th:first-child, .mo-table td:first-child { position: sticky; left: 0; z-index: 1; text-align: left; }
   .mo-table thead tr.mo-cols th:first-child { z-index: 3; }
   .mo-table td:first-child { font-weight: 600; color: var(--fg); }
-  .mo-table td:nth-child(n+2):nth-child(-n+12), .mo-table thead tr.mo-cols th:nth-child(n+2):nth-child(-n+12) { text-align: left; }
-  .mo-table td:nth-child(3), .mo-table td:nth-child(8), .mo-table td:nth-child(13), .mo-table td:nth-child(19), .mo-table td:nth-child(22), .mo-table td:nth-child(25),
-  .mo-table thead tr.mo-cols th:nth-child(3), .mo-table thead tr.mo-cols th:nth-child(8), .mo-table thead tr.mo-cols th:nth-child(13), .mo-table thead tr.mo-cols th:nth-child(19), .mo-table thead tr.mo-cols th:nth-child(22), .mo-table thead tr.mo-cols th:nth-child(25),
-  .mo-table thead tr.mo-groups th + th { border-left: 1px solid var(--line); }
+  .mo-tm td:nth-child(n+2):nth-child(-n+12), .mo-tm thead tr.mo-cols th:nth-child(n+2):nth-child(-n+12) { text-align: left; }
+  .mo-tm td:nth-child(3), .mo-tm td:nth-child(8), .mo-tm td:nth-child(13), .mo-tm td:nth-child(19), .mo-tm td:nth-child(22), .mo-tm td:nth-child(25),
+  .mo-tm thead tr.mo-cols th:nth-child(3), .mo-tm thead tr.mo-cols th:nth-child(8), .mo-tm thead tr.mo-cols th:nth-child(13), .mo-tm thead tr.mo-cols th:nth-child(19), .mo-tm thead tr.mo-cols th:nth-child(22), .mo-tm thead tr.mo-cols th:nth-child(25),
+  .mo-tm thead tr.mo-groups th + th { border-left: 1px solid var(--line); }
   .mo-table tbody tr { cursor: pointer; }
   .mo-table tbody tr:hover td, .mo-table tbody tr.is-sel td { background: var(--hover); }
   .mo-table tbody tr.is-sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
@@ -169,6 +171,29 @@
   .mo-table th[aria-sort="ascending"], .mo-table th[aria-sort="descending"] { color: var(--fg); }
   .mo-empty { padding: 14px; font-size: var(--cap); color: var(--muted); }
 
+  .mo-pages { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
+  .mo-pages button { appearance: none; border: 0; background: none; font: inherit; font-weight: 500; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+  .mo-pages button:hover { color: var(--fg); }
+  .mo-pages button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); font-weight: 600; }
+  .mo-page { display: grid; gap: 24px; }
+  .mo-crit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 14px 20px; margin: 0; }
+  .mo-crit > div { display: grid; gap: 2px; }
+  .mo-crit dt { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: var(--cap); }
+  .mo-crit dd { margin: 0; font-size: var(--cap); color: var(--muted); line-height: 1.45; }
+  .mo-crit dd b { color: var(--fg); font-weight: 600; }
+  .mo-nd { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--c); }
+  .mo-tabs button .mo-nd { margin-right: 6px; vertical-align: -1px; }
+  .mo-bands { display: grid; gap: 12px; }
+  .mo-band { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 4px 12px; align-items: center; }
+  .mo-band-k { font-size: var(--cap); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .mo-band-bar { display: block; height: 14px; border-radius: 3px; background: var(--grid); overflow: hidden; }
+  .mo-band-bar > i { display: block; height: 100%; border-radius: 3px; background: var(--c, var(--accent)); }
+  .mo-band-v { grid-column: 2; font-size: var(--cap); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mo-band-v b { color: var(--fg); font-weight: 600; }
+  .mo-tn td:nth-child(2), .mo-tn th:nth-child(2) { font-weight: 700; }
+  .mo-tn td:nth-child(3), .mo-tn th:nth-child(3), .mo-tn td:nth-child(4), .mo-tn th:nth-child(4) { text-align: left; }
+  .mo-tn td:nth-child(6), .mo-tn th:nth-child(6) { border-left: 1px solid var(--line); }
+  .mo-tn td.is-cur { font-weight: 700; color: var(--fg); }
   .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
   .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
   .mo-btn:hover { background: var(--hover); }
@@ -190,16 +215,22 @@
         <button type="button" data-comar="IV" aria-pressed="false">COMAR IV</button>
       </div>
     </div>
+    <nav class="mo-pages" role="tablist" aria-label="Páginas">
+      <button type="button" role="tab" data-page="matriz" aria-selected="true">Matriz operacional</button>
+      <button type="button" role="tab" data-page="natureza" aria-selected="false">Ranking por natureza</button>
+    </nav>
+  </header>
+
+  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o link na constante <code>CSV_URL</code> no início do script deste arquivo.</span></div>
+  <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a planilha publicada.</b> <span id="mo-status-msg"></span></span></div>
+
+  <div class="mo-page" id="pg-matriz">
     <p class="mo-lede" id="mo-lede">
       <span class="mo-rec" data-rec="todos">Na matriz completa,</span><span class="mo-rec" data-rec="comar" hidden>No COMAR <span data-comar-nome>—</span>,</span>
       <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> de <b data-src="resumo" data-col="gbms">—</b> GBMs estão com saldo considerado negativo, um déficit somado de
       <b data-src="resumo" data-col="deficit_considerado">—</b> militares.
       <span class="mo-pior" data-pior="sim">Pelo índice de carga operacional, o maior déficit é do <b data-src="resumo" data-col="pior_gbm_carga" data-fmt="text">—</b> (<b data-src="resumo" data-col="pior_saldo_carga" data-fmt="signed">—</b>).</span><span class="mo-pior" data-pior="nao" hidden>Pelo índice de carga operacional, nenhum GBM do recorte fica com déficit.</span>
     </p>
-  </header>
-
-  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o link na constante <code>CSV_URL</code> no início do script deste arquivo.</span></div>
-  <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a planilha publicada.</b> <span id="mo-status-msg"></span></span></div>
 
   <section class="mo-kpis" id="indicadores" aria-label="Indicadores do recorte">
     <div class="mo-kpi">
@@ -292,11 +323,11 @@
       </dl>
       <p class="mo-sub">Ranking de ocorrências, últimos 12 meses</p>
       <dl class="mo-dl">
-        <div><dt>Ocorrências</dt><dd><span data-src="gbm" data-col="rk_ocorrencias" data-fmt="text">—</span></dd></div>
-        <div><dt>UR</dt><dd><span data-src="gbm" data-col="rk_ur" data-fmt="text">—</span></dd></div>
-        <div><dt>Multiemprego</dt><dd><span data-src="gbm" data-col="rk_multiemprego" data-fmt="text">—</span></dd></div>
-        <div><dt>Multiemprego c/ florestal</dt><dd><span data-src="gbm" data-col="rk_multiemprego_florestal" data-fmt="text">—</span></dd></div>
-        <div><dt>Incêndio estrutural</dt><dd><span data-src="gbm" data-col="rk_incendio" data-fmt="text">—</span></dd></div>
+        <div><dt>Ocorrências</dt><dd><span data-src="gbm" data-col="rk_ocorrencias" data-fmt="ord">—</span></dd></div>
+        <div><dt>UR</dt><dd><span data-src="gbm" data-col="rk_ur" data-fmt="ord">—</span></dd></div>
+        <div><dt>Multiemprego</dt><dd><span data-src="gbm" data-col="rk_multiemprego" data-fmt="ord">—</span></dd></div>
+        <div><dt>Multiemprego c/ florestal</dt><dd><span data-src="gbm" data-col="rk_multiemprego_florestal" data-fmt="ord">—</span></dd></div>
+        <div><dt>Incêndio estrutural</dt><dd><span data-src="gbm" data-col="rk_incendio" data-fmt="ord">—</span></dd></div>
       </dl>
     </article>
   </div>
@@ -384,7 +415,7 @@
       <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
     </div>
     <div class="mo-table-wrap">
-      <table class="mo-table">
+      <table class="mo-table mo-tm">
         <thead>
           <tr class="mo-groups">
             <th colspan="2"></th>
@@ -433,6 +464,92 @@
     </div>
   </article>
 
+  </div>
+
+  <div class="mo-page" id="pg-natureza" hidden>
+    <p class="mo-lede" id="mo-nat-lede">
+      <span class="mo-rec" data-rec="todos">Na matriz completa,</span><span class="mo-rec" data-rec="comar" hidden>No COMAR <span data-comar-nome>—</span>,</span>
+      em <b data-nat-v="nome">—</b>, as primeiras posições são <b data-nat-v="top">—</b>.
+      Essa natureza orienta a distribuição de <b data-nat-v="alvo">—</b>; <b data-nat-v="com">—</b> de <b data-nat-v="gbms">—</b> GBMs do recorte têm ao menos uma.
+    </p>
+
+    <div class="mo-tabs" role="group" aria-label="Natureza da ocorrência">
+      <button type="button" data-nat="rk_ur" aria-pressed="true"><i class="mo-nd" style="--c: var(--n1)"></i>Unidade de resgate (UR)</button>
+      <button type="button" data-nat="rk_multiemprego" aria-pressed="false"><i class="mo-nd" style="--c: var(--n2)"></i>Multiemprego</button>
+      <button type="button" data-nat="rk_multiemprego_florestal" aria-pressed="false"><i class="mo-nd" style="--c: var(--n3)"></i>Multiemprego com florestal</button>
+      <button type="button" data-nat="rk_incendio" aria-pressed="false"><i class="mo-nd" style="--c: var(--n4)"></i>Incêndio estrutural</button>
+    </div>
+
+    <div class="mo-row2">
+      <article class="mo-card" id="nat-posicoes">
+        <div class="mo-card-head">
+          <h2>Posição de cada GBM por natureza</h2>
+          <p class="mo-note">Posição entre os GBMs pelo número de ocorrências dos últimos 12 meses (fonte: GESINT). 1º é o que mais atende. O ponto maior é a natureza escolhida; a linha mostra a distância entre a melhor e a pior posição do GBM nas quatro naturezas.</p>
+        </div>
+        <div class="mo-chart" id="ch-nat"></div>
+        <div class="mo-legend">
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--n1)"></i>UR</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--n2)"></i>Multiemprego</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--n3)"></i>Multiemprego com florestal</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--n4)"></i>Incêndio estrutural</span>
+        </div>
+      </article>
+
+      <div class="mo-page" style="gap: 12px">
+        <article class="mo-card" id="nat-criterio">
+          <div class="mo-card-head">
+            <h2>Natureza e viatura</h2>
+            <p class="mo-note">Que viatura cada ranking orienta. A contagem considera as viaturas guarnecidas da matriz; o AR de apoio sem efetivo fica de fora.</p>
+          </div>
+          <dl class="mo-crit">
+            <div><dt><i class="mo-nd" style="--c: var(--n1)"></i>Unidade de resgate (UR)</dt><dd>Atendimentos pré-hospitalares. Orienta a distribuição de <b>UR</b>, incluindo a UR de reforço (GSV).</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n2)"></i>Multiemprego</dt><dd>Ocorrências que não são de atendimento pré-hospitalar. Orienta <b>ABSL ou AR</b>.</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n3)"></i>Multiemprego com florestal</dt><dd>Multiemprego incluindo as ocorrências florestais. Também orienta <b>ABSL ou AR</b>.</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n4)"></i>Incêndio estrutural</dt><dd>Orienta as viaturas com água: <b>ASE ou ABT</b>.</dd></div>
+          </dl>
+        </article>
+
+        <article class="mo-card" id="nat-faixas">
+          <div class="mo-card-head">
+            <h2>Viaturas por faixa do ranking</h2>
+            <p class="mo-note">Média de viaturas relacionadas à natureza escolhida por GBM, em cada terço do ranking. Se a frota segue o ranking, a primeira faixa tem a maior média.</p>
+          </div>
+          <div class="mo-bands">
+            <div class="mo-band" data-band="1"><span class="mo-band-k">1º a 8º</span><span class="mo-band-bar"><i></i></span><span class="mo-band-v"><b data-band-v="media">—</b> por GBM · <span data-band-v="qtd">—</span> viaturas em <span data-band-v="gbms">—</span> GBMs</span></div>
+            <div class="mo-band" data-band="2"><span class="mo-band-k">9º a 16º</span><span class="mo-band-bar"><i></i></span><span class="mo-band-v"><b data-band-v="media">—</b> por GBM · <span data-band-v="qtd">—</span> viaturas em <span data-band-v="gbms">—</span> GBMs</span></div>
+            <div class="mo-band" data-band="3"><span class="mo-band-k">17º a 24º</span><span class="mo-band-bar"><i></i></span><span class="mo-band-v"><b data-band-v="media">—</b> por GBM · <span data-band-v="qtd">—</span> viaturas em <span data-band-v="gbms">—</span> GBMs</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <article class="mo-card" id="nat-tabela">
+      <div class="mo-card-head">
+        <h2>Ranking e frota relacionada</h2>
+        <p class="mo-note">GBMs na ordem da natureza escolhida, com as viaturas da matriz que essa natureza orienta e a posição nas demais. Quanto mais forte a cor, mais alta a posição.</p>
+      </div>
+      <div class="mo-table-wrap">
+        <table class="mo-table mo-tn">
+          <thead>
+            <tr class="mo-cols">
+              <th>GBM</th>
+              <th>Posição</th>
+              <th>COMAR</th>
+              <th>Viaturas relacionadas</th>
+              <th>Qtd.</th>
+              <th>Ocorrências (total)</th>
+              <th>UR</th>
+              <th>Multiemprego</th>
+              <th>Multiemprego c/ florestal</th>
+              <th>Incêndio estrutural</th>
+            </tr>
+          </thead>
+          <tbody id="mo-nat-tbody"></tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+
   <footer class="mo-foot">
     <span>Dados da aba Absoluto da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
     <button type="button" class="mo-btn" id="mo-recarregar">Recarregar dados</button>
@@ -453,6 +570,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     efetivo_necessario: 'int', efetivo_atual: 'int', novo_efetivo: 'int', cotas_gsv: 'int', ralvo: 'int',
     saldo_efetivo: 'signed', saldo_considerado: 'signed', saldo_carga: 'signed', pior_saldo_carga: 'signed',
     coef_ajuste: 'dec2', matriz_risco: 'dec2', carga_atual: 'dec2', carga_atualizada: 'dec2',
+    rk_ocorrencias: 'ord', rk_ur: 'ord', rk_multiemprego: 'ord', rk_multiemprego_florestal: 'ord', rk_incendio: 'ord',
   };
   const COLS = ['gbm', 'comar', 'ur', 'ur_gsv', 'vme', 'vme2', 'apoio_ar', 'vci', 'vs', 'vpa', 've', 'apoio',
     'efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'oficial_dia', 'cotas_gsv', 'saldo_considerado',
@@ -466,6 +584,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     if (v == null || v === '') return '';
     if (kind === 'signed') return v === 0 ? '0' : fSig(v);
     if (kind === 'dec2') return f2(v);
+    if (kind === 'ord') return typeof v === 'number' ? fInt(v) + 'º' : String(v);
     if (typeof v === 'number') return Number.isInteger(v) ? fInt(v) : f2(v);
     return String(v);
   };
@@ -488,7 +607,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
       'Ranking Multiemprego c/ florestal': 'rk_multiemprego_florestal', 'Ranking Incêndio estrutural': 'rk_incendio',
     };
     const opcionais = new Set(['rk_ocorrencias', 'rk_ur', 'rk_multiemprego', 'rk_multiemprego_florestal', 'rk_incendio']);
-    const texto = new Set(['gbm', 'comar', ...opcionais]);
+    const texto = new Set(['gbm', 'comar']);
     const icone = new Set([...BASE, ...INTER, 'oficial_dia']);
     const chave = (s) => fold(norm(s)).replace(/[^a-z0-9]+/g, '');
     const hi = grid.findIndex((r) => r.some((c) => norm(c) === 'GBM') && r.some((c) => norm(c) === 'COMAR'));
@@ -513,7 +632,8 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
         const o = {};
         for (const c of Object.values(nomes)) {
           const cel = pos[c] == null ? '' : r[pos[c]];
-          if (texto.has(c)) o[c] = pos[c] == null ? null : norm(cel);
+          if (texto.has(c)) o[c] = norm(cel);
+          else if (opcionais.has(c)) o[c] = pos[c] == null ? null : num(String(cel ?? '').replace(/[º°ª]/g, ''));
           else if (icone.has(c)) o[c] = semIcone(cel);
           else o[c] = num(cel);
         }
@@ -557,7 +677,19 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
   }
 
   /* ---- Estado ---- */
-  const S = { all: [], resumo: [], frota: [], status: 'loading', comar: 'Todos', saldo: 'saldo_considerado', gbm: null, sort: { field: null, dir: null } };
+  const S = { all: [], resumo: [], frota: [], status: 'loading', page: 'matriz', nat: 'rk_ur', comar: 'Todos', saldo: 'saldo_considerado', gbm: null, sort: { field: null, dir: null } };
+
+  /* ---- Naturezas de ocorrência e viaturas que cada uma orienta ---- */
+  const POSTO = { ur: 'UR', ur_gsv: 'UR reforço', vme: 'VME', vme2: '2ª VME', vci: 'VCI', vs: 'VS', vpa: 'VPA', ve: 'VE', apoio: 'Apoio' };
+  const GUARNECIDAS = ['vme', 'vme2', 'vci', 'vs', 'vpa', 've', 'apoio'];
+  const NATS = [
+    { k: 'rk_ur', slug: 'ur', nome: 'unidade de resgate (UR)', curto: 'UR', cor: '--n1', alvo: 'UR', viat: (col) => col === 'ur' || col === 'ur_gsv' },
+    { k: 'rk_multiemprego', slug: 'multiemprego', nome: 'multiemprego', curto: 'Multiemprego', cor: '--n2', alvo: 'ABSL ou AR', viat: (col, m) => GUARNECIDAS.includes(col) && (m === 'ABSL' || m === 'AR') },
+    { k: 'rk_multiemprego_florestal', slug: 'florestal', nome: 'multiemprego com florestal', curto: 'Multiemprego c/ florestal', cor: '--n3', alvo: 'ABSL ou AR', viat: (col, m) => GUARNECIDAS.includes(col) && (m === 'ABSL' || m === 'AR') },
+    { k: 'rk_incendio', slug: 'incendio', nome: 'incêndio estrutural', curto: 'Incêndio estrutural', cor: '--n4', alvo: 'ASE ou ABT', viat: (col, m) => GUARNECIDAS.includes(col) && (m === 'ASE' || m === 'ABT') },
+  ];
+  const natOf = (k) => NATS.find((n) => n.k === k) || NATS[0];
+  const relacionadas = (r, nat) => ['ur', 'ur_gsv', ...GUARNECIDAS].filter((c) => r[c] && nat.viat(c, r[c])).map((c) => ({ col: c, m: r[c] }));
   const rows = () => {
     const rs = S.all.filter((r) => S.comar === 'Todos' || r.comar === S.comar);
     return rs.map((r, i) => [r, i]).sort((a, b) => (b[0].matriz_risco ?? -1) - (a[0].matriz_risco ?? -1) || a[1] - b[1]).map((p) => p[0]);
@@ -840,12 +972,124 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.comar === S.comar)));
     document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
     document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
+    document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
+    document.getElementById('pg-matriz').hidden = S.page !== 'matriz';
+    document.getElementById('pg-natureza').hidden = S.page !== 'natureza';
+    document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
-    drawRanking(document.getElementById('ch-ranking'));
-    drawSaldos(document.getElementById('ch-saldos'));
-    drawCarga(document.getElementById('ch-carga'));
-    drawBullet(document.getElementById('ch-bullet'));
-    drawTable();
+    if (S.page === 'matriz') {
+      drawRanking(document.getElementById('ch-ranking'));
+      drawSaldos(document.getElementById('ch-saldos'));
+      drawCarga(document.getElementById('ch-carga'));
+      drawBullet(document.getElementById('ch-bullet'));
+      drawTable();
+    } else {
+      fillNatureza();
+      drawNatDots(document.getElementById('ch-nat'));
+      drawNatTable();
+    }
+  }
+
+  /* ---- Página: ranking por natureza ---- */
+  function natRows() {
+    const nat = natOf(S.nat);
+    return rows().filter((r) => r[nat.k] != null).sort((a, b) => a[nat.k] - b[nat.k] || a.gbm.localeCompare(b.gbm, 'pt-BR'));
+  }
+  function fillNatureza() {
+    const ok = S.status === 'ok';
+    const nat = natOf(S.nat);
+    const rs = ok ? natRows() : [];
+    const all = ok ? rows() : [];
+    const set = (k, txt) => document.querySelectorAll(`[data-nat-v="${k}"]`).forEach((el) => { el.textContent = txt; });
+    set('nome', nat.nome);
+    set('alvo', nat.alvo);
+    const top = rs.slice(0, 3).map((r) => `${r.gbm} (${fmt('ord', r[nat.k])})`);
+    set('top', !ok ? '—' : top.length ? (top.length > 1 ? top.slice(0, -1).join(', ') + ' e ' + top[top.length - 1] : top[0]) : '—');
+    set('com', ok ? fmt('int', all.filter((r) => relacionadas(r, nat).length > 0).length) : '—');
+    set('gbms', ok ? fmt('int', all.length) : '—');
+    const faixas = [[1, 8], [9, 16], [17, 24]].map(([a, b]) => {
+      const g = rs.filter((r) => r[nat.k] >= a && r[nat.k] <= b);
+      const qtd = g.reduce((s, r) => s + relacionadas(r, nat).length, 0);
+      return { gbms: g.length, qtd, media: g.length ? qtd / g.length : null };
+    });
+    const maxMedia = Math.max(1, ...faixas.map((f) => f.media ?? 0));
+    document.querySelectorAll('.mo-band[data-band]').forEach((el) => {
+      const f = faixas[Number(el.dataset.band) - 1];
+      el.style.setProperty('--c', `var(${nat.cor})`);
+      const i = el.querySelector('.mo-band-bar > i');
+      if (i) i.style.width = (ok && f && f.media != null ? (100 * f.media) / maxMedia : 0) + '%';
+      el.querySelectorAll('[data-band-v]').forEach((v) => {
+        const k = v.dataset.bandV;
+        v.textContent = !ok || !f || (k === 'media' && f.media == null) ? '—' : k === 'media' ? f2(f.media).replace(/,00$/, '') : fmt('int', f[k]);
+      });
+    });
+  }
+  function drawNatDots(el) {
+    if (S.status !== 'ok') { el.replaceChildren(); return; }
+    const nat = natOf(S.nat), sel = selGbm();
+    const rs = natRows();
+    const W = Math.max(260, el.clientWidth), rowH = 24, top = 24, bottom = 6;
+    const H = top + rs.length * rowH + bottom;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Posição de cada GBM por natureza de ocorrência');
+    const posW = measure(svg, rs.map((r) => fmt('ord', r[nat.k])), 'mo-t-muted') + 8;
+    const nameW = Math.min(W * 0.42, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const x0 = posW + nameW + 16;
+    const maxRk = d3.max(S.all, (d) => d3.max(NATS, (n) => d[n.k] ?? 0)) || 24;
+    const x = d3.scaleLinear([1, maxRk], [x0 + 8, W - 10]);
+    const ticks = [1, 6, 12, 18, 24].filter((t) => t <= maxRk);
+    const axis = svg.append('g');
+    axis.selectAll('line').data(ticks).join('line').attr('class', 'mo-gl').attr('x1', (t) => x(t)).attr('x2', (t) => x(t)).attr('y1', top - 6).attr('y2', H - bottom);
+    axis.selectAll('text').data(ticks).join('text').attr('class', 'mo-t-muted').attr('x', (t) => x(t)).attr('y', 10).attr('dy', '0.35em').attr('text-anchor', 'middle').text((t) => fmt('ord', t));
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (d.gbm === sel ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${top + i * rowH})`)
+      .attr('aria-label', (d) => `${d.gbm}: ` + NATS.map((n) => `${n.curto} ${fmt('ord', d[n.k])}`).join(', '));
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t-muted').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => fmt('ord', d[nat.k]));
+    g.append('text').attr('class', 'mo-t').attr('x', posW).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    const ext = (d) => d3.extent(NATS, (n) => d[n.k]).filter((v) => v != null);
+    g.append('line').attr('class', 'mo-link').attr('y1', rowH / 2).attr('y2', rowH / 2)
+      .attr('x1', (d) => x(ext(d)[0] ?? 1)).attr('x2', (d) => x(ext(d)[1] ?? 1));
+    NATS.filter((n) => n.k !== nat.k).forEach((n) => {
+      g.filter((d) => d[n.k] != null).append('circle').attr('cx', (d) => x(d[n.k])).attr('cy', rowH / 2).attr('r', 3.5).style('fill', `var(${n.cor})`).style('opacity', 0.8);
+    });
+    g.append('circle').attr('class', 'mo-bar').attr('cx', (d) => x(d[nat.k])).attr('cy', rowH / 2).attr('r', 6).style('fill', `var(${nat.cor})`).style('stroke', 'var(--panel)').style('stroke-width', 1.5);
+    rowEvents(g, el, tip, (d) => [
+      { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+      ...NATS.map((n) => ({ t: `${n.curto}: ${fmt('ord', d[n.k]) || '—'}`, sw: n.cor })),
+      { t: 'Ocorrências (total): ' + (fmt('ord', d.rk_ocorrencias) || '—') },
+    ]);
+  }
+  function drawNatTable() {
+    const tb = document.getElementById('mo-nat-tbody');
+    if (S.status !== 'ok') { tb.replaceChildren(); return; }
+    const nat = natOf(S.nat), sel = selGbm();
+    const maxRk = d3.max(S.all, (d) => d3.max([...NATS.map((n) => d[n.k] ?? 0), d.rk_ocorrencias ?? 0])) || 24;
+    const heat = (v, cor) => (v == null ? '' : `color-mix(in srgb, var(${cor}) ${Math.round(8 + 42 * (maxRk - v) / Math.max(1, maxRk - 1))}%, var(--panel))`);
+    const frag = document.createDocumentFragment();
+    natRows().forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gbm;
+      if (r.gbm === sel) tr.className = 'is-sel';
+      const rel = relacionadas(r, nat);
+      const cells = [
+        [r.gbm], [fmt('ord', r[nat.k])], [r.comar],
+        [rel.length ? rel.map((v) => `${v.m} (${POSTO[v.col]})`).join(' · ') : 'nenhuma'], [fmt('int', rel.length)],
+        [fmt('ord', r.rk_ocorrencias), heat(r.rk_ocorrencias, '--ref')],
+        ...NATS.map((n) => [fmt('ord', r[n.k]), heat(r[n.k], n.cor), n.k === nat.k]),
+      ];
+      cells.forEach(([txt, bg, cur]) => {
+        const td = document.createElement('td');
+        td.textContent = txt ?? '';
+        if (bg) td.style.background = bg;
+        if (cur) td.className = 'is-cur';
+        tr.appendChild(td);
+      });
+      frag.appendChild(tr);
+    });
+    tb.replaceChildren(frag);
   }
 
   async function load() {
@@ -872,17 +1116,28 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
   }
 
   /* ---- Controles ---- */
-  const hashComar = decodeURIComponent(location.hash.slice(1));
-  if (COMARS.includes(hashComar)) S.comar = hashComar;
-  document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.addEventListener('click', () => {
-    S.comar = b.dataset.comar;
-    history.replaceState(null, '', S.comar === 'Todos' ? location.pathname + location.search : '#' + S.comar);
-    render();
-  }));
+  const readHash = () => {
+    decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
+      if (COMARS.includes(t)) S.comar = t;
+      else if (t === 'natureza') S.page = 'natureza';
+      else { const n = NATS.find((o) => o.slug === t); if (n) { S.nat = n.k; S.page = 'natureza'; } }
+    });
+  };
+  const writeHash = () => {
+    const parts = [];
+    if (S.page === 'natureza') parts.push(S.nat === NATS[0].k ? 'natureza' : natOf(S.nat).slug);
+    if (S.comar !== 'Todos') parts.push(S.comar);
+    history.replaceState(null, '', parts.length ? '#' + parts.join('-') : location.pathname + location.search);
+  };
+  readHash();
+  document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.addEventListener('click', () => { S.comar = b.dataset.comar; writeHash(); render(); }));
+  document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.addEventListener('click', () => { S.page = b.dataset.page; writeHash(); render(); }));
+  document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.addEventListener('click', () => { S.nat = b.dataset.nat; writeHash(); render(); }));
+  document.getElementById('mo-nat-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; render(); } });
   document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.addEventListener('click', () => { S.saldo = b.dataset.saldo; render(); }));
   document.querySelectorAll('.mo-table thead th[data-field] .mo-sort').forEach((btn) => btn.addEventListener('click', () => {
     const f = btn.closest('th').dataset.field;
-    const texto = !KIND[f];
+    const texto = !KIND[f] || KIND[f] === 'ord';
     if (S.sort.field === f) {
       if (S.sort.dir === (texto ? 'asc' : 'desc')) S.sort.dir = texto ? 'desc' : 'asc';
       else S.sort = { field: null, dir: null };
