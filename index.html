@@ -17,6 +17,7 @@
     --grid: #e9edf2; --axis: #9aa4b1; --ref: #6f7b8a;
     --n1: #2b5a8c; --n2: #c07a1c; --n3: #3d8a59; --n4: #b03a5b; --n5: #7a4fa3;
     --hot: #d9822b; --cool: #3d7cc9; --warn: #b7791f;
+    --k1: #1f7a8c; --k2: #6a4fb3; --k3: #b07d12; --k4: #c0506b;
     --truck: #c0392b; --truck-2: #a93226; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #2f6fd6;
     --pickup: #e4e8ec; --pickup-line: #a9b2bc; --stripe: #f2c94c; --helm1: #e9b949; --helm2: #d9632b;
     --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -31,6 +32,7 @@
       --grid: #202a35; --axis: #5d6876; --ref: #8e9aa9;
       --n1: #6ea2da; --n2: #e2a64c; --n3: #6cc08d; --n4: #e27393; --n5: #b48ae0;
       --hot: #f0a04b; --cool: #6aa6ea; --warn: #e0a548;
+      --k1: #4fb3c6; --k2: #a68ae6; --k3: #e0b04a; --k4: #e9849a;
       --truck: #d9483a; --truck-2: #b83a2e; --glass: #9ec3df; --metal: #8b96a3; --tire: #07090c; --light: #5b9bff;
       --pickup: #cfd5db; --pickup-line: #8c96a1; --stripe: #f2c94c; --helm1: #f2c757; --helm2: #ef7a43;
       color-scheme: dark;
@@ -177,8 +179,9 @@
   .mo-table th[aria-sort="ascending"], .mo-table th[aria-sort="descending"] { color: var(--fg); }
   .mo-empty { padding: 14px; font-size: var(--cap); color: var(--muted); }
 
-  .mo-pages { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
-  .mo-pages button { appearance: none; border: 0; background: none; font: inherit; font-weight: 500; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+  .mo-pages { display: flex; flex-wrap: nowrap; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+  .mo-pages::-webkit-scrollbar { display: none; }
+  .mo-pages button { flex: none; white-space: nowrap; appearance: none; border: 0; background: none; font: inherit; font-weight: 500; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
   .mo-pages button:hover { color: var(--fg); }
   .mo-pages button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); font-weight: 600; }
   .mo-page { display: grid; gap: 24px; }
@@ -288,6 +291,40 @@
   .po-key .po-helm { width: 20px; height: 17px; }
   @keyframes po-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: no-preference) { .po-veh.is-new { animation: po-in .35s ease-out; } .po-helm.is-new { animation: po-in .3s ease-out; } }
+  /* ---- Matriz de risco e carga operacional ---- */
+  .rk-eq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .rk-tok { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: var(--r); font-weight: 600; font-size: var(--cap);
+    background: color-mix(in srgb, var(--c) 14%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 40%, var(--panel)); }
+  .rk-tok b { font-variant-numeric: tabular-nums; }
+  .rk-op { color: var(--muted); font-weight: 700; }
+  .rk-res { font-family: var(--font-serif); font-size: 1.25rem; }
+  .rk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 12px; }
+  .rk-card-h { display: flex; align-items: center; gap: 8px; }
+  .rk-peso { margin-left: auto; font-size: var(--cap); font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .rk-calc { font-size: var(--cap); line-height: 1.5; padding: 8px 10px; border-radius: 6px; background: var(--bg); font-variant-numeric: tabular-nums; }
+  .rk-cls { width: 100%; border-collapse: collapse; font-size: var(--cap); font-variant-numeric: tabular-nums; }
+  .rk-cls th { text-align: left; font-weight: 500; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
+  .rk-cls td { padding: 4px 8px; border-bottom: 1px solid var(--line); }
+  .rk-cls .n { text-align: right; }
+  .rk-cls tr.is-on td { background: color-mix(in srgb, var(--c) 18%, var(--panel)); font-weight: 700; }
+  .rk-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+  .rk-steps li { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 2px 10px; }
+  .rk-steps li::before { content: ""; grid-row: 1 / span 3; width: 10px; height: 10px; margin-top: 4px; border-radius: 50%; background: var(--c, var(--fg)); }
+  .rk-st-t { font-weight: 600; font-size: var(--cap); }
+  .rk-st-c { font-size: var(--cap); color: var(--muted); line-height: 1.5; font-variant-numeric: tabular-nums; }
+  .rk-st-r { font-size: var(--body); font-variant-numeric: tabular-nums; }
+  .rk-st-r b { font-weight: 700; }
+  .rk-total { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .rk-total b { font-family: var(--font-serif); font-size: 2rem; font-weight: 400; line-height: 1; }
+  .rk-total span { font-size: var(--cap); color: var(--muted); }
+  .mo-tr td.n, .mo-tr th.n { text-align: right; }
+  .mo-tr td.l, .mo-tr th.l { text-align: left; }
+  .mo-tr td.pt { font-weight: 700; text-align: center; }
+  .mo-tr th.gs, .mo-tr td.gs { border-left: 1px solid var(--line); }
+  .cg-cell { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .cg-bar { display: inline-block; height: 8px; border-radius: 3px; background: var(--c, var(--accent)); min-width: 1px; }
+  .mo-pgerr { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); font-size: var(--cap); color: var(--muted); }
+  .mo-pgerr b { color: var(--fg); }
   .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
   .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
   .mo-btn:hover { background: var(--hover); }
@@ -351,11 +388,13 @@
       <button type="button" role="tab" data-page="matriz" aria-selected="true">Matriz operacional</button>
       <button type="button" role="tab" data-page="tabela" aria-selected="false">Tabela Absoluto</button>
       <button type="button" role="tab" data-page="natureza" aria-selected="false">Ranking por natureza</button>
+      <button type="button" role="tab" data-page="risco" aria-selected="false">Matriz de risco</button>
+      <button type="button" role="tab" data-page="carga" aria-selected="false">Carga operacional</button>
       <button type="button" role="tab" data-page="poder" aria-selected="false">Poder operacional</button>
     </nav>
   </header>
 
-  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o link na constante <code>CSV_URL</code> no início do script deste arquivo.</span></div>
+  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o endereço base na constante <code>PUB</code> no início do script deste arquivo.</span></div>
   <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a planilha publicada.</b> <span id="mo-status-msg"></span></span></div>
 
   <div class="mo-page" id="pg-matriz">
@@ -486,7 +525,7 @@
       </div>
     </article>
 
-    <article class="mo-card" id="carga">
+    <article class="mo-card" id="carga-militar">
       <div class="mo-card-head">
         <h2>Carga operacional por militar</h2>
         <p class="mo-note">Ocorrências por militar lotado com o efetivo atual e na carga atualizada. A linha tracejada é a relação alvo (Ralvo) usada na equalização.</p>
@@ -656,6 +695,159 @@
     </article>
   </div>
 
+  <div class="mo-page" id="pg-risco" hidden>
+    <div class="mo-pgerr" data-pgerr="risco" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a aba Matriz de Risco.</b> <span data-pgerr-msg></span></span></div>
+    <p class="mo-lede">A matriz de risco ordena os GBMs por prioridade. Cada GBM recebe de 1 a 6 pontos em quatro critérios, e a demanda operacional pesa <b data-rk="peso-dop">—</b> vezes. Somados com os pesos, os pontos vão de <b data-rk="min">—</b> a <b data-rk="max">—</b>; quanto maior, mais prioritário o GBM.</p>
+    <div class="rk-eq" aria-label="Fórmula da pontuação total">
+      <span class="rk-res">Pontuação</span><span class="rk-op">=</span>
+      <span class="rk-tok" style="--c: var(--k1)"><b data-rk="w-dop">—</b> × Demanda operacional</span><span class="rk-op">+</span>
+      <span class="rk-tok" style="--c: var(--k2)"><b data-rk="w-iso">—</b> × Isolamento geográfico</span><span class="rk-op">+</span>
+      <span class="rk-tok" style="--c: var(--k3)"><b data-rk="w-pdo">—</b> × Potencial de demanda</span><span class="rk-op">+</span>
+      <span class="rk-tok" style="--c: var(--k4)"><b data-rk="w-fd">—</b> × Riscos estruturais</span>
+    </div>
+
+    <div class="mo-row2">
+      <article class="mo-card" id="rk-composicao">
+        <div class="mo-card-head">
+          <h2>Composição da pontuação de cada GBM</h2>
+          <p class="mo-note">Cada cor é um critério já multiplicado pelo seu peso; a soma é a pontuação total. Toque em um GBM para ver o cálculo passo a passo.</p>
+        </div>
+        <div class="mo-chart" id="ch-rk"></div>
+        <div class="mo-legend">
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--k1)"></i>Demanda operacional</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--k2)"></i>Isolamento geográfico</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--k3)"></i>Potencial de demanda</span>
+          <span class="mo-key"><i class="mo-nd" style="--c: var(--k4)"></i>Riscos estruturais</span>
+        </div>
+      </article>
+      <article class="mo-card" id="rk-exemplo">
+        <div class="mo-card-head">
+          <p class="mo-eyebrow">Passo a passo</p>
+          <h2 class="mo-ficha-nome" id="rk-ex-nome">—</h2>
+          <p class="mo-sub" id="rk-ex-sub"></p>
+        </div>
+        <ol class="rk-steps" id="rk-ex-steps"></ol>
+        <div class="rk-total" id="rk-ex-total"></div>
+      </article>
+    </div>
+
+    <div class="rk-grid">
+      <article class="mo-card" data-crit="dop" style="--c: var(--k1)">
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k1)"></i><h2>a) Demanda operacional</h2><span class="rk-peso" data-rk="peso-txt-dop"></span></div>
+        <p class="mo-note">Ocorrências de 2025 ponderadas pela complexidade, medida pelo número de atendimentos por ocorrência. Uma ocorrência que mobiliza 4 ou mais atendimentos vale muito mais que uma de até 2.</p>
+        <p class="rk-calc" data-rk="calc-dop">—</p>
+        <table class="rk-cls" data-rk-cls="dop"></table>
+      </article>
+      <article class="mo-card" data-crit="iso" style="--c: var(--k2)">
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k2)"></i><h2>b) Isolamento geográfico</h2><span class="rk-peso" data-rk="peso-txt-iso"></span></div>
+        <p class="mo-note">Tempo que o apoio do GBM mais próximo leva para chegar à área. Quanto mais distante o apoio, mais o GBM depende de si mesmo e mais pontos recebe.</p>
+        <p class="rk-calc">Tempo de apoio (s) = minutos × 60 + segundos de deslocamento do GBM de apoio.</p>
+        <table class="rk-cls" data-rk-cls="iso"></table>
+      </article>
+      <article class="mo-card" data-crit="pdo" style="--c: var(--k3)">
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k3)"></i><h2>c) Potencial de demanda</h2><span class="rk-peso" data-rk="peso-txt-pdo"></span></div>
+        <p class="mo-note">Relação entre a população atendida e a renda per capita da área. Áreas mais populosas e de menor renda tendem a gerar mais ocorrências e pontuam mais.</p>
+        <p class="rk-calc">Coeficiente PDO = população atendida ÷ renda per capita (R$).</p>
+        <table class="rk-cls" data-rk-cls="pdo"></table>
+      </article>
+      <article class="mo-card" data-crit="fd" style="--c: var(--k4)">
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k4)"></i><h2>d) Riscos estruturais da área</h2><span class="rk-peso" data-rk="peso-txt-fd"></span></div>
+        <p class="mo-note">Média ponderada de três subcritérios, cada um de 1 a 6 pontos: extensão da área, edificações com mais de 12 m e o risco da área (nível de 1 a 5).</p>
+        <p class="rk-calc" data-rk="calc-fd">—</p>
+        <table class="rk-cls" data-rk-cls="fd"></table>
+      </article>
+    </div>
+
+    <article class="mo-card" id="rk-tabela">
+      <div class="mo-card-head">
+        <h2>Valores e pontos de todos os GBMs</h2>
+        <p class="mo-note">Para cada critério, o valor medido e os pontos (1 a 6). Quanto mais forte a cor, mais pontos. A última coluna traz a posição publicada no trabalho original (Tabela 5), que ordena os empates por COMAR e número do GBM.</p>
+      </div>
+      <div class="mo-table-wrap">
+        <table class="mo-table mo-tr">
+          <thead>
+            <tr class="mo-cols">
+              <th class="l">GBM</th><th class="l">COMAR</th>
+              <th class="n gs">Demanda (coef.)</th><th>Pts</th>
+              <th class="n gs">Apoio (s)</th><th>Pts</th>
+              <th class="n gs">PDO</th><th>Pts</th>
+              <th class="n gs">Riscos (fator D)</th>
+              <th class="n gs">Total</th><th class="n">Posição</th><th class="n">No trabalho</th>
+            </tr>
+          </thead>
+          <tbody id="rk-tbody"></tbody>
+        </table>
+      </div>
+      <p class="mo-note" id="rk-fonte"></p>
+    </article>
+  </div>
+
+  <div class="mo-page" id="pg-carga" hidden>
+    <div class="mo-pgerr" data-pgerr="carga" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a aba Carga Operacional.</b> <span data-pgerr-msg></span></span></div>
+    <p class="mo-lede">A carga operacional mede quantas ocorrências cada militar lotado no GBM atendeu: ocorrências ÷ militares lotados. Nos 24 GBMs, a média foi de <b data-cg="media">—</b> por militar. A maior carga é do <b data-cg="max-gbm">—</b> (<b data-cg="max">—</b>) e a menor, do <b data-cg="min-gbm">—</b> (<b data-cg="min">—</b>).</p>
+    <div class="rk-eq" aria-label="Fórmulas da carga operacional">
+      <span class="rk-tok" style="--c: var(--accent)">Carga = ocorrências ÷ militares lotados</span>
+      <span class="rk-tok" style="--c: var(--hot)">Índice relativo = 1 + 4 × (carga − mínima) ÷ (máxima − mínima)</span>
+      <span class="rk-tok" style="--c: var(--k1)">Ralvo = ocorrências dos GBMs ÷ efetivo atual dos GBMs</span>
+    </div>
+
+    <div class="mo-row2">
+      <article class="mo-card" id="cg-grafico">
+        <div class="mo-card-head">
+          <h2>Ocorrências por militar lotado</h2>
+          <p class="mo-note">A cor mostra o índice de carga relativa, de 1 (azul, menor carga) a 5 (laranja, maior). A linha tracejada é a média dos GBMs. Toque em um GBM para ver o cálculo.</p>
+        </div>
+        <div class="mo-chart" id="ch-cg"></div>
+        <div class="mo-legend">
+          <span class="ta-scale">Índice <i class="ta-grad ta-grad-dem"></i> 1 → 5</span>
+          <span class="mo-key"><i class="mo-sw is-dash"></i>Média dos GBMs</span>
+        </div>
+      </article>
+      <article class="mo-card" id="cg-exemplo">
+        <div class="mo-card-head">
+          <p class="mo-eyebrow">Passo a passo</p>
+          <h2 class="mo-ficha-nome" id="cg-ex-nome">—</h2>
+          <p class="mo-sub" id="cg-ex-sub"></p>
+        </div>
+        <ol class="rk-steps" id="cg-ex-steps"></ol>
+      </article>
+    </div>
+
+    <article class="mo-card" id="cg-natureza">
+      <div class="mo-card-head">
+        <h2>Carga por natureza</h2>
+        <p class="mo-note">Ocorrências de cada natureza, por militar lotado, e a posição do GBM em cada uma (1º é o de maior carga). As barras comparam os GBMs dentro de cada natureza.</p>
+      </div>
+      <div class="mo-table-wrap">
+        <table class="mo-table mo-tr">
+          <thead>
+            <tr class="mo-groups"><th colspan="3"></th><th colspan="3" class="gs">APH (emergência médica e acidente de trânsito)</th><th colspan="3" class="gs">Multiemprego (exceto emergência médica)</th><th colspan="3" class="gs">Incêndio estrutural</th></tr>
+            <tr class="mo-cols">
+              <th class="l">GBM</th><th class="n">Militares lotados</th><th class="n">Ocorrências</th>
+              <th class="n gs">Ocorrências</th><th class="n">Por militar</th><th class="n">Posição</th>
+              <th class="n gs">Ocorrências</th><th class="n">Por militar</th><th class="n">Posição</th>
+              <th class="n gs">Ocorrências</th><th class="n">Por militar</th><th class="n">Posição</th>
+            </tr>
+          </thead>
+          <tbody id="cg-tbody"></tbody>
+        </table>
+      </div>
+      <p class="mo-note">As colunas por natureza vêm da aba Carga Operacional, que não informa o critério de contagem; a soma delas passa do total de ocorrências.</p>
+    </article>
+
+    <article class="mo-card" id="cg-defs">
+      <div class="mo-card-head"><h2>Como a carga entra na matriz</h2></div>
+      <dl class="mo-defs">
+        <div><dt>Carga operacional com efetivo atual</dt><dd>Ocorrências do GBM divididas pelos militares lotados nele hoje.</dd></div>
+        <div><dt>Índice de carga operacional relativa</dt><dd>A mesma carga em escala de 1 a 5: o GBM de menor carga vale 1 e o de maior, 5.</dd></div>
+        <div><dt>Relação alvo (Ralvo)</dt><dd>Ocorrências de todos os GBMs divididas pelo efetivo atual somado. É a carga média que serve de referência para equalizar o efetivo.</dd></div>
+        <div><dt>Coeficiente de ajuste</dt><dd>Carga do GBM dividida pela Ralvo. Acima de 1, o GBM atende mais ocorrências por militar do que a média.</dd></div>
+        <div><dt>Novo efetivo necessário</dt><dd>Ocorrências do GBM divididas pela Ralvo, arredondado, com mínimo de 69 militares.</dd></div>
+        <div><dt>Carga operacional atualizada</dt><dd>Ocorrências divididas pelo efetivo necessário somado ao reforço do oficial de dia e das cotas de GSV: a carga que o GBM teria com o efetivo previsto na matriz.</dd></div>
+      </dl>
+    </article>
+  </div>
+
   <div class="mo-page" id="pg-poder" hidden>
     <p class="mo-lede">O que um quartel consegue colocar na rua a cada plantão. O exemplo parte do menor GBM da matriz, com <b data-po="total">69</b> bombeiros; mude o efetivo do GBM ou o número de bombeiros na ala de serviço para ver o socorro que dá para ativar.</p>
 
@@ -713,21 +905,22 @@
   </div>
 
   <footer class="mo-foot">
-    <span>Dados da aba Absoluto da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
+    <span>Dados das abas Absoluto, Matriz de Risco, Carga Operacional e Parâmetros da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
     <button type="button" class="mo-btn" id="mo-recarregar">Recarregar dados</button>
   </footer>
 </div>
 
 <script>
 /* ===== CONFIGURAÇÃO =====
-   CSV_URL: link da aba Absoluto publicada na Web em formato CSV
-   (Arquivo → Compartilhar → Publicar na Web → aba Absoluto → CSV). */
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDItEC90J5UhrDDD6dUIImcMKvxJQqkbiH6Vn92o4jXphHn1Ue58odgHp6KMCLSvXZX/pub?gid=1977235102&single=true&output=csv';
+   PUB: endereço da planilha publicada na Web (Arquivo → Compartilhar → Publicar na Web),
+   sem o "?output=csv". Cada aba é lida pelo seu gid (o número depois de "gid=" no endereço da aba). */
+const PUB = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDItEC90J5UhrDDD6dUIImcMKvxJQqkbiH6Vn92o4jXphHn1Ue58odgHp6KMCLSvXZX/pub';
+const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, params: 1866811546 };
 /* ======================== */
 
 (() => {
   const loc = d3.formatLocale({ decimal: ',', thousands: '.', grouping: [3], currency: ['R$ ', ''], minus: '−' });
-  const fInt = loc.format(',d'), fSig = loc.format('+,d'), f2 = loc.format(',.2f');
+  const fInt = loc.format(',d'), fSig = loc.format('+,d'), f2 = loc.format(',.2f'), f1 = loc.format(',.1f');
   const KIND = {
     efetivo_necessario: 'int', efetivo_atual: 'int', novo_efetivo: 'int', cotas_gsv: 'int', ralvo: 'int',
     saldo_efetivo: 'signed', saldo_considerado: 'signed', saldo_carga: 'signed', pior_saldo_carga: 'signed',
@@ -1099,7 +1292,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
     document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
     document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
-    ['matriz', 'tabela', 'natureza', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
+    ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
     document.querySelectorAll('.mo-seg').forEach((el) => { el.hidden = S.page === 'poder'; });
     document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
@@ -1114,6 +1307,10 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
       fillNatureza();
       drawNatDots(document.getElementById('ch-nat'));
       drawNatTable();
+    } else if (S.page === 'risco') {
+      renderRisco();
+    } else if (S.page === 'carga') {
+      renderCarga();
     } else {
       renderPoder();
     }
@@ -1588,34 +1785,452 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
     tb.replaceChildren(frag);
   }
 
+  const urlAba = (k) => {
+    const local = new URLSearchParams(location.search).get('local');
+    if (local) return `${local}-${k}.csv`;
+    return `${PUB}?gid=${ABAS[k]}&single=true&output=csv`;
+  };
+  async function lerAba(k) {
+    const res = await fetch(urlAba(k), { cache: 'no-store' });
+    if (!res.ok) throw new Error('O Google respondeu com o código ' + res.status + '. Confira se a planilha continua publicada na Web.');
+    const text = await res.text();
+    if (/^\s*<(!doctype|html)/i.test(text)) throw new Error('O endereço não devolveu um CSV. Confira se a planilha foi publicada no formato CSV.');
+    return d3.csvParseRows(text);
+  }
+  const numBR = (x) => {
+    if (typeof x === 'number') return Number.isFinite(x) ? x : null;
+    const t = norm(x).replace(/R\$\s*/g, '').replace(/[º°ª]/g, '').replace(/\./g, '').replace(',', '.').replace(/^\+/, '').replace('−', '-');
+    if (t === '' || t === '-') return null;
+    const v = Number(t);
+    return Number.isFinite(v) ? v : null;
+  };
+  const semComar = (c) => norm(c).replace(/^COMAR\s+/i, '');
+
+  function parseRisco(grid) {
+    const hi = grid.findIndex((r) => r.some((c) => norm(c) === 'GBM') && r.some((c) => norm(c) === 'Coeficiente DOP'));
+    if (hi < 0) throw new Error('O cabeçalho da aba Matriz de Risco não foi encontrado.');
+    const h = grid[hi].map(norm);
+    const at = (lab) => h.indexOf(lab);
+    const after = (lab) => { const i = at(lab); return i < 0 ? -1 : i + 1; };
+    const C = {
+      comar: at('COMAR'), gbm: at('GBM'), q2: at('≤2 atend.'), q3: at('3 atend.'), q4: at('4+ atend.'), dop: at('Coeficiente DOP'), p_dop: after('Coeficiente DOP'),
+      apoio: at('GBM de apoio'), dist: at('Distância (km)'), tmin: at('Tempo de chegada: min'), tseg: at('Tempo de chegada: s'), tapoio: at('Tempo de apoio (s)'), p_iso: after('Tempo de apoio (s)'),
+      pop: at('População atendida'), renda: at('Renda per capita (R$)'), pdo: at('Coeficiente PDO'), p_pdo: after('Coeficiente PDO'),
+      ext: at('Extensão da área (ha)'), edif: at('Edificações elevadas (> 12 m)'), risco: at('Risco da área (1 a 5)'),
+      p_ext: at('Pontos: extensão'), p_edif: at('Pontos: edificações'), p_risco: at('Pontos: risco'), fd: at('Pontos (fator D)'),
+      total: at('Pontuação total (ponderada)'), pos: at('Posição final (com empates)'), pos_trab: at('Posição no trabalho (Tabela 5)'),
+    };
+    const falta = ['gbm', 'p_dop', 'p_iso', 'p_pdo', 'fd', 'total'].filter((k) => C[k] < 0);
+    if (falta.length) throw new Error('Colunas não encontradas na aba Matriz de Risco: ' + falta.join(', ') + '.');
+    return grid.slice(hi + 1).filter((r) => norm(r[C.gbm]) !== '').map((r) => {
+      const o = { gbm: norm(r[C.gbm]), comar: C.comar >= 0 ? semComar(r[C.comar]) : '', apoio: C.apoio >= 0 ? norm(r[C.apoio]) : '' };
+      for (const k of Object.keys(C)) if (!(k in o)) o[k] = C[k] >= 0 ? numBR(r[C[k]]) : null;
+      return o;
+    }).filter((o) => o.total != null);
+  }
+
+  function parseCarga(grid) {
+    const hi = grid.findIndex((r) => r.some((c) => norm(c) === 'GBM') && r.some((c) => norm(c).startsWith('Militares lotados')));
+    if (hi < 0) throw new Error('O cabeçalho da aba Carga Operacional não foi encontrado.');
+    const h = grid[hi].map(norm), g = (grid[hi - 1] || []).map((c) => fold(norm(c)));
+    const C = {
+      gbm: h.indexOf('GBM'), comar: h.indexOf('COMAR'), lot: h.findIndex((c) => c.startsWith('Militares lotados')), oc: h.indexOf('Ocorrências'),
+      carga: h.findIndex((c) => c.startsWith('Ocorrências / Militares lotados')), indice: h.findIndex((c) => c.startsWith('Índice de Carga')),
+    };
+    if (C.gbm < 0 || C.oc < 0 || C.carga < 0) throw new Error('Colunas não encontradas na aba Carga Operacional.');
+    const nat = { aph: g.findIndex((c) => c.startsWith('aph')), multi: g.findIndex((c) => c.startsWith('multiemprego')), inc: g.findIndex((c) => c.startsWith('incendio')) };
+    const linha = (r) => {
+      const o = { gbm: norm(r[C.gbm]), comar: C.comar >= 0 ? semComar(r[C.comar]) : '', lot: numBR(r[C.lot]), oc: numBR(r[C.oc]), carga: numBR(r[C.carga]), indice: C.indice >= 0 ? numBR(r[C.indice]) : null };
+      for (const [k, i] of Object.entries(nat)) {
+        o[k] = i < 0 ? null : { oc: numBR(r[i]), rk: numBR(r[i + 1]), pm: numBR(r[i + 2]), rkpm: numBR(r[i + 3]) };
+      }
+      return o;
+    };
+    const body = grid.slice(hi + 1).filter((r) => norm(r[C.gbm]) !== '');
+    const tot = body.find((r) => fold(norm(r[C.gbm])) === 'total');
+    return { rows: body.filter((r) => r !== tot).map(linha).filter((o) => o.carga != null), total: tot ? linha(tot) : null };
+  }
+
+  function parseParams(grid) {
+    const A = (r) => norm(r[0]);
+    const idx = (pred) => grid.findIndex(pred);
+    const P = {};
+    const fonte = grid.find((r) => /^Fonte: Anexo/i.test(A(r)));
+    P.fonte = fonte ? A(fonte).replace(/\s*\(documento anexado[^)]*\)\.?/i, '.') : null;
+    let i = idx((r) => A(r) === 'Complexidade');
+    if (i >= 0) P.beta = grid.slice(i + 1, i + 4).map((r) => ({ nome: norm(r[0]), faixa: norm(r[1]), b: numBR(r[3]) }));
+    i = idx((r) => A(r) === 'Pontos' && norm(r[1]) === 'DOP');
+    if (i >= 0) P.classes = grid.slice(i + 1, i + 7).map((r) => ({ p: numBR(r[0]), dop: numBR(r[1]), iso: numBR(r[2]), pdo: numBR(r[3]), cDop: norm(r[4]), cIso: norm(r[5]), cPdo: norm(r[6]) })).filter((c) => c.p != null);
+    i = idx((r) => A(r) === 'Critério' && norm(r[1]) === 'Peso');
+    if (i >= 0) {
+      P.pesos = {};
+      for (const r of grid.slice(i + 1, i + 8)) {
+        const k = fold(A(r));
+        if (!k) break;
+        const w = numBR(r[1]);
+        if (k.startsWith('demanda')) P.pesos.dop = w;
+        else if (k.startsWith('isolamento')) P.pesos.iso = w;
+        else if (k.startsWith('potencial')) P.pesos.pdo = w;
+        else if (k.startsWith('caracteristicas') || k.startsWith('riscos')) P.pesos.fd = w;
+        else if (k.startsWith('carga')) P.pesos.carga = w;
+      }
+    }
+    i = idx((r) => A(r) === 'Pontos' && fold(norm(r[1])).startsWith('extensao'));
+    if (i >= 0) P.fdLim = grid.slice(i + 1, i + 7).map((r) => ({ p: numBR(r[0]), ext: numBR(r[1]), edif: numBR(r[2]) })).filter((c) => c.p != null);
+    i = idx((r) => A(r) === 'Nível' && norm(r[1]) === 'Pontos');
+    if (i >= 0) P.riscoNivel = grid.slice(i + 1, i + 6).map((r) => ({ n: numBR(r[0]), p: numBR(r[1]) })).filter((c) => c.n != null);
+    i = idx((r) => A(r) === 'Subcritério');
+    if (i >= 0) P.fdPesos = grid.slice(i + 1, i + 4).map((r) => ({ nome: norm(r[0]), w: numBR(r[1]) }));
+    const kv = (test) => { for (const r of grid) for (let j = 0; j < r.length - 1; j++) { if (test(fold(norm(r[j])))) return norm(r[j + 1]); } return null; };
+    P.cotaFator = numBR(kv((t) => t.startsWith('fator multiplicador da cota gsv')));
+    P.ofBase = numBR(kv((t) => t.startsWith('adicional oficial de dia') && t.includes('base')));
+    const pct = kv((t) => t.startsWith('adicional oficial de dia') && t.includes('acrescimo'));
+    P.ofPct = pct == null ? null : (numBR(pct.replace('%', '')) ?? 0) / (pct.includes('%') ? 100 : 1);
+    return P;
+  }
+
   async function load() {
-    const url = new URLSearchParams(location.search).get('csv') || CSV_URL;
-    if (!url) { S.status = 'config'; render(); return; }
+    if (!PUB && !new URLSearchParams(location.search).get('local')) { S.status = 'config'; render(); return; }
     S.status = 'loading';
     render();
+    const [abs, ris, car, par] = await Promise.allSettled(['absoluto', 'risco', 'carga', 'params'].map(lerAba));
     try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('O Google respondeu com o código ' + res.status + '. Confira se a aba continua publicada na Web.');
-      const text = await res.text();
-      if (/^\s*<(!doctype|html)/i.test(text)) throw new Error('O link não devolveu um CSV. Confira se a aba foi publicada no formato "Valores separados por vírgula (.csv)".');
-      S.all = parse(d3.csvParseRows(text));
+      if (abs.status !== 'fulfilled') throw abs.reason;
+      S.all = parse(abs.value);
       S.resumo = resumo(S.all);
       S.frota = frota(S.all);
       S.status = 'ok';
-      const agora = new Date();
-      document.getElementById('mo-atualizado').textContent = 'Última leitura: ' + agora.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
+      document.getElementById('mo-atualizado').textContent = 'Última leitura: ' + new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
     } catch (e) {
       S.status = 'error';
-      document.getElementById('mo-status-msg').textContent = e.message || String(e);
+      document.getElementById('mo-status-msg').textContent = (e && e.message) || String(e);
     }
+    const guarda = (res, fn) => {
+      if (res.status !== 'fulfilled') return { status: 'error', msg: (res.reason && res.reason.message) || String(res.reason) };
+      try { return { status: 'ok', ...fn(res.value) }; } catch (e) { return { status: 'error', msg: e.message || String(e) }; }
+    };
+    S.risco = guarda(ris, (g) => ({ rows: parseRisco(g) }));
+    S.carga = guarda(car, parseCarga);
+    S.par = par.status === 'fulfilled' ? (() => { try { return parseParams(par.value); } catch (e) { return null; } })() : null;
     render();
+  }
+
+  /* ---- Página: matriz de risco ---- */
+  const CRIT = [
+    { k: 'dop', p: 'p_dop', nome: 'Demanda operacional', cor: '--k1' },
+    { k: 'iso', p: 'p_iso', nome: 'Isolamento geográfico', cor: '--k2' },
+    { k: 'pdo', p: 'p_pdo', nome: 'Potencial de demanda', cor: '--k3' },
+    { k: 'fd', p: 'fd', nome: 'Riscos estruturais', cor: '--k4' },
+  ];
+  const pesos = () => {
+    const w = (S.par && S.par.pesos) || {};
+    if ([w.dop, w.iso, w.pdo, w.fd].every((x) => x != null)) return w;
+    const r = S.risco && S.risco.rows && S.risco.rows.find((o) => o.p_dop);
+    const dop = r ? Math.round(((r.total - r.p_iso - r.p_pdo - r.fd) / r.p_dop) * 10) / 10 : 2;
+    return { dop, iso: 1, pdo: 1, fd: 1 };
+  };
+  const rkRows = () => {
+    if (!S.risco || S.risco.status !== 'ok') return [];
+    return S.risco.rows.filter((r) => S.comar === 'Todos' || r.comar === S.comar).slice().sort((a, b) => b.total - a.total || a.gbm.localeCompare(b.gbm, 'pt-BR'));
+  };
+  const selIn = (rs) => { const hit = rs.find((r) => r.gbm === S.gbm); return hit || rs[0] || null; };
+  const pickTo = (g, id) => {
+    S.gbm = g;
+    render();
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  };
+  const classe = (crit, pts) => {
+    const c = S.par && S.par.classes && S.par.classes.find((o) => o.p === pts);
+    if (!c) return '';
+    return crit === 'dop' ? c.cDop : crit === 'iso' ? c.cIso : crit === 'pdo' ? c.cPdo : '';
+  };
+  const pageErr = (k, st) => {
+    document.querySelectorAll(`[data-pgerr="${k}"]`).forEach((el) => {
+      el.hidden = !st || st.status !== 'error';
+      const m = el.querySelector('[data-pgerr-msg]');
+      if (m) m.textContent = st && st.msg ? st.msg : '';
+    });
+  };
+  const step = (cor, titulo, calc, resultado) => {
+    const li = document.createElement('li');
+    li.style.setProperty('--c', `var(${cor})`);
+    const t = document.createElement('span'); t.className = 'rk-st-t'; t.textContent = titulo;
+    const c = document.createElement('span'); c.className = 'rk-st-c'; c.textContent = calc;
+    const r = document.createElement('span'); r.className = 'rk-st-r';
+    resultado.forEach(([txt, b]) => { const e = document.createElement(b ? 'b' : 'span'); e.textContent = txt; r.appendChild(e); });
+    li.append(t, c, r);
+    return li;
+  };
+  const nz = (v, f) => (v == null ? '—' : f(v));
+
+  function renderRisco() {
+    pageErr('risco', S.risco);
+    const w = pesos();
+    const soma = (w.dop ?? 0) + (w.iso ?? 0) + (w.pdo ?? 0) + (w.fd ?? 0);
+    const setRk = (k, txt) => document.querySelectorAll(`[data-rk="${k}"]`).forEach((el) => { el.textContent = txt; });
+    const fw = (x) => (x == null ? '—' : Number.isInteger(x) ? fInt(x) : f1(x));
+    setRk('peso-dop', fw(w.dop)); setRk('min', fw(soma)); setRk('max', fw(soma * 6));
+    CRIT.forEach((c) => { setRk('w-' + c.k, fw(w[c.k])); setRk('peso-txt-' + c.k, `peso ${fw(w[c.k])}`); });
+    const beta = S.par && S.par.beta;
+    setRk('calc-dop', beta && beta.length === 3
+      ? `Coeficiente = ocorrências com ${beta[0].faixa} atendimentos × ${f1(beta[0].b)} + com ${beta[1].faixa} × ${f1(beta[1].b)} + com ${beta[2].faixa} × ${f1(beta[2].b)}.`
+      : 'Coeficiente = soma das ocorrências ponderadas pela complexidade.');
+    const fdP = S.par && S.par.fdPesos;
+    setRk('calc-fd', fdP && fdP.length === 3
+      ? `Fator D = (extensão × ${fw(fdP[0].w)} + edificações × ${fw(fdP[1].w)} + risco da área × ${fw(fdP[2].w)}) ÷ ${fw(fdP.reduce((a, o) => a + (o.w ?? 0), 0))}.`
+      : 'Fator D = média ponderada dos três subcritérios.');
+    const fonte = document.getElementById('rk-fonte');
+    fonte.textContent = S.par && S.par.fonte ? S.par.fonte : '';
+
+    const rs = rkRows();
+    const sel = selIn(rs);
+    // tabelas de classes
+    const cls = S.par && S.par.classes;
+    document.querySelectorAll('[data-rk-cls]').forEach((tb) => {
+      const k = tb.dataset.rkCls;
+      tb.replaceChildren();
+      const head = (cols) => { const tr = document.createElement('tr'); cols.forEach(([t, n]) => { const th = document.createElement('th'); th.textContent = t; if (n) th.className = 'n'; tr.appendChild(th); }); tb.appendChild(tr); };
+      const row = (cells, on) => { const tr = document.createElement('tr'); if (on) tr.className = 'is-on'; cells.forEach(([t, n]) => { const td = document.createElement('td'); td.textContent = t; if (n) td.className = 'n'; tr.appendChild(td); }); tb.appendChild(tr); };
+      if (k === 'fd') {
+        const lim = S.par && S.par.fdLim;
+        if (!lim) return;
+        head([['Pontos'], ['Extensão (ha) a partir de', 1], ['Edificações a partir de', 1]]);
+        lim.forEach((c) => row([[fInt(c.p)], [fInt(Math.round(c.ext))], [fInt(Math.round(c.edif))]], false));
+        const rn = S.par.riscoNivel;
+        if (rn && rn.length) row([['Risco'], [`nível 1 a ${fInt(rn.length)} vale ${fInt(rn[0].p)} a ${fInt(rn[rn.length - 1].p)} pontos`], ['']], false);
+        return;
+      }
+      if (!cls) return;
+      const lim = (c) => (k === 'dop' ? f2(c.dop) : k === 'iso' ? `${fInt(Math.round(c.iso))} s` : f2(c.pdo));
+      head([['Pontos'], ['A partir de', 1], ['Classe']]);
+      const pts = sel ? sel['p_' + k] : null;
+      cls.forEach((c) => row([[fInt(c.p)], [lim(c), 1], [classe(k, c.p)]], c.p === pts));
+    });
+
+    // gráfico
+    const el = document.getElementById('ch-rk');
+    if (!S.risco || S.risco.status !== 'ok') { el.replaceChildren(); }
+    else drawRk(el, rs, sel, w);
+
+    // passo a passo
+    const nome = document.getElementById('rk-ex-nome'), sub = document.getElementById('rk-ex-sub');
+    const ol = document.getElementById('rk-ex-steps'), tot = document.getElementById('rk-ex-total');
+    if (!sel) { nome.textContent = '—'; sub.textContent = ''; ol.replaceChildren(); tot.replaceChildren(); }
+    else {
+      nome.textContent = sel.gbm;
+      sub.textContent = `COMAR ${sel.comar} · como a pontuação de ${f2(sel.total)} se forma`;
+      const b = beta && beta.length === 3 ? beta.map((o) => o.b) : null;
+      const pesoTxt = (k, p) => (w[k] != null && w[k] !== 1 ? [[`${fInt(p)} pontos`, true], [classe(k, p) ? ` (${classe(k, p).toLowerCase()})` : ''], [` × peso ${fw(w[k])} = `], [fw(p * w[k]), true]] : [[`${fInt(p)} pontos`, true], [classe(k, p) ? ` (${classe(k, p).toLowerCase()})` : '']]);
+      const fdp = fdP && fdP.length === 3 ? fdP.map((o) => o.w) : null;
+      const sumfd = fdp ? fdp.reduce((a, x) => a + x, 0) : null;
+      ol.replaceChildren(
+        step('--k1', 'a) Demanda operacional',
+          b ? `${nz(sel.q2, fInt)} × ${f1(b[0])} + ${nz(sel.q3, fInt)} × ${f1(b[1])} + ${nz(sel.q4, fInt)} × ${f1(b[2])} = ${nz(sel.dop, f1)}` : `Coeficiente: ${nz(sel.dop, f1)}`,
+          pesoTxt('dop', sel.p_dop)),
+        step('--k2', 'b) Isolamento geográfico',
+          `Apoio do ${sel.apoio || '—'}, a ${nz(sel.dist, f1)} km: ${nz(sel.tmin, fInt)} min ${nz(sel.tseg, fInt)} s = ${nz(sel.tapoio, fInt)} s`,
+          pesoTxt('iso', sel.p_iso)),
+        step('--k3', 'c) Potencial de demanda',
+          `${nz(sel.pop, fInt)} habitantes ÷ R$ ${nz(sel.renda, fInt)} = ${nz(sel.pdo, f2)}`,
+          pesoTxt('pdo', sel.p_pdo)),
+        step('--k4', 'd) Riscos estruturais',
+          `Extensão ${nz(sel.ext, fInt)} ha → ${nz(sel.p_ext, fInt)}; edificações acima de 12 m: ${nz(sel.edif, fInt)} → ${nz(sel.p_edif, fInt)}; risco da área ${nz(sel.risco, fInt)} → ${nz(sel.p_risco, fInt)}` +
+          (fdp ? `. (${nz(sel.p_ext, fInt)} × ${fw(fdp[0])} + ${nz(sel.p_edif, fInt)} × ${fw(fdp[1])} + ${nz(sel.p_risco, fInt)} × ${fw(fdp[2])}) ÷ ${fw(sumfd)}` : ''),
+          [[`${f2(sel.fd)} pontos`, true]].concat(w.fd != null && w.fd !== 1 ? [[` × peso ${fw(w.fd)} = `], [f2(sel.fd * w.fd), true]] : [])),
+      );
+      tot.replaceChildren();
+      const parts = CRIT.map((c) => f2((sel[c.p] ?? 0) * (w[c.k] ?? 1))).join(' + ');
+      const bt = document.createElement('b'); bt.textContent = f2(sel.total);
+      const s1 = document.createElement('span'); s1.textContent = `${parts} = pontuação total · ${nz(sel.pos, fInt)}º de ${fInt(S.risco.rows.length)}` + (sel.pos_trab != null ? ` (no trabalho original: ${fInt(sel.pos_trab)}º)` : '');
+      tot.append(bt, s1);
+    }
+
+    // tabela
+    const tb = document.getElementById('rk-tbody');
+    const heat = (p, cor) => (p == null ? '' : `color-mix(in srgb, var(${cor}) ${Math.round(6 + 9 * p)}%, var(--panel))`);
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gbm;
+      if (sel && r.gbm === sel.gbm) tr.className = 'is-sel';
+      const cells = [
+        [r.gbm, 'l'], [r.comar, 'l'],
+        [nz(r.dop, f1), 'n gs'], [nz(r.p_dop, fInt), 'pt', heat(r.p_dop, '--k1')],
+        [nz(r.tapoio, fInt), 'n gs'], [nz(r.p_iso, fInt), 'pt', heat(r.p_iso, '--k2')],
+        [nz(r.pdo, f2), 'n gs'], [nz(r.p_pdo, fInt), 'pt', heat(r.p_pdo, '--k3')],
+        [nz(r.fd, f2), 'pt gs', heat(r.fd, '--k4')],
+        [f2(r.total), 'n gs'], [r.pos != null ? fInt(r.pos) + 'º' : '—', 'n'], [r.pos_trab != null ? fInt(r.pos_trab) + 'º' : '—', 'n'],
+      ];
+      cells.forEach(([t, c, bg]) => { const td = document.createElement('td'); td.textContent = t; td.className = c; if (bg) td.style.background = bg; tr.appendChild(td); });
+      return tr;
+    }));
+  }
+
+  function drawRk(el, rs, sel, w) {
+    const W = Math.max(260, el.clientWidth), rowH = 24, barH = 14, padT = 2;
+    const H = rs.length * rowH + padT * 2;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Composição da pontuação da matriz de risco por GBM');
+    const nameW = Math.min(W * 0.45, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const valW = measure(svg, rs.map((r) => f2(r.total)), 'mo-t-muted') + 8;
+    const x0 = nameW + 12;
+    const soma = (w.dop ?? 0) + (w.iso ?? 0) + (w.pdo ?? 0) + (w.fd ?? 0);
+    const x = d3.scaleLinear([0, Math.max(soma * 6, d3.max(S.risco.rows, (d) => d.total) || 1)], [x0, W - valW]);
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (sel && d.gbm === sel.gbm ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${padT + i * rowH})`)
+      .attr('tabindex', 0).attr('role', 'button')
+      .attr('aria-label', (d) => `${d.gbm}, pontuação ${f2(d.total)}`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    g.each(function (d) {
+      let acc = 0;
+      const gg = d3.select(this);
+      CRIT.forEach((c) => {
+        const v = (d[c.p] ?? 0) * (w[c.k] ?? 1);
+        gg.append('rect').attr('x', x(acc)).attr('y', (rowH - barH) / 2).attr('height', barH).attr('width', Math.max(0, x(acc + v) - x(acc) - 1)).style('fill', `var(${c.cor})`);
+        acc += v;
+      });
+      gg.append('text').attr('class', 'mo-t-muted').attr('x', x(acc) + 6).attr('y', rowH / 2).attr('dy', '0.35em').text(f2(d.total));
+    });
+    g.on('click', (ev, d) => pickTo(d.gbm, 'rk-exemplo'))
+      .on('keydown', (ev, d) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pickTo(d.gbm, 'rk-exemplo'); } })
+      .on('mousemove', (ev, d) => {
+        const [px, py] = d3.pointer(ev, el);
+        tip.show([
+          { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+          ...CRIT.map((c) => ({ t: `${c.nome}: ${fInt(d[c.p] ?? 0) === String(d[c.p]) ? fInt(d[c.p]) : f2(d[c.p] ?? 0)} pts` + (w[c.k] != null && w[c.k] !== 1 ? ` × ${fInt(w[c.k])}` : ''), sw: c.cor })),
+          { t: 'Total: ' + f2(d.total) },
+        ], px, py);
+      })
+      .on('mouseleave blur', () => tip.hide());
+  }
+
+  /* ---- Página: carga operacional ---- */
+  const cgRows = () => {
+    if (!S.carga || S.carga.status !== 'ok') return [];
+    return S.carga.rows.filter((r) => S.comar === 'Todos' || r.comar === S.comar).slice().sort((a, b) => b.carga - a.carga);
+  };
+  const corIndice = (ind) => {
+    if (ind == null) return 'var(--accent)';
+    const t = Math.max(0, Math.min(1, (ind - 1) / 4));
+    return `color-mix(in srgb, var(--hot) ${Math.round(t * 100)}%, var(--cool))`;
+  };
+  function renderCarga() {
+    pageErr('carga', S.carga);
+    const ok = S.carga && S.carga.status === 'ok';
+    const all = ok ? S.carga.rows : [];
+    const setCg = (k, txt) => document.querySelectorAll(`[data-cg="${k}"]`).forEach((el) => { el.textContent = txt; });
+    const mx = all.reduce((a, r) => (a == null || r.carga > a.carga ? r : a), null);
+    const mn = all.reduce((a, r) => (a == null || r.carga < a.carga ? r : a), null);
+    const media = ok && S.carga.total && S.carga.total.carga != null ? S.carga.total.carga : (all.length ? d3.sum(all, (r) => r.oc) / d3.sum(all, (r) => r.lot) : null);
+    setCg('media', nz(media, f2)); setCg('max-gbm', mx ? mx.gbm : '—'); setCg('max', mx ? f2(mx.carga) : '—'); setCg('min-gbm', mn ? mn.gbm : '—'); setCg('min', mn ? f2(mn.carga) : '—');
+    const rs = cgRows();
+    const sel = selIn(rs);
+    const el = document.getElementById('ch-cg');
+    if (!ok) el.replaceChildren(); else drawCg(el, rs, sel, media);
+
+    const nome = document.getElementById('cg-ex-nome'), sub = document.getElementById('cg-ex-sub'), ol = document.getElementById('cg-ex-steps');
+    if (!sel) { nome.textContent = '—'; sub.textContent = ''; ol.replaceChildren(); }
+    else {
+      nome.textContent = sel.gbm;
+      sub.textContent = `COMAR ${sel.comar} · da carga ao saldo de efetivo`;
+      const a = S.all.find((r) => r.gbm === sel.gbm) || null;
+      const efTot = d3.sum(S.all, (r) => r.efetivo_atual ?? 0);
+      const ocTot = d3.sum(all, (r) => r.oc ?? 0);
+      const ralvo = efTot ? ocTot / efTot : null;
+      const items = [
+        step('--accent', '1. Carga operacional', `${nz(sel.oc, fInt)} ocorrências ÷ ${nz(sel.lot, fInt)} militares lotados`, [[`${f2(sel.carga)} ocorrências por militar`, true]]),
+        step('--hot', '2. Índice de carga relativa', `1 + 4 × (${f2(sel.carga)} − ${mn ? f2(mn.carga) : '—'}) ÷ (${mx ? f2(mx.carga) : '—'} − ${mn ? f2(mn.carga) : '—'})`, [[nz(sel.indice, f2), true], [' numa escala de 1 a 5']]),
+        step('--k1', '3. Relação alvo (Ralvo)', `${fInt(ocTot)} ocorrências dos GBMs ÷ ${fInt(efTot)} militares do efetivo atual`, [[`${nz(ralvo, f1)} ocorrências por militar`, true], [' (referência para todos os GBMs)']]),
+      ];
+      if (a) {
+        items.push(
+          step('--k2', '4. Coeficiente de ajuste', `(${nz(sel.oc, fInt)} ÷ ${nz(a.efetivo_atual, fInt)} do efetivo atual) ÷ ${nz(ralvo, f1)}`, [[nz(a.coef_ajuste, f2), true], [a.coef_ajuste > 1 ? ': carga acima da média' : a.coef_ajuste < 1 ? ': carga abaixo da média' : '']]),
+          step('--k3', '5. Novo efetivo necessário', `${nz(sel.oc, fInt)} ÷ ${nz(ralvo, f1)} = ${ralvo ? f1(sel.oc / ralvo) : '—'}, com mínimo de 69`, [[`${nz(a.novo_efetivo, fInt)} militares`, true]]),
+          step('--k4', '6. Saldo pelo índice de carga', `${nz(a.efetivo_atual, fInt)} do efetivo atual − ${nz(a.novo_efetivo, fInt)} do novo efetivo necessário`, [[nz(a.saldo_carga, (v) => fmt('signed', v)), true], [a.saldo_carga < 0 ? ' (faltam militares)' : a.saldo_carga > 0 ? ' (sobram militares)' : '']]),
+        );
+        const par = S.par || {};
+        const of = a.oficial_dia && par.ofBase != null ? par.ofBase * (1 + (par.ofPct ?? 0)) : 0;
+        const cot = a.cotas_gsv && par.cotaFator != null ? a.cotas_gsv * par.cotaFator : 0;
+        const den = (a.efetivo_necessario ?? 0) + of + cot;
+        const detalhe = [`${nz(a.efetivo_necessario, fInt)} do efetivo necessário`];
+        if (of) detalhe.push(`${f1(of)} do oficial de dia (${fInt(par.ofBase)} + ${fInt(Math.round((par.ofPct ?? 0) * 100))}%)`);
+        if (cot) detalhe.push(`${f1(cot)} de ${fInt(a.cotas_gsv)} cotas de GSV × ${f1(par.cotaFator)}`);
+        items.push(step('--muted', '7. Carga operacional atualizada', `${nz(sel.oc, fInt)} ÷ (${detalhe.join(' + ')}) = ${nz(sel.oc, fInt)} ÷ ${f1(den)}`, [[`${nz(a.carga_atualizada, f2)} por militar`, true], [' com o efetivo previsto na matriz']]));
+      }
+      ol.replaceChildren(...items);
+    }
+
+    const tb = document.getElementById('cg-tbody');
+    const maxPm = {};
+    ['aph', 'multi', 'inc'].forEach((k) => { maxPm[k] = d3.max(all, (r) => (r[k] ? r[k].pm : 0)) || 1; });
+    const bar = (v, max, cor) => {
+      const d = document.createElement('span'); d.className = 'cg-cell';
+      const b = document.createElement('i'); b.className = 'cg-bar'; b.style.width = (v == null ? 0 : Math.round((48 * v) / max)) + 'px'; b.style.setProperty('--c', `var(${cor})`);
+      const t = document.createElement('span'); t.textContent = nz(v, f2);
+      d.append(b, t);
+      return d;
+    };
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gbm;
+      if (sel && r.gbm === sel.gbm) tr.className = 'is-sel';
+      const td = (t, c) => { const e = document.createElement('td'); e.className = c; if (typeof t === 'string') e.textContent = t; else e.appendChild(t); tr.appendChild(e); };
+      td(r.gbm, 'l'); td(nz(r.lot, fInt), 'n'); td(nz(r.oc, fInt), 'n');
+      [['aph', '--n1'], ['multi', '--n2'], ['inc', '--n4']].forEach(([k, cor]) => {
+        const v = r[k] || {};
+        td(nz(v.oc, fInt), 'n gs'); td(bar(v.pm, maxPm[k], cor), 'n'); td(v.rkpm != null ? fInt(v.rkpm) + 'º' : '—', 'n');
+      });
+      return tr;
+    }));
+  }
+  function drawCg(el, rs, sel, media) {
+    const W = Math.max(260, el.clientWidth), rowH = 24, barH = 14, top = 6, bottom = 22;
+    const H = top + rs.length * rowH + bottom;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Ocorrências por militar lotado em cada GBM');
+    const nameW = Math.min(W * 0.45, measure(svg, rs.map((r) => r.gbm), 'mo-t'));
+    const valW = measure(svg, rs.map((r) => `${f2(r.carga)} · ${nz(r.indice, f1)}`), 'mo-t-muted') + 8;
+    const x0 = nameW + 12;
+    const x = d3.scaleLinear([0, d3.max(S.carga.rows, (d) => d.carga) || 1], [x0, W - valW]);
+    if (media != null) {
+      svg.append('line').attr('class', 'mo-ref').attr('x1', x(media)).attr('x2', x(media)).attr('y1', 0).attr('y2', H - bottom + 4);
+      const lab = 'Média ' + f2(media);
+      const lw = measure(svg, [lab], 'mo-t-muted');
+      svg.append('text').attr('class', 'mo-t-muted').attr('x', Math.max(x0 + lw / 2, Math.min(W - lw / 2, x(media)))).attr('y', H - 6).attr('text-anchor', 'middle').text(lab);
+    }
+    const tip = tipFor(el);
+    const g = svg.append('g').selectAll('g').data(rs).join('g')
+      .attr('class', (d) => 'mo-row' + (sel && d.gbm === sel.gbm ? ' is-sel' : ''))
+      .attr('transform', (d, i) => `translate(0,${top + i * rowH})`)
+      .attr('tabindex', 0).attr('role', 'button')
+      .attr('aria-label', (d) => `${d.gbm}, ${f2(d.carga)} ocorrências por militar, índice ${nz(d.indice, f1)}`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.gbm);
+    g.append('rect').attr('class', 'mo-bar').attr('x', x0).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', 3)
+      .attr('width', (d) => Math.max(0, x(d.carga) - x0)).style('fill', (d) => corIndice(d.indice));
+    g.append('text').attr('class', 'mo-t-muted').attr('x', (d) => x(d.carga) + 6).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => `${f2(d.carga)} · ${nz(d.indice, f1)}`);
+    g.on('click', (ev, d) => pickTo(d.gbm, 'cg-exemplo'))
+      .on('keydown', (ev, d) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pickTo(d.gbm, 'cg-exemplo'); } })
+      .on('mousemove', (ev, d) => {
+        const [px, py] = d3.pointer(ev, el);
+        tip.show([
+          { t: 'COMAR ' + d.comar, cls: 'mo-tip-h' }, { t: d.gbm, cls: 'mo-tip-b' },
+          { t: `${nz(d.oc, fInt)} ocorrências ÷ ${nz(d.lot, fInt)} militares` },
+          { t: `Carga: ${f2(d.carga)} por militar` },
+          { t: `Índice relativo: ${nz(d.indice, f2)}` },
+        ], px, py);
+      })
+      .on('mouseleave blur', () => tip.hide());
   }
 
   /* ---- Controles ---- */
   const readHash = () => {
     decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
       if (COMARS.includes(t)) S.comar = t;
-      else if (t === 'natureza' || t === 'tabela' || t === 'poder') S.page = t;
+      else if (['natureza', 'tabela', 'risco', 'carga', 'poder'].includes(t)) S.page = t;
       else { const n = NATS.find((o) => o.slug === t); if (n) { S.nat = n.k; S.page = 'natureza'; } }
     });
   };
@@ -1633,6 +2248,8 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmssdXmfVEAfDI
   document.getElementById('mo-nat-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; render(); } });
   document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.addEventListener('click', () => { S.saldo = b.dataset.saldo; render(); }));
   document.getElementById('mo-busca').addEventListener('input', drawAbs);
+  document.getElementById('rk-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'rk-exemplo'); });
+  document.getElementById('cg-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'cg-exemplo'); });
   document.getElementById('mo-ta-body').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; drawAbs(); } });
   document.querySelectorAll('.ta-tools [data-grp]').forEach((b) => b.addEventListener('click', () => {
     const g = b.dataset.grp;

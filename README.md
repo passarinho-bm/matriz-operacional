@@ -1,7 +1,9 @@
 # Matriz Operacional · CBMDF
 
-Painel com viaturas, efetivo, saldos, matriz de risco e carga operacional dos GBMs, lido da aba **Absoluto** da planilha Matriz Operacional.
+Painel da Matriz Operacional do CBMDF, lido da planilha publicada na Web.
 
-- A página lê a aba publicada na Web em CSV a cada acesso. Alterações na planilha aparecem em alguns minutos (o Google guarda o CSV publicado em cache por pouco tempo).
-- Para apontar para outra aba ou outro mês, troque o link em `CSV_URL`, no início do script de `index.html`.
-- `#II` no fim do endereço abre a página já filtrada pelo COMAR II (vale para I, II, III e IV).
+Abas do painel: Matriz operacional, Tabela Absoluto, Ranking por natureza, Matriz de risco, Carga operacional e Poder operacional.
+
+- A página lê, a cada acesso, as abas **Absoluto**, **Matriz de Risco**, **Carga Operacional** e **Parâmetros** da planilha publicada em CSV. Alterações na planilha aparecem em alguns minutos (o Google guarda o CSV publicado em cache por pouco tempo).
+- Configuração no início do script de `index.html`: `PUB` é o endereço da planilha publicada (sem `?output=csv`) e `ABAS` traz o `gid` de cada aba. Se a aba de um novo mês for outra, troque o `gid` correspondente.
+- Endereços diretos: `#tabela`, `#natureza`, `#risco`, `#carga`, `#poder`. Acrescente o COMAR para abrir já filtrado, por exemplo `#risco-II`.
