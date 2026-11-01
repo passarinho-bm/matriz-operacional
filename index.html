@@ -4,39 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Matriz Operacional · CBMDF</title>
-<meta name="description" content="Viaturas, efetivo, saldos, matriz de risco e carga operacional dos GBMs do CBMDF, lidos da aba Absoluto da Matriz Operacional.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap">
+<meta name="description" content="Viaturas, efetivo, saldos, matriz de risco, carga operacional e distâncias dos GBMs do CBMDF.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <style>
   /* Layout: cabeçalho com filtro, faixa de indicadores, depois cartões em grade de 2 colunas que viram 1 no celular. */
+  /* Tema no padrão visual do BRADO: barra superior cinza-azulada, fundo cinza claro, cartões brancos com cabeçalho cinza, fonte do sistema. */
   :root {
-    --bg: #f4f6f8; --panel: #ffffff; --fg: #16202b; --muted: #5a6676; --line: #dde2e8; --hover: #eef1f5;
-    --accent: #2b5a8c; --accent-2: #c07a1c; --bad: #b8372b; --ok: #2c7a4d; --surplus: #b3bcc7;
-    --grid: #e9edf2; --axis: #9aa4b1; --ref: #6f7b8a;
-    --n1: #2b5a8c; --n2: #c07a1c; --n3: #3d8a59; --n4: #b03a5b; --n5: #7a4fa3;
-    --hot: #d9822b; --cool: #3d7cc9; --warn: #b7791f;
-    --k1: #1f7a8c; --k2: #6a4fb3; --k3: #b07d12; --k4: #c0506b;
-    --truck: #c0392b; --truck-2: #a93226; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #2f6fd6;
-    --pickup: #e4e8ec; --pickup-line: #a9b2bc; --stripe: #f2c94c; --helm1: #e9b949; --helm2: #d9632b;
-    --font-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-    --r: 8px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1.0625rem; --title: 1.875rem;
+    --bg: #f3f4f6; --panel: #ffffff; --band: #e5e7eb; --band-2: #f8f9fa; --box: #f9fafb;
+    --fg: #343a46; --muted: #6b7280; --line: #dee2e6; --hover: #eef2f7;
+    --bar: #4c5567; --brand: #dd6b20; --accent: #1976d2; --primary: #155dfc; --yellow: #fdc700; --chip: #e0e7ff; --outline: #6d8895;
+    --accent-2: #dd6b20; --bad: #c62828; --ok: #2e7d32; --warn: #b58100; --surplus: #b6bec9;
+    --grid: #e9ecef; --axis: #adb5bd; --ref: #6b7280;
+    --n1: #1976d2; --n2: #dd6b20; --n3: #2e7d32; --n4: #c62828; --n5: #7b4fb8;
+    --hot: #dd6b20; --cool: #1976d2;
+    --k1: #1976d2; --k2: #dd6b20; --k3: #2e7d32; --k4: #7b4fb8;
+    --truck: #c62828; --truck-2: #a52020; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #1976d2;
+    --pickup: #e4e8ec; --pickup-line: #a9b2bc; --stripe: #fdc700; --helm1: #fdc700; --helm2: #dd6b20;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-serif: var(--font-sans);
+    --r: 6px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1rem; --title: 1.75rem;
     color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0e1319; --panel: #151c24; --fg: #e7ecf1; --muted: #98a4b2; --line: #26303b; --hover: #1c2530;
-      --accent: #6ea2da; --accent-2: #e2a64c; --bad: #ee6a5b; --ok: #5cc189; --surplus: #4a5562;
-      --grid: #202a35; --axis: #5d6876; --ref: #8e9aa9;
-      --n1: #6ea2da; --n2: #e2a64c; --n3: #6cc08d; --n4: #e27393; --n5: #b48ae0;
-      --hot: #f0a04b; --cool: #6aa6ea; --warn: #e0a548;
-      --k1: #4fb3c6; --k2: #a68ae6; --k3: #e0b04a; --k4: #e9849a;
-      --truck: #d9483a; --truck-2: #b83a2e; --glass: #9ec3df; --metal: #8b96a3; --tire: #07090c; --light: #5b9bff;
-      --pickup: #cfd5db; --pickup-line: #8c96a1; --stripe: #f2c94c; --helm1: #f2c757; --helm2: #ef7a43;
-      color-scheme: dark;
-    }
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -350,6 +337,72 @@
   .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
   .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
   .mo-btn:hover { background: var(--hover); }
+
+  /* ===== Padrão BRADO ===== */
+  .appbar { background: var(--bar); color: #fff; padding-top: env(safe-area-inset-top, 0px); box-shadow: 0 2px 4px rgba(0, 0, 0, .18); }
+  .appbar-in { max-width: 1440px; margin-inline: auto; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 16px; min-height: 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  @media (min-width: 900px) { .appbar-in { padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: max(32px, env(safe-area-inset-right, 0px)); } }
+  .appbar-logo { font-size: 1.375rem; letter-spacing: .02em; font-weight: 400; }
+  .appbar-logo b { color: var(--brand); font-weight: 400; }
+  .appbar-sub { font-size: var(--cap); opacity: .85; letter-spacing: .08em; }
+  .mo { padding-block: 16px max(32px, env(safe-area-inset-bottom, 0px)); gap: 20px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; color: var(--muted); font-size: var(--body); }
+  .crumbs svg { width: 22px; height: 18px; fill: var(--muted); }
+  .crumbs .sep { color: var(--muted); font-weight: 700; }
+  .crumbs b { color: var(--fg); font-weight: 500; }
+  .filtro { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; padding: 14px 16px; background: var(--box); border: 2px solid var(--line); border-radius: 4px; }
+  .filtro-k { font-size: var(--body); color: var(--fg); }
+  .mo-seg { border: 0; padding: 0; background: none; gap: 8px; }
+  .mo-seg button { border: 1px solid var(--outline); color: var(--outline); border-radius: 999px; padding: 5px 16px; font-size: var(--body); background: var(--panel); }
+  .mo-seg button:hover { color: var(--fg); border-color: var(--fg); }
+  .mo-seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: none; font-weight: 500; }
+  .mo-pages { gap: 0; border-bottom: 2px solid var(--line); }
+  .mo-pages button { font-weight: 600; color: var(--muted); padding: 10px 16px; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .mo-pages button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .mo-tabs { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: none; padding: 0; gap: 0; justify-self: stretch; }
+  .mo-tabs button { border-radius: 0; padding: 8px 14px; font-size: var(--body); font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .mo-tabs button[aria-pressed="true"] { background: none; color: var(--accent); box-shadow: none; border-bottom-color: var(--accent); font-weight: 600; }
+  .mo-card { border: 0; border-radius: var(--r); box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .06); padding: 0 20px 20px; gap: 14px; overflow: hidden; }
+  .mo-card > .mo-card-head:first-child, .mo-card > .rk-card-h:first-child, .mo-card > .mo-tools:first-child { margin: 0 -20px; padding: 12px 20px; background: var(--band-2); border-bottom: 1px solid var(--line); }
+  .mo-card > .mo-card-head:first-child + *, .mo-card > .rk-card-h:first-child + * { margin-top: 2px; }
+  .mo-card h2 { display: flex; align-items: center; gap: 6px; font-size: .9375rem; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; color: var(--fg); }
+  .mo-card h2.mo-ficha-nome, .mo-card h2.mo-ficha-nome { text-transform: none; letter-spacing: 0; font-family: var(--font-sans); font-size: 1.375rem; font-weight: 600; }
+  .mo-card-head .mo-eyebrow { color: var(--muted); }
+  .mo-note, .mo-sub { font-size: var(--cap); color: var(--muted); }
+  .mo-lede { font-size: var(--body); color: var(--fg); max-width: none; line-height: 1.6; padding: 12px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  .mo-lede b { color: var(--fg); }
+  .mo-kpi { border: 0; box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .06); padding: 0 16px 14px; gap: 6px; overflow: hidden; }
+  .mo-kpi-label { margin: 0 -16px !important; padding: 8px 16px; background: var(--band); color: var(--fg); font-weight: 600; font-size: var(--cap); text-transform: uppercase; letter-spacing: .02em; display: flex; align-items: center; gap: 6px; }
+  .mo-kpi-value { font-family: var(--font-sans); font-weight: 600; font-size: 1.75rem; margin-top: 6px !important; }
+  .po-n-big output, .rk-total b, .rk-res, .po-headline, .mo-title { font-family: var(--font-sans); font-weight: 600; }
+  .mo-btn { background: var(--panel); border: 1px solid var(--outline); color: var(--outline); border-radius: 999px; padding: 5px 14px; font-size: var(--cap); }
+  .mo-btn:hover { color: var(--fg); border-color: var(--fg); background: var(--panel); }
+  .mo-btn.is-primary { background: var(--primary); border-color: var(--primary); color: #fff; border-radius: 4px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 18px; }
+  .mo-btn.is-primary:hover { filter: brightness(1.08); color: #fff; }
+  .mo-btn.is-yellow { background: var(--yellow); border-color: var(--yellow); color: #1f2937; border-radius: 4px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 18px; }
+  .mo-btn.is-yellow:hover { filter: brightness(1.04); color: #1f2937; }
+  .mo-vt { background: var(--chip); border: 0; color: #3b4252; font-weight: 500; }
+  .po-badge { color: #fff; background: var(--bc); font-weight: 600; border-radius: 999px; padding: 2px 10px; }
+  .po-badge.warn { --bc: var(--yellow); color: #1f2937; }
+  .mo-flag { background: var(--ok); color: #fff; border-radius: 4px; }
+  .mo-search, .ds-ctrl select { border-radius: 4px; border: 1px solid #ced4da; background: var(--panel); }
+  .mo-table thead th { color: var(--fg); font-weight: 600; }
+  .mo-table thead tr.mo-cols th { background: var(--band-2); }
+  .mo-table thead tr.mo-groups th { background: var(--band); }
+  .mo-foot { border-top: 0; padding: 12px 16px; background: var(--panel); border-radius: var(--r); box-shadow: 0 1px 2px rgba(0, 0, 0, .06); }
+  .mo-status, .mo-pgerr { border: 0; border-left: 4px solid var(--bad); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+  .mo-chip, .po-step { box-shadow: none; }
+  .po-step[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: #e8f1fb; }
+  .po-veh { background: var(--panel); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); border: 0; }
+  .po-veh.is-reserva, .po-veh.is-vazio { box-shadow: none; border: 1px dashed var(--outline); }
+  .rk-calc { background: var(--box); border: 1px solid var(--line); }
+
+  /* ===== Botão i e balão de origem dos dados ===== */
+  .tip { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 17px; height: 17px; padding: 0; margin-left: 2px; border-radius: 50%; border: 1.5px solid var(--accent); background: var(--panel); color: var(--accent); font: italic 700 11px/1 Georgia, "Times New Roman", serif; text-transform: none; letter-spacing: 0; cursor: help; vertical-align: middle; }
+  .tip:hover, .tip:focus-visible { background: var(--accent); color: #fff; outline: none; }
+  .tipbox { position: fixed; z-index: 1000; max-width: min(300px, calc(100vw - 16px)); padding: 8px 11px; border-radius: 6px; background: #343a40; color: #fff; font: 400 12.5px/1.45 var(--font-sans); box-shadow: 0 4px 14px rgba(0, 0, 0, .25); pointer-events: none; white-space: pre-line; }
+  .mo-table th .tip { margin-left: 4px; }
 </style>
 </head>
 <body>
@@ -391,19 +444,27 @@
     </symbol>
   </defs>
 </svg>
+<header class="appbar">
+  <div class="appbar-in">
+    <span class="appbar-logo"><b>M</b>ATRIZ OPERACIONAL</span>
+    <span class="appbar-sub">CBMDF · COMANDO OPERACIONAL</span>
+  </div>
+</header>
 <div class="mo is-loading" id="mo">
   <header class="mo-head" id="topo">
-    <div class="mo-titlebar">
-      <div class="mo-titles">
-        <p class="mo-eyebrow">CBMDF · Comando Operacional</p>
-        <h1 class="mo-title">Matriz Operacional — <span id="mo-periodo">novembro de 2026</span></h1>
-      </div>
+    <h1 class="sr">Matriz Operacional — <span id="mo-periodo">novembro de 2026</span></h1>
+    <nav class="crumbs" aria-label="Local">
+      <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M12 1 1 10h3v9h6v-6h4v6h6v-9h3z"/></svg>
+      <span class="sep">›</span><span>Matriz Operacional</span><span class="sep">›</span><span>Novembro de 2026</span><span class="sep">›</span><b id="mo-crumb">Matriz operacional</b>
+    </nav>
+    <div class="filtro">
+      <span class="filtro-k">COMAR:</span>
       <div class="mo-seg" role="group" aria-label="Filtrar por COMAR">
         <button type="button" data-comar="Todos" aria-pressed="true">Todos</button>
-        <button type="button" data-comar="I" aria-pressed="false">COMAR I</button>
-        <button type="button" data-comar="II" aria-pressed="false">COMAR II</button>
-        <button type="button" data-comar="III" aria-pressed="false">COMAR III</button>
-        <button type="button" data-comar="IV" aria-pressed="false">COMAR IV</button>
+        <button type="button" data-comar="I" aria-pressed="false">I</button>
+        <button type="button" data-comar="II" aria-pressed="false">II</button>
+        <button type="button" data-comar="III" aria-pressed="false">III</button>
+        <button type="button" data-comar="IV" aria-pressed="false">IV</button>
       </div>
     </div>
     <nav class="mo-pages" role="tablist" aria-label="Páginas">
@@ -417,59 +478,69 @@
     </nav>
   </header>
 
-  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o link da planilha.</b> Publique a aba Absoluto como CSV (Arquivo → Compartilhar → Publicar na Web) e cole o endereço base na constante <code>PUB</code> no início do script deste arquivo.</span></div>
-  <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a planilha publicada.</b> <span id="mo-status-msg"></span></span></div>
+  <div class="mo-status" id="mo-status-config" hidden><span class="mo-status-dot"></span><span><b>Falta o endereço da planilha.</b> Publique a planilha na Web. Copie o endereço para a constante <code>PUB</code> no início do script.</span></div>
+  <div class="mo-status" id="mo-status-error" hidden><span class="mo-status-dot"></span><span><b>A planilha não carregou.</b> <span id="mo-status-msg"></span></span></div>
 
   <div class="mo-page" id="pg-matriz">
     <p class="mo-lede" id="mo-lede">
-      <span class="mo-rec" data-rec="todos">Na matriz completa,</span><span class="mo-rec" data-rec="comar" hidden>No COMAR <span data-comar-nome>—</span>,</span>
-      <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> de <b data-src="resumo" data-col="gbms">—</b> GBMs estão com saldo considerado negativo, um déficit somado de
-      <b data-src="resumo" data-col="deficit_considerado">—</b> militares.
-      <span class="mo-pior" data-pior="sim">Pelo índice de carga operacional, o maior déficit é do <b data-src="resumo" data-col="pior_gbm_carga" data-fmt="text">—</b> (<b data-src="resumo" data-col="pior_saldo_carga" data-fmt="signed">—</b>).</span><span class="mo-pior" data-pior="nao" hidden>Pelo índice de carga operacional, nenhum GBM do recorte fica com déficit.</span>
+      <span class="mo-rec" data-rec="todos">Matriz completa:</span><span class="mo-rec" data-rec="comar" hidden>COMAR <span data-comar-nome>—</span>:</span>
+      <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> de <b data-src="resumo" data-col="gbms">—</b> GBMs têm saldo considerado negativo.
+      O déficit total é de <b data-src="resumo" data-col="deficit_considerado">—</b> militares.
+      <span class="mo-pior" data-pior="sim">Pela carga, o maior déficit é do <b data-src="resumo" data-col="pior_gbm_carga" data-fmt="text">—</b>: <b data-src="resumo" data-col="pior_saldo_carga" data-fmt="signed">—</b>.</span><span class="mo-pior" data-pior="nao" hidden>Pela carga, nenhum GBM tem déficit.</span>
     </p>
 
   <section class="mo-kpis" id="indicadores" aria-label="Indicadores do recorte">
     <div class="mo-kpi">
-      <p class="mo-kpi-label">Efetivo atual</p>
+      <p class="mo-kpi-label">Efetivo atual <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Absoluto.
+Efetivo atual: coluna «Efetivo Atual».
+Necessário: coluna «Efetivo Necessário (com 30% de afast.)».
+O necessário inclui 30% de afastamento.">i</button></p>
       <p class="mo-kpi-value"><span data-src="resumo" data-col="efetivo_atual">—</span></p>
-      <p class="mo-kpi-note">de <b data-src="resumo" data-col="efetivo_necessario">—</b> necessários, com 30% de afastamento</p>
+      <p class="mo-kpi-note">Necessário: <b data-src="resumo" data-col="efetivo_necessario">—</b></p>
     </div>
     <div class="mo-kpi">
-      <p class="mo-kpi-label">Saldo efetivo</p>
+      <p class="mo-kpi-label">Saldo efetivo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Saldo efetivo = efetivo atual − efetivo necessário.
+Fonte: aba Absoluto, coluna «Saldo Efetivo».">i</button></p>
       <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_efetivo" data-tone="sign">—</span></p>
-      <p class="mo-kpi-note"><b data-src="resumo" data-col="gbms_deficit_efetivo">—</b> GBMs abaixo do efetivo necessário</p>
+      <p class="mo-kpi-note"><b data-src="resumo" data-col="gbms_deficit_efetivo">—</b> GBMs com saldo negativo</p>
     </div>
     <div class="mo-kpi">
-      <p class="mo-kpi-label">Saldo considerado</p>
+      <p class="mo-kpi-label">Saldo considerado <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Saldo considerado = saldo efetivo + oficial de dia + cotas de GSV 12h.
+Fonte: aba Absoluto, coluna «Saldo Considerado».">i</button></p>
       <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_considerado" data-tone="sign">—</span></p>
-      <p class="mo-kpi-note">com oficial de dia e cotas de GSV 12h · <b data-src="resumo" data-col="gbms_deficit_considerado">—</b> GBMs negativos</p>
+      <p class="mo-kpi-note"><b data-src="resumo" data-col="gbms_deficit_considerado">—</b> GBMs com saldo negativo</p>
     </div>
     <div class="mo-kpi">
-      <p class="mo-kpi-label">Saldo pelo índice de carga</p>
+      <p class="mo-kpi-label">Saldo pela carga <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Saldo pela carga = efetivo atual − novo efetivo necessário.
+O novo efetivo necessário vem da carga de ocorrências.
+Fonte: aba Absoluto, colunas «Novo Efetivo Necessário» e «Saldo Efetivo pelo Índice de Carga Operacional».">i</button></p>
       <p class="mo-kpi-value"><span data-src="resumo" data-col="saldo_carga" data-tone="sign">—</span></p>
-      <p class="mo-kpi-note">novo efetivo necessário: <b data-src="resumo" data-col="novo_efetivo">—</b> · <b data-src="resumo" data-col="gbms_deficit_carga">—</b> GBMs negativos</p>
+      <p class="mo-kpi-note">Novo necessário: <b data-src="resumo" data-col="novo_efetivo">—</b> · <b data-src="resumo" data-col="gbms_deficit_carga">—</b> GBMs com saldo negativo</p>
     </div>
     <div class="mo-kpi">
-      <p class="mo-kpi-label">Viaturas na matriz</p>
+      <p class="mo-kpi-label">Viaturas <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Contagem das viaturas nas colunas de viaturas da aba Absoluto.
+Inclui o AR de apoio.">i</button></p>
       <p class="mo-kpi-value"><span data-src="resumo" data-col="viaturas">—</span></p>
-      <p class="mo-kpi-note"><b data-src="resumo" data-col="viaturas_base">—</b> no socorro base · <b data-src="resumo" data-col="viaturas_intermediario">—</b> no intermediário</p>
+      <p class="mo-kpi-note">Socorro base: <b data-src="resumo" data-col="viaturas_base">—</b> · Intermediário: <b data-src="resumo" data-col="viaturas_intermediario">—</b></p>
     </div>
   </section>
 
   <div class="mo-row2">
     <article class="mo-card" id="ranking">
       <div class="mo-card-head">
-        <h2>Ranking da matriz de risco</h2>
-        <p class="mo-note">Pontuação ponderada de demanda operacional, isolamento geográfico, potencial de demanda e riscos estruturais da área. Toque em um GBM para abrir a ficha.</p>
+        <h2>Matriz de risco <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Pontos de cada GBM.
+Fonte: aba Absoluto, coluna «Matriz de Risco».
+O cálculo está na aba «Matriz de risco» deste painel.">i</button></h2>
+        <p class="mo-note">Selecione um GBM para ver a ficha.</p>
       </div>
       <div class="mo-chart" id="ch-ranking"></div>
     </article>
 
     <article class="mo-card" id="ficha">
       <div class="mo-card-head">
-        <p class="mo-eyebrow">Ficha do GBM</p>
+        <p class="mo-eyebrow">Ficha do GBM <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Absoluto, linha do GBM.">i</button></p>
         <h2 class="mo-ficha-nome"><span data-src="gbm" data-col="gbm" data-fmt="text">—</span></h2>
-        <p class="mo-sub">COMAR <span data-src="gbm" data-col="comar" data-fmt="text">—</span> · <span data-src="gbm" data-col="posicao_risco">—</span>º lugar entre <span data-src="resumo-todos" data-col="gbms">—</span> na matriz de risco</p>
+        <p class="mo-sub">COMAR <span data-src="gbm" data-col="comar" data-fmt="text">—</span> · <span data-src="gbm" data-col="posicao_risco">—</span>º de <span data-src="resumo-todos" data-col="gbms">—</span> na matriz de risco</p>
       </div>
 
       <div class="mo-vtr">
@@ -499,8 +570,8 @@
       <div class="mo-bullet" id="ch-bullet"></div>
       <div class="mo-legend">
         <span class="mo-key"><i class="mo-sw is-acc"></i>Efetivo atual</span>
-        <span class="mo-key"><i class="mo-sw is-line"></i>Necessário (30% de afastamento)</span>
-        <span class="mo-key"><i class="mo-sw is-dash"></i>Novo necessário pela carga</span>
+        <span class="mo-key"><i class="mo-sw is-line"></i>Necessário</span>
+        <span class="mo-key"><i class="mo-sw is-dash"></i>Novo necessário (carga)</span>
       </div>
 
       <dl class="mo-dl">
@@ -509,15 +580,17 @@
         <div><dt>Novo efetivo necessário</dt><dd><span data-src="gbm" data-col="novo_efetivo">—</span></dd></div>
         <div><dt>Saldo efetivo</dt><dd><span data-src="gbm" data-col="saldo_efetivo" data-tone="sign">—</span></dd></div>
         <div><dt>Saldo considerado</dt><dd><span data-src="gbm" data-col="saldo_considerado" data-tone="sign">—</span></dd></div>
-        <div><dt>Saldo pelo índice de carga</dt><dd><span data-src="gbm" data-col="saldo_carga" data-tone="sign">—</span></dd></div>
+        <div><dt>Saldo pela carga</dt><dd><span data-src="gbm" data-col="saldo_carga" data-tone="sign">—</span></dd></div>
         <div><dt>Oficial de dia</dt><dd><span data-src="gbm" data-col="oficial_dia" data-fmt="text" data-empty="Não">—</span></dd></div>
-        <div><dt>Cotas diárias de GSV 12h</dt><dd><span data-src="gbm" data-col="cotas_gsv" data-empty="Nenhuma">—</span></dd></div>
+        <div><dt>Cotas de GSV 12h</dt><dd><span data-src="gbm" data-col="cotas_gsv" data-empty="Nenhuma">—</span></dd></div>
         <div><dt>Coeficiente de ajuste</dt><dd><span data-src="gbm" data-col="coef_ajuste">—</span></dd></div>
         <div><dt>Matriz de risco</dt><dd><span data-src="gbm" data-col="matriz_risco">—</span></dd></div>
-        <div><dt>Carga com efetivo atual</dt><dd><span data-src="gbm" data-col="carga_atual">—</span></dd></div>
+        <div><dt>Carga atual</dt><dd><span data-src="gbm" data-col="carga_atual">—</span></dd></div>
         <div><dt>Carga atualizada</dt><dd><span data-src="gbm" data-col="carga_atualizada">—</span></dd></div>
       </dl>
-      <p class="mo-sub">Ranking de ocorrências, últimos 12 meses</p>
+      <p class="mo-sub">Ranking de ocorrências (12 meses) <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Posição entre os 24 GBMs. 1º = mais ocorrências.
+Fonte: aba Absoluto, colunas «Ranking…».
+Origem: aba Parâmetros, dados GESINT.">i</button></p>
       <dl class="mo-dl">
         <div><dt>Ocorrências</dt><dd><span data-src="gbm" data-col="rk_ocorrencias" data-fmt="ord">—</span></dd></div>
         <div><dt>UR</dt><dd><span data-src="gbm" data-col="rk_ur" data-fmt="ord">—</span></dd></div>
@@ -531,15 +604,15 @@
   <div class="mo-row2 is-even">
     <article class="mo-card" id="saldos">
       <div class="mo-card-head">
-        <h2>Saldo de efetivo por GBM</h2>
-        <p class="mo-note mo-saldo-note" data-for="saldo_efetivo" hidden>Efetivo atual menos o efetivo necessário, com 30% de afastamento.</p>
-        <p class="mo-note mo-saldo-note" data-for="saldo_considerado">Saldo efetivo ajustado pelo oficial de dia e pelas cotas diárias de GSV 12h.</p>
-        <p class="mo-note mo-saldo-note" data-for="saldo_carga" hidden>Efetivo atual menos o novo efetivo necessário, calculado pela relação alvo de ocorrências por militar.</p>
+        <h2>Saldo de efetivo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Absoluto, colunas «Saldo Efetivo», «Saldo Considerado» e «Saldo Efetivo pelo Índice de Carga Operacional».">i</button></h2>
+        <p class="mo-note mo-saldo-note" data-for="saldo_efetivo" hidden>Efetivo atual − efetivo necessário.</p>
+        <p class="mo-note mo-saldo-note" data-for="saldo_considerado">Saldo efetivo + oficial de dia + cotas de GSV.</p>
+        <p class="mo-note mo-saldo-note" data-for="saldo_carga" hidden>Efetivo atual − novo efetivo necessário.</p>
       </div>
       <div class="mo-tabs" role="group" aria-label="Medida de saldo">
         <button type="button" data-saldo="saldo_efetivo" aria-pressed="false">Saldo efetivo</button>
         <button type="button" data-saldo="saldo_considerado" aria-pressed="true">Saldo considerado</button>
-        <button type="button" data-saldo="saldo_carga" aria-pressed="false">Pelo índice de carga</button>
+        <button type="button" data-saldo="saldo_carga" aria-pressed="false">Saldo pela carga</button>
       </div>
       <div class="mo-chart" id="ch-saldos"></div>
       <div class="mo-legend">
@@ -550,13 +623,15 @@
 
     <article class="mo-card" id="carga-militar">
       <div class="mo-card-head">
-        <h2>Carga operacional por militar</h2>
-        <p class="mo-note">Ocorrências por militar lotado com o efetivo atual e na carga atualizada. A linha tracejada é a relação alvo (Ralvo) usada na equalização.</p>
+        <h2>Carga por militar <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Carga = ocorrências ÷ militares.
+Fonte: aba Absoluto, colunas «Carga Operacional com Efetivo Atual» e «Carga Operacional - Atualizada».
+Ralvo: coluna «Relação Alvo (Ralvo)».">i</button></h2>
+        <p class="mo-note">Linha tracejada: Ralvo, a carga de referência.</p>
       </div>
       <div class="mo-chart" id="ch-carga"></div>
       <div class="mo-legend">
-        <span class="mo-key"><i class="mo-sw is-dot is-acc"></i>Com efetivo atual</span>
-        <span class="mo-key"><i class="mo-sw is-dot is-acc2"></i>Atualizada</span>
+        <span class="mo-key"><i class="mo-sw is-dot is-acc"></i>Carga atual</span>
+        <span class="mo-key"><i class="mo-sw is-dot is-acc2"></i>Carga atualizada</span>
         <span class="mo-key"><i class="mo-sw is-dash"></i>Ralvo</span>
       </div>
     </article>
@@ -565,8 +640,8 @@
   <div class="mo-row2 is-even">
     <article class="mo-card" id="frota">
       <div class="mo-card-head">
-        <h2>Frota na matriz</h2>
-        <p class="mo-note">Viaturas previstas em cada posição da matriz, quantos GBMs do recorte as têm e com quais modelos.</p>
+        <h2>Frota <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Contagem por coluna de viatura da aba Absoluto.">i</button></h2>
+        <p class="mo-note">Viaturas por posição e por modelo.</p>
       </div>
       <div class="mo-frota">
         <p class="mo-frota-grp">Socorro base</p>
@@ -586,18 +661,18 @@
 
     <article class="mo-card" id="como-ler">
       <div class="mo-card-head">
-        <h2>Como ler</h2>
+        <h2>Termos</h2>
         <p class="mo-note">Termos das colunas da aba Absoluto.</p>
       </div>
       <dl class="mo-defs">
-        <div><dt>Efetivo necessário</dt><dd>Militares para guarnecer as viaturas previstas na matriz, já com 30% de afastamento.</dd></div>
-        <div><dt>Saldo efetivo</dt><dd>Efetivo atual menos o efetivo necessário. Negativo indica falta de militares.</dd></div>
-        <div><dt>Saldo considerado</dt><dd>Saldo efetivo ajustado pelo oficial de dia e pelas cotas diárias de GSV 12h.</dd></div>
-        <div><dt>Relação alvo (Ralvo)</dt><dd><b data-src="ralvo" data-col="ralvo">—</b> ocorrências por militar lotado, referência da equalização de efetivo.</dd></div>
-        <div><dt>Coeficiente de ajuste</dt><dd>Carga operacional com efetivo atual dividida pela Ralvo. Acima de 1, o GBM atende mais ocorrências por militar do que o alvo.</dd></div>
-        <div><dt>Novo efetivo necessário</dt><dd>Efetivo atual multiplicado pelo coeficiente de ajuste, respeitado o efetivo mínimo do quartel.</dd></div>
-        <div><dt>Saldo pelo índice de carga</dt><dd>Efetivo atual menos o novo efetivo necessário.</dd></div>
-        <div><dt>Matriz de risco</dt><dd>Pontuação ponderada de quatro critérios: demanda operacional, isolamento geográfico, potencial de demanda operacional e riscos estruturais da área.</dd></div>
+        <div><dt>Efetivo necessário</dt><dd>Militares para as viaturas da matriz. Inclui 30% de afastamento.</dd></div>
+        <div><dt>Saldo efetivo</dt><dd>Efetivo atual − efetivo necessário. Valor negativo = falta de militares.</dd></div>
+        <div><dt>Saldo considerado</dt><dd>Saldo efetivo + oficial de dia + cotas de GSV 12h.</dd></div>
+        <div><dt>Relação alvo (Ralvo)</dt><dd><b data-src="ralvo" data-col="ralvo">—</b> ocorrências por militar. É a referência para equalizar o efetivo.</dd></div>
+        <div><dt>Coeficiente de ajuste</dt><dd>Carga do GBM ÷ Ralvo. Valor acima de 1 = carga acima da referência.</dd></div>
+        <div><dt>Novo efetivo necessário</dt><dd>Ocorrências ÷ Ralvo. O mínimo é 69 militares.</dd></div>
+        <div><dt>Saldo pela carga</dt><dd>Efetivo atual − novo efetivo necessário.</dd></div>
+        <div><dt>Matriz de risco</dt><dd>Pontos de 4 critérios: demanda, isolamento, potencial de demanda e riscos estruturais.</dd></div>
       </dl>
     </article>
   </div>
@@ -606,9 +681,9 @@
 
   <div class="mo-page" id="pg-natureza" hidden>
     <p class="mo-lede" id="mo-nat-lede">
-      <span class="mo-rec" data-rec="todos">Na matriz completa,</span><span class="mo-rec" data-rec="comar" hidden>No COMAR <span data-comar-nome>—</span>,</span>
-      em <b data-nat-v="nome">—</b>, as primeiras posições são <b data-nat-v="top">—</b>.
-      Essa natureza orienta a distribuição de <b data-nat-v="alvo">—</b>; <b data-nat-v="com">—</b> de <b data-nat-v="gbms">—</b> GBMs do recorte têm ao menos uma.
+      <span class="mo-rec" data-rec="todos">Matriz completa:</span><span class="mo-rec" data-rec="comar" hidden>COMAR <span data-comar-nome>—</span>:</span>
+      em <b data-nat-v="nome">—</b>, os primeiros são <b data-nat-v="top">—</b>.
+      Esta natureza orienta a distribuição de <b data-nat-v="alvo">—</b>. <b data-nat-v="com">—</b> de <b data-nat-v="gbms">—</b> GBMs têm ao menos uma.
     </p>
 
     <div class="mo-tabs" role="group" aria-label="Natureza da ocorrência">
@@ -621,8 +696,10 @@
     <div class="mo-row2">
       <article class="mo-card" id="nat-posicoes">
         <div class="mo-card-head">
-          <h2>Posição de cada GBM por natureza</h2>
-          <p class="mo-note">Posição entre os GBMs pelo número de ocorrências dos últimos 12 meses (fonte: GESINT). 1º é o que mais atende. O ponto maior é a natureza escolhida; a linha mostra a distância entre a melhor e a pior posição do GBM nas quatro naturezas.</p>
+          <h2>Posição por natureza <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Posição entre os 24 GBMs pelas ocorrências dos últimos 12 meses.
+Fonte: aba Absoluto, colunas «Ranking…».
+Origem: aba Parâmetros, dados GESINT.">i</button></h2>
+          <p class="mo-note">1º = mais ocorrências. Ponto grande = natureza escolhida. Linha = da melhor à pior posição do GBM.</p>
         </div>
         <div class="mo-chart" id="ch-nat"></div>
         <div class="mo-legend">
@@ -636,21 +713,24 @@
       <div class="mo-page" style="gap: 12px">
         <article class="mo-card" id="nat-criterio">
           <div class="mo-card-head">
-            <h2>Natureza e viatura</h2>
-            <p class="mo-note">Que viatura cada ranking orienta. A contagem considera as viaturas guarnecidas da matriz; o AR de apoio sem efetivo fica de fora.</p>
+            <h2>Natureza e viatura <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Regra do Comando Operacional.
+A contagem usa as viaturas com guarnição da aba Absoluto.
+O AR de apoio, sem efetivo, fica fora.">i</button></h2>
+            <p class="mo-note">Cada ranking orienta um tipo de viatura.</p>
           </div>
           <dl class="mo-crit">
-            <div><dt><i class="mo-nd" style="--c: var(--n1)"></i>Unidade de resgate (UR)</dt><dd>Atendimentos pré-hospitalares. Orienta a distribuição de <b>UR</b>, incluindo a UR de reforço (GSV).</dd></div>
-            <div><dt><i class="mo-nd" style="--c: var(--n2)"></i>Multiemprego</dt><dd>Ocorrências que não são de atendimento pré-hospitalar. Orienta <b>ABSL ou AR</b>.</dd></div>
-            <div><dt><i class="mo-nd" style="--c: var(--n3)"></i>Multiemprego com florestal</dt><dd>Multiemprego incluindo as ocorrências florestais. Também orienta <b>ABSL ou AR</b>.</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n1)"></i>Unidade de resgate (UR)</dt><dd>Atendimento pré-hospitalar. Orienta a <b>UR</b> e a UR de reforço (GSV).</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n2)"></i>Multiemprego</dt><dd>Ocorrências sem atendimento pré-hospitalar. Orienta <b>ABSL ou AR</b>.</dd></div>
+            <div><dt><i class="mo-nd" style="--c: var(--n3)"></i>Multiemprego com florestal</dt><dd>Multiemprego mais ocorrências florestais. Orienta <b>ABSL ou AR</b>.</dd></div>
             <div><dt><i class="mo-nd" style="--c: var(--n4)"></i>Incêndio estrutural</dt><dd>Orienta as viaturas com água: <b>ASE ou ABT</b>.</dd></div>
           </dl>
         </article>
 
         <article class="mo-card" id="nat-faixas">
           <div class="mo-card-head">
-            <h2>Viaturas por faixa do ranking</h2>
-            <p class="mo-note">Média de viaturas relacionadas à natureza escolhida por GBM, em cada terço do ranking. Se a frota segue o ranking, a primeira faixa tem a maior média.</p>
+            <h2>Viaturas por faixa <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Média das viaturas da natureza por GBM, em cada terço do ranking.
+Fonte: aba Absoluto (rankings e viaturas).">i</button></h2>
+            <p class="mo-note">Se a frota segue o ranking, a 1ª faixa tem a maior média.</p>
           </div>
           <div class="mo-bands">
             <div class="mo-band" data-band="1"><span class="mo-band-k">1º a 8º</span><span class="mo-band-bar"><i></i></span><span class="mo-band-v"><b data-band-v="media">—</b> por GBM · <span data-band-v="qtd">—</span> viaturas em <span data-band-v="gbms">—</span> GBMs</span></div>
@@ -663,8 +743,8 @@
 
     <article class="mo-card" id="nat-tabela">
       <div class="mo-card-head">
-        <h2>Ranking e frota relacionada</h2>
-        <p class="mo-note">GBMs na ordem da natureza escolhida, com as viaturas da matriz que essa natureza orienta e a posição nas demais. Quanto mais forte a cor, mais alta a posição.</p>
+        <h2>Ranking e frota <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Absoluto, colunas de ranking e de viaturas.">i</button></h2>
+        <p class="mo-note">Ordem da natureza escolhida. Cor mais forte = posição mais alta.</p>
       </div>
       <div class="mo-table-wrap">
         <table class="mo-table mo-tn">
@@ -689,7 +769,7 @@
   </div>
 
   <div class="mo-page" id="pg-tabela" hidden>
-    <p class="mo-lede">Todas as colunas da aba Absoluto, como chegam da planilha. Os saldos vão do vermelho (déficit) ao verde (sobra); os critérios de demanda, do azul (menor) ao laranja (maior). Clique em um cabeçalho para ordenar e em uma linha para destacá-la.</p>
+    <p class="mo-lede">Todas as colunas da aba Absoluto. Selecione um cabeçalho para ordenar. Selecione o <b>i</b> para ver a origem da coluna.</p>
     <article class="mo-card" id="tabela-absoluto">
       <div class="ta-tools">
         <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
@@ -702,8 +782,8 @@
         </div>
       </div>
       <div class="ta-legend">
-        <span class="ta-scale">Saldo <i class="ta-grad ta-grad-saldo"></i> déficit → sobra</span>
-        <span class="ta-scale">Demanda <i class="ta-grad ta-grad-dem"></i> menor → maior</span>
+        <span class="ta-scale">Saldo: déficit <i class="ta-grad ta-grad-saldo"></i> sobra</span>
+        <span class="ta-scale">Demanda: menor <i class="ta-grad ta-grad-dem"></i> maior</span>
         <span class="ta-vlegend"><span class="mo-vt f-aph"><svg class="mo-ic" aria-hidden="true"><use href="#i-ur"></use></svg>UR</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-abt"></use></svg>ABT</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-absl"></use></svg>ABSL</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>AR</span><span class="mo-vt f-altura"><svg class="mo-ic" aria-hidden="true"><use href="#i-aem"></use></svg>AEM</span><span class="mo-vt f-apoio"><svg class="mo-ic" aria-hidden="true"><use href="#i-at"></use></svg>AT-APSG</span></span>
       </div>
       <div class="mo-table-wrap mo-ta-wrap">
@@ -714,13 +794,13 @@
         </table>
         <p class="mo-empty" id="mo-ta-empty" hidden>Nenhum GBM corresponde à busca.</p>
       </div>
-      <p class="mo-note">Cores calculadas sobre os 24 GBMs. Demanda considera matriz de risco, carga operacional, coeficiente de ajuste e as posições no ranking de ocorrências (1º é a maior demanda). A linha de total soma os GBMs visíveis.</p>
+      <p class="mo-note">As cores comparam os 24 GBMs. A linha Total soma os GBMs visíveis.</p>
     </article>
   </div>
 
   <div class="mo-page" id="pg-risco" hidden>
     <div class="mo-pgerr" data-pgerr="risco" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a aba Matriz de Risco.</b> <span data-pgerr-msg></span></span></div>
-    <p class="mo-lede">A matriz de risco ordena os GBMs por prioridade. Cada GBM recebe de 1 a 6 pontos em quatro critérios, e a demanda operacional pesa <b data-rk="peso-dop">—</b> vezes. Somados com os pesos, os pontos vão de <b data-rk="min">—</b> a <b data-rk="max">—</b>; quanto maior, mais prioritário o GBM.</p>
+    <p class="mo-lede">A matriz de risco ordena os GBMs por prioridade. Cada critério vale de 1 a 6 pontos. A demanda operacional tem peso <b data-rk="peso-dop">—</b>. O total vai de <b data-rk="min">—</b> a <b data-rk="max">—</b> pontos. Mais pontos = mais prioridade.</p>
     <div class="rk-eq" aria-label="Fórmula da pontuação total">
       <span class="rk-res">Pontuação</span><span class="rk-op">=</span>
       <span class="rk-tok" style="--c: var(--k1)"><b data-rk="w-dop">—</b> × Demanda operacional</span><span class="rk-op">+</span>
@@ -732,8 +812,9 @@
     <div class="mo-row2">
       <article class="mo-card" id="rk-composicao">
         <div class="mo-card-head">
-          <h2>Composição da pontuação de cada GBM</h2>
-          <p class="mo-note">Cada cor é um critério já multiplicado pelo seu peso; a soma é a pontuação total. Toque em um GBM para ver o cálculo passo a passo.</p>
+          <h2>Pontos por GBM <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco, coluna «Pontuação total (ponderada)».
+Pesos: aba Parâmetros.">i</button></h2>
+          <p class="mo-note">Cada cor é um critério, já com o peso. Selecione um GBM para ver o cálculo.</p>
         </div>
         <div class="mo-chart" id="ch-rk"></div>
         <div class="mo-legend">
@@ -745,7 +826,8 @@
       </article>
       <article class="mo-card" id="rk-exemplo">
         <div class="mo-card-head">
-          <p class="mo-eyebrow">Passo a passo</p>
+          <p class="mo-eyebrow">Cálculo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Valores da aba Matriz de Risco, linha do GBM.
+Pesos, β e classes: aba Parâmetros.">i</button></p>
           <h2 class="mo-ficha-nome" id="rk-ex-nome">—</h2>
           <p class="mo-sub" id="rk-ex-sub"></p>
         </div>
@@ -756,26 +838,30 @@
 
     <div class="rk-grid">
       <article class="mo-card" data-crit="dop" style="--c: var(--k1)">
-        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k1)"></i><h2>a) Demanda operacional</h2><span class="rk-peso" data-rk="peso-txt-dop"></span></div>
-        <p class="mo-note">Ocorrências de 2025 ponderadas pela complexidade, medida pelo número de atendimentos por ocorrência. Uma ocorrência que mobiliza 4 ou mais atendimentos vale muito mais que uma de até 2.</p>
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k1)"></i><h2>a) Demanda operacional <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco, colunas «≤2 atend.», «3 atend.», «4+ atend.» e «Coeficiente DOP».
+β e classes: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk="peso-txt-dop"></span></div>
+        <p class="mo-note">Ocorrências de 2025, com peso pela complexidade. Complexidade = número de atendimentos por ocorrência.</p>
         <p class="rk-calc" data-rk="calc-dop">—</p>
         <table class="rk-cls" data-rk-cls="dop"></table>
       </article>
       <article class="mo-card" data-crit="iso" style="--c: var(--k2)">
-        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k2)"></i><h2>b) Isolamento geográfico</h2><span class="rk-peso" data-rk="peso-txt-iso"></span></div>
-        <p class="mo-note">Tempo que o apoio do GBM mais próximo leva para chegar à área. Quanto mais distante o apoio, mais o GBM depende de si mesmo e mais pontos recebe.</p>
-        <p class="rk-calc">Tempo de apoio (s) = minutos × 60 + segundos de deslocamento do GBM de apoio.</p>
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k2)"></i><h2>b) Isolamento geográfico <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco, colunas «GBM de apoio», «Distância (km)» e «Tempo de apoio (s)».
+Classes: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk="peso-txt-iso"></span></div>
+        <p class="mo-note">Tempo de chegada do apoio do GBM mais próximo. Apoio mais distante = mais pontos.</p>
+        <p class="rk-calc">Tempo de apoio (s) = minutos × 60 + segundos.</p>
         <table class="rk-cls" data-rk-cls="iso"></table>
       </article>
       <article class="mo-card" data-crit="pdo" style="--c: var(--k3)">
-        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k3)"></i><h2>c) Potencial de demanda</h2><span class="rk-peso" data-rk="peso-txt-pdo"></span></div>
-        <p class="mo-note">Relação entre a população atendida e a renda per capita da área. Áreas mais populosas e de menor renda tendem a gerar mais ocorrências e pontuam mais.</p>
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k3)"></i><h2>c) Potencial de demanda <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco, colunas «População atendida», «Renda per capita (R$)» e «Coeficiente PDO».
+Classes: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk="peso-txt-pdo"></span></div>
+        <p class="mo-note">População atendida ÷ renda per capita. Mais população e menor renda = mais pontos.</p>
         <p class="rk-calc">Coeficiente PDO = população atendida ÷ renda per capita (R$).</p>
         <table class="rk-cls" data-rk-cls="pdo"></table>
       </article>
       <article class="mo-card" data-crit="fd" style="--c: var(--k4)">
-        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k4)"></i><h2>d) Riscos estruturais da área</h2><span class="rk-peso" data-rk="peso-txt-fd"></span></div>
-        <p class="mo-note">Média ponderada de três subcritérios, cada um de 1 a 6 pontos: extensão da área, edificações com mais de 12 m e o risco da área (nível de 1 a 5).</p>
+        <div class="rk-card-h"><i class="mo-nd" style="--c: var(--k4)"></i><h2>d) Riscos estruturais <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco, colunas «Extensão da área (ha)», «Edificações elevadas (&gt; 12 m)» e «Risco da área (1 a 5)».
+Limites e pesos: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk="peso-txt-fd"></span></div>
+        <p class="mo-note">Média de 3 subcritérios: extensão da área, edificações acima de 12 m e risco da área.</p>
         <p class="rk-calc" data-rk="calc-fd">—</p>
         <table class="rk-cls" data-rk-cls="fd"></table>
       </article>
@@ -783,8 +869,9 @@
 
     <article class="mo-card" id="rk-tabela">
       <div class="mo-card-head">
-        <h2>Valores e pontos de todos os GBMs</h2>
-        <p class="mo-note">Para cada critério, o valor medido e os pontos (1 a 6). Quanto mais forte a cor, mais pontos. A última coluna traz a posição publicada no trabalho original (Tabela 5), que ordena os empates por COMAR e número do GBM.</p>
+        <h2>Valores e pontos <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco.
+«No trabalho» = posição na Tabela 5 do trabalho original.">i</button></h2>
+        <p class="mo-note">Valor medido e pontos de cada critério. Cor mais forte = mais pontos.</p>
       </div>
       <div class="mo-table-wrap">
         <table class="mo-table mo-tr">
@@ -807,28 +894,32 @@
 
   <div class="mo-page" id="pg-carga" hidden>
     <div class="mo-pgerr" data-pgerr="carga" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler a aba Carga Operacional.</b> <span data-pgerr-msg></span></span></div>
-    <p class="mo-lede">A carga operacional mede quantas ocorrências cada militar lotado no GBM atendeu: ocorrências ÷ militares lotados. Nos 24 GBMs, a média foi de <b data-cg="media">—</b> por militar. A maior carga é do <b data-cg="max-gbm">—</b> (<b data-cg="max">—</b>) e a menor, do <b data-cg="min-gbm">—</b> (<b data-cg="min">—</b>).</p>
+    <p class="mo-lede">Carga = ocorrências ÷ militares lotados. A média dos 24 GBMs é <b data-cg="media">—</b> por militar. Maior carga: <b data-cg="max-gbm">—</b> (<b data-cg="max">—</b>). Menor carga: <b data-cg="min-gbm">—</b> (<b data-cg="min">—</b>).</p>
     <div class="rk-eq" aria-label="Fórmulas da carga operacional">
-      <span class="rk-tok" style="--c: var(--accent)">Carga = ocorrências ÷ militares lotados</span>
-      <span class="rk-tok" style="--c: var(--hot)">Índice relativo = 1 + 4 × (carga − mínima) ÷ (máxima − mínima)</span>
-      <span class="rk-tok" style="--c: var(--k1)">Ralvo = ocorrências dos GBMs ÷ efetivo atual dos GBMs</span>
+      <span class="rk-tok" style="--c: var(--accent)">Carga = ocorrências ÷ militares</span>
+      <span class="rk-tok" style="--c: var(--hot)">Índice = 1 + 4 × (carga − mínima) ÷ (máxima − mínima)</span>
+      <span class="rk-tok" style="--c: var(--k1)">Ralvo = ocorrências ÷ efetivo atual (todos os GBMs)</span>
     </div>
 
     <div class="mo-row2">
       <article class="mo-card" id="cg-grafico">
         <div class="mo-card-head">
-          <h2>Ocorrências por militar lotado</h2>
-          <p class="mo-note">A cor mostra o índice de carga relativa, de 1 (azul, menor carga) a 5 (laranja, maior). A linha tracejada é a média dos GBMs. Toque em um GBM para ver o cálculo.</p>
+          <h2>Carga por GBM <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Carga Operacional, colunas «Ocorrências / Militares lotados» e «Índice de Carga Operacional Relativa».
+Militares: aba Parâmetros (BRADO).
+Ocorrências: aba Parâmetros (GESINT).">i</button></h2>
+          <p class="mo-note">Cor = índice de carga, de 1 a 5. Linha tracejada = média. Selecione um GBM para ver o cálculo.</p>
         </div>
         <div class="mo-chart" id="ch-cg"></div>
         <div class="mo-legend">
-          <span class="ta-scale">Índice <i class="ta-grad ta-grad-dem"></i> 1 → 5</span>
+          <span class="ta-scale">Índice: 1 <i class="ta-grad ta-grad-dem"></i> 5</span>
           <span class="mo-key"><i class="mo-sw is-dash"></i>Média dos GBMs</span>
         </div>
       </article>
       <article class="mo-card" id="cg-exemplo">
         <div class="mo-card-head">
-          <p class="mo-eyebrow">Passo a passo</p>
+          <p class="mo-eyebrow">Cálculo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Carga Operacional e aba Absoluto, linha do GBM.
+Ralvo: aba COMAR.
+Constantes de GSV e oficial de dia: aba Parâmetros.">i</button></p>
           <h2 class="mo-ficha-nome" id="cg-ex-nome">—</h2>
           <p class="mo-sub" id="cg-ex-sub"></p>
         </div>
@@ -838,8 +929,10 @@
 
     <article class="mo-card" id="cg-natureza">
       <div class="mo-card-head">
-        <h2>Carga por natureza</h2>
-        <p class="mo-note">Ocorrências de cada natureza, por militar lotado, e a posição do GBM em cada uma (1º é o de maior carga). As barras comparam os GBMs dentro de cada natureza.</p>
+        <h2>Carga por natureza <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Carga Operacional.
+A aba não informa o critério de contagem por natureza.
+A soma das naturezas passa do total de ocorrências.">i</button></h2>
+        <p class="mo-note">Ocorrências por natureza e por militar. Posição: 1º = maior carga.</p>
       </div>
       <div class="mo-table-wrap">
         <table class="mo-table mo-tr">
@@ -855,25 +948,25 @@
           <tbody id="cg-tbody"></tbody>
         </table>
       </div>
-      <p class="mo-note">As colunas por natureza vêm da aba Carga Operacional, que não informa o critério de contagem; a soma delas passa do total de ocorrências.</p>
+      
     </article>
 
     <article class="mo-card" id="cg-defs">
-      <div class="mo-card-head"><h2>Como a carga entra na matriz</h2></div>
+      <div class="mo-card-head"><h2>Termos</h2></div>
       <dl class="mo-defs">
-        <div><dt>Carga operacional com efetivo atual</dt><dd>Ocorrências do GBM divididas pelos militares lotados nele hoje.</dd></div>
-        <div><dt>Índice de carga operacional relativa</dt><dd>A mesma carga em escala de 1 a 5: o GBM de menor carga vale 1 e o de maior, 5.</dd></div>
-        <div><dt>Relação alvo (Ralvo)</dt><dd>Ocorrências de todos os GBMs divididas pelo efetivo atual somado. É a carga média que serve de referência para equalizar o efetivo.</dd></div>
-        <div><dt>Coeficiente de ajuste</dt><dd>Carga do GBM dividida pela Ralvo. Acima de 1, o GBM atende mais ocorrências por militar do que a média.</dd></div>
-        <div><dt>Novo efetivo necessário</dt><dd>Ocorrências do GBM divididas pela Ralvo, arredondado, com mínimo de 69 militares.</dd></div>
-        <div><dt>Carga operacional atualizada</dt><dd>Ocorrências divididas pelo efetivo necessário somado ao reforço do oficial de dia e das cotas de GSV: a carga que o GBM teria com o efetivo previsto na matriz.</dd></div>
+        <div><dt>Carga atual</dt><dd>Ocorrências ÷ militares lotados no GBM.</dd></div>
+        <div><dt>Índice de carga relativa</dt><dd>A carga em escala de 1 a 5. Menor carga = 1. Maior carga = 5.</dd></div>
+        <div><dt>Relação alvo (Ralvo)</dt><dd>Ocorrências de todos os GBMs ÷ efetivo atual total. É a carga de referência.</dd></div>
+        <div><dt>Coeficiente de ajuste</dt><dd>Carga do GBM ÷ Ralvo. Valor acima de 1 = carga acima da referência.</dd></div>
+        <div><dt>Novo efetivo necessário</dt><dd>Ocorrências ÷ Ralvo. O mínimo é 69 militares.</dd></div>
+        <div><dt>Carga atualizada</dt><dd>Ocorrências ÷ (efetivo necessário + oficial de dia + cotas de GSV). É a carga com o efetivo da matriz.</dd></div>
       </dl>
     </article>
   </div>
 
   <div class="mo-page" id="pg-distancias" hidden>
     <div class="mo-pgerr" data-pgerr="distancias" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler as distâncias.</b> <span data-pgerr-msg></span></span></div>
-    <p class="mo-lede">Distância e tempo de deslocamento entre os GBMs, da aba Parâmetros. O GBM mais isolado é o <b data-ds="iso-gbm">—</b>: o mais próximo dele, o <b data-ds="iso-viz">—</b>, fica a <b data-ds="iso-t">—</b> min. O menos isolado é o <b data-ds="perto-gbm">—</b>, a <b data-ds="perto-t">—</b> min do <b data-ds="perto-viz">—</b>.</p>
+    <p class="mo-lede">Tempo e distância entre os GBMs. Mais isolado: <b data-ds="iso-gbm">—</b>. O GBM mais próximo dele é o <b data-ds="iso-viz">—</b>, a <b data-ds="iso-t">—</b> min. Menos isolado: <b data-ds="perto-gbm">—</b>, a <b data-ds="perto-t">—</b> min do <b data-ds="perto-viz">—</b>.</p>
     <div class="ds-ctrl">
       <label for="ds-origem">Origem <select id="ds-origem"></select></label>
       <div class="mo-tabs" role="group" aria-label="Medida">
@@ -886,8 +979,9 @@
     <div class="mo-row2 is-even">
       <article class="mo-card" id="ds-saida">
         <div class="mo-card-head">
-          <h2>Saindo do <span data-ds="origem">—</span></h2>
-          <p class="mo-note">Destinos do mais perto ao mais longe, com tempo e distância de ida. A linha tracejada marca o raio de apoio; <b data-ds="no-raio">—</b> GBMs ficam dentro dele.</p>
+          <h2>Saída do <span data-ds="origem">—</span> <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Valores de ida.
+Fonte: aba Parâmetros, tabelas «Distância entre GBMs (km)» e «Tempo de deslocamento entre GBMs (min)».">i</button></h2>
+          <p class="mo-note">Destinos do mais perto ao mais longe. Linha tracejada = raio de apoio. GBMs no raio: <b data-ds="no-raio">—</b>.</p>
         </div>
         <div class="mo-chart" id="ch-ds"></div>
         <div class="mo-legend">
@@ -897,8 +991,10 @@
       </article>
       <article class="mo-card" id="ds-vizinhos">
         <div class="mo-card-head">
-          <h2>Apoio mais próximo de cada GBM</h2>
-          <p class="mo-note">Do mais isolado ao menos isolado, pelo tempo até o GBM mais próximo. A última coluna conta quantos GBMs chegam dentro do raio de apoio. Toque em um GBM para usá-lo como origem.</p>
+          <h2>GBM mais próximo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Isolamento = tempo até o GBM mais próximo.
+«No raio» = GBMs dentro do raio de apoio.
+Fonte: aba Parâmetros.">i</button></h2>
+          <p class="mo-note">Do mais isolado ao menos isolado. Selecione um GBM para usá-lo como origem.</p>
         </div>
         <div class="mo-table-wrap">
           <table class="mo-table mo-tr">
@@ -911,8 +1007,9 @@
 
     <article class="mo-card" id="ds-matriz">
       <div class="mo-card-head">
-        <h2>Matriz de <span data-ds="medida">tempo (min)</span></h2>
-        <p class="mo-note">Cada linha é a origem e cada coluna, o destino. Da cor azul (perto) à laranja (longe). Toque em uma célula para ver a ida e a volta, ou no nome de uma linha para usá-la como origem.</p>
+        <h2>Matriz de <span data-ds="medida">tempo (min)</span> <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Parâmetros, tabelas «Distância entre GBMs (km)» e «Tempo de deslocamento entre GBMs (min)».
+Ida e volta podem ter valores diferentes.">i</button></h2>
+        <p class="mo-note">Linha = origem. Coluna = destino. Azul = perto. Laranja = longe.</p>
       </div>
       <p class="ds-info" id="ds-info"></p>
       <div class="mo-table-wrap" style="max-height: 75vh">
@@ -925,12 +1022,14 @@
   </div>
 
   <div class="mo-page" id="pg-poder" hidden>
-    <p class="mo-lede">O que um quartel consegue colocar na rua a cada plantão. O exemplo parte do menor GBM da matriz, com <b data-po="total">69</b> bombeiros; mude o efetivo do GBM ou o número de bombeiros na ala de serviço para ver o socorro que dá para ativar.</p>
+    <p class="mo-lede">Veja quantas viaturas a ala de serviço pode ativar. O exemplo usa o menor GBM: <b data-po="total">69</b> bombeiros. Mude o efetivo do GBM ou o efetivo da ala.</p>
 
     <article class="mo-card" id="po-composicao">
       <div class="mo-card-head">
-        <h2>Para onde vai o efetivo do GBM</h2>
-        <p class="mo-note">Expediente, SECOM e escala de UR saem primeiro; o restante se divide nas quatro alas. Toque em uma ala para simular o plantão dela.</p>
+        <h2>Divisão do efetivo <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Valores de referência do Comando Operacional:
+expediente 6, SECOM 5, escala de UR 15.
+O resto vai para as 4 alas.">i</button></h2>
+        <p class="mo-note">Expediente, SECOM e escala de UR saem primeiro. O resto vai para 4 alas. Selecione uma ala para simular.</p>
       </div>
       <div class="po-total">
         <label for="po-total">Efetivo do GBM</label>
@@ -943,8 +1042,8 @@
 
     <article class="mo-card" id="po-simulador">
       <div class="mo-card-head">
-        <h2>O que a ala de serviço consegue ativar</h2>
-        <p class="mo-note">Arraste o controle ou toque em uma faixa. Capacete laranja: condutor (QBMG-2). Capacete amarelo: operacional (QBMG-1).</p>
+        <h2>Viaturas da ala de serviço <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Regras de guarnição do Comando Operacional. Veja o cartão «Regras de guarnição».">i</button></h2>
+        <p class="mo-note">Mova o controle ou selecione uma faixa. Capacete laranja = condutor (QBMG-2). Capacete amarelo = operacional (QBMG-1).</p>
       </div>
       <div class="po-ctrl">
         <div class="po-n-row">
@@ -955,9 +1054,9 @@
         <div class="po-steps" id="po-steps" role="group" aria-label="Faixas de efetivo"></div>
         <div class="po-sub">
           <label for="po-c">Condutores (QBMG-2) na ala <input id="po-c" type="range" min="0" max="3" step="1" value="2"> <output id="po-c-out" for="po-c">2</output></label>
-          <span id="po-c-auto">automático: um por viatura possível</span>
+          <span id="po-c-auto">automático: 1 por viatura</span>
           <button type="button" class="mo-btn" id="po-c-reset" hidden>Voltar ao automático</button>
-          <button type="button" class="mo-btn" id="po-play">Percorrer de 3 a 12</button>
+          <button type="button" class="mo-btn is-yellow" id="po-play">Percorrer de 3 a 12</button>
         </div>
       </div>
       <div class="po-stage" id="po-stage" aria-live="polite"></div>
@@ -969,20 +1068,20 @@
     </article>
 
     <article class="mo-card" id="po-regras">
-      <div class="mo-card-head"><h2>Regras de guarnição usadas</h2></div>
+      <div class="mo-card-head"><h2>Regras de guarnição</h2></div>
       <dl class="mo-crit">
         <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE no padrão</dt><dd><b>5 bombeiros</b>: 1 condutor (QBMG-2) e 4 operacionais (QBMG-1).</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--warn)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE em exceção</dt><dd><b>4 bombeiros</b>: 1 condutor (QBMG-2) e 3 operacionais (QBMG-1). É o mínimo para ativar o ASE.</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--n2)" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Pode ser conduzida por QBMG-1 em deslocamentos não emergenciais, como prevenções, lavagem de pista e averiguação para captura de insetos.</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>, idealmente <b>10</b>, com um condutor (QBMG-2) para cada caminhão.</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--warn)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE em exceção</dt><dd><b>4 bombeiros</b>: 1 condutor (QBMG-2) e 3 operacionais (QBMG-1). É o mínimo para o ASE.</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--n2)" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Um QBMG-1 pode conduzir a AR só em deslocamento não emergencial: prevenção, lavagem de pista e captura de insetos.</dd></div>
+        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>. O ideal é <b>10</b>. Cada ASE precisa de 1 condutor (QBMG-2).</dd></div>
       </dl>
-      <p class="mo-note">Ordem de ativação usada na simulação: primeiro o ASE; com 6 ou 7, ASE e AR; com 8 ou mais, o segundo ASE; o que sobra completa os ASE até o padrão e depois a AR. Lugares de operacional podem ser ocupados por um condutor quando faltam QBMG-1. GBMs com viaturas do intermediário (VCI, VS, VPA, VE) têm escalas próprias para elas, que não entram nesta conta.</p>
+      <p class="mo-note">Ordem: 1 ASE. Com 6 ou 7, ASE e AR. Com 8 ou mais, 2º ASE. O resto completa os ASE e depois a AR. Um condutor pode ocupar a vaga de operacional. As escalas do intermediário (VCI, VS, VPA, VE) não entram nesta conta.</p>
     </article>
   </div>
 
   <footer class="mo-foot">
-    <span>Dados das abas Absoluto, Matriz de Risco, Carga Operacional e Parâmetros da planilha Matriz Operacional, lidos a cada acesso. <span id="mo-atualizado"></span></span>
-    <button type="button" class="mo-btn" id="mo-recarregar">Recarregar dados</button>
+    <span>Fonte: planilha Matriz Operacional, abas Absoluto, Matriz de Risco, Carga Operacional e Parâmetros. <span id="mo-atualizado"></span></span>
+    <button type="button" class="mo-btn is-primary" id="mo-recarregar">Recarregar dados</button>
   </footer>
 </div>
 
@@ -1368,8 +1467,10 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
     document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
     document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
+    const ativa = document.querySelector(`.mo-pages [data-page="${S.page}"]`);
+    document.getElementById('mo-crumb').textContent = ativa ? ativa.textContent : '';
     ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'distancias', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
-    document.querySelectorAll('.mo-seg').forEach((el) => { el.hidden = S.page === 'poder'; });
+    document.querySelectorAll('.filtro').forEach((el) => { el.hidden = S.page === 'poder'; });
     document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
     if (S.page === 'matriz') {
@@ -1412,6 +1513,26 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     rk_ocorrencias: 'Ocorrências', rk_ur: 'UR', rk_multiemprego: 'Multiemprego', rk_multiemprego_florestal: 'Multiemprego c/ florestal', rk_incendio: 'Incêndio estrutural',
   };
   const ABS_COLS = GRUPOS.flatMap((g) => g.cols);
+  const COLTIP = {
+    numero: 'Número do GBM. Coluna «#».', gbm: 'Nome do GBM. Coluna «GBM».', comar: 'COMAR do GBM. Coluna «COMAR».',
+    ur: 'Viatura de APH. Coluna «UR».', ur_gsv: 'UR extra, guarnecida por GSV. Coluna «UR (GSV) / Reforço».',
+    vme: 'Viatura multiemprego principal. Coluna «VME».', vme2: 'Segunda viatura multiemprego. Coluna «2ª VME».', apoio_ar: 'AR de apoio, sem efetivo próprio. Coluna «Apoio AR».',
+    vci: 'Viatura do socorro intermediário. Coluna «VCI».', vs: 'Viatura do socorro intermediário. Coluna «VS».', vpa: 'Viatura do socorro intermediário. Coluna «VPA».', ve: 'Viatura do socorro intermediário. Coluna «VE».',
+    apoio: 'Viatura de apoio do intermediário (AT/APSG). Coluna «Apoio».',
+    efetivo_necessario: 'Militares para as viaturas da matriz, com 30% de afastamento. Coluna «Efetivo Necessário (com 30% de afast.)».',
+    efetivo_atual: 'Militares do GBM hoje. Coluna «Efetivo Atual».', saldo_efetivo: 'Efetivo atual − efetivo necessário. Coluna «Saldo Efetivo».',
+    oficial_dia: 'SIM = o GBM tem oficial de dia. Coluna «Oficial de Dia».', cotas_gsv: 'Cotas diárias de GSV de 12 h. Coluna «Cotas diárias de GSV 12h».',
+    saldo_considerado: 'Saldo efetivo + oficial de dia + cotas de GSV. Coluna «Saldo Considerado».',
+    ralvo: 'Ocorrências por militar de referência. Coluna «Relação Alvo (Ralvo)».', coef_ajuste: 'Carga do GBM ÷ Ralvo. Coluna «Coeficiente de Ajuste».',
+    novo_efetivo: 'Ocorrências ÷ Ralvo. Mínimo: 69. Coluna «Novo Efetivo Necessário».', saldo_carga: 'Efetivo atual − novo efetivo necessário. Coluna «Saldo Efetivo pelo Índice de Carga Operacional».',
+    matriz_risco: 'Pontos da matriz de risco. Coluna «Matriz de Risco».', carga_atual: 'Ocorrências ÷ militares lotados. Coluna «Carga Operacional com Efetivo Atual».',
+    carga_atualizada: 'Ocorrências ÷ efetivo necessário com reforços. Coluna «Carga Operacional - Atualizada».',
+    rk_ocorrencias: 'Posição em todas as ocorrências (12 meses). 1º = mais ocorrências. Coluna «Ranking Ocorrências». Dados: aba Parâmetros (GESINT).',
+    rk_ur: 'Posição em UR (12 meses). 1º = mais ocorrências. Coluna «Ranking UR». Dados: aba Parâmetros (GESINT).',
+    rk_multiemprego: 'Posição em multiemprego (12 meses). Coluna «Ranking Multiemprego». Dados: aba Parâmetros (GESINT).',
+    rk_multiemprego_florestal: 'Posição em multiemprego com florestal (12 meses). Coluna «Ranking Multiemprego c/ florestal». Dados: aba Parâmetros (GESINT).',
+    rk_incendio: 'Posição em incêndio estrutural (12 meses). Coluna «Ranking Incêndio estrutural». Dados: aba Parâmetros (GESINT).',
+  };
   const GRP_OF = Object.fromEntries(GRUPOS.flatMap((g) => g.cols.map((c, i) => [c, { g: g.id, first: i === 0 }])));
   const VIATS = new Set(GRUPOS[1].cols);
   const SALDOS = new Set(['saldo_efetivo', 'saldo_considerado', 'saldo_carga']);
@@ -1481,6 +1602,13 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
         drawAbs();
       });
       th.appendChild(b);
+      if (COLTIP[c]) {
+        const tp = document.createElement('button');
+        tp.type = 'button'; tp.className = 'tip'; tp.textContent = 'i';
+        tp.setAttribute('aria-label', 'Origem dos dados');
+        tp.dataset.tip = 'Fonte: aba Absoluto.\n' + COLTIP[c];
+        th.appendChild(tp);
+      }
       trc.appendChild(th);
     });
     head.replaceChildren(trg, trc);
@@ -1645,8 +1773,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     sum.replaceChildren();
     const add = (txt, bold) => { const e = document.createElement(bold ? 'b' : 'span'); e.textContent = txt; sum.appendChild(e); };
     add(fmt('int', P.total), true); add(' bombeiros: '); add(fmt('int', PO.EXP), true); add(' no expediente, '); add(fmt('int', PO.SECOM), true); add(' na SECOM, ');
-    add(fmt('int', PO.UR), true); add(' na escala de UR e '); add(fmt('int', resto), true); add(' nas quatro alas, com ');
-    add(tamanhos.length > 1 ? `${tamanhos[0]} ou ${tamanhos[tamanhos.length - 1]}` : String(tamanhos[0] ?? 0), true); add(' bombeiros cada ('); add(lista.map((a) => `${a.nome} ${a.n}`).join(', ')); add(').');
+    add(fmt('int', PO.UR), true); add(' na escala de UR e '); add(fmt('int', resto), true); add(' nas 4 alas. Cada ala tem ');
+    add(tamanhos.length > 1 ? `${tamanhos[0]} ou ${tamanhos[tamanhos.length - 1]}` : String(tamanhos[0] ?? 0), true); add(' bombeiros: '); add(lista.map((a) => `${a.nome} ${a.n}`).join(', ')); add('.');
 
     const rng = document.getElementById('po-n');
     rng.value = P.n;
@@ -1707,11 +1835,11 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       const el = card('ar');
       const h = document.createElement('div'); h.className = 'po-veh-h';
       const t = document.createElement('span'); t.textContent = 'AR';
-      const bd = document.createElement('span'); bd.className = 'po-badge ' + (g.arCond ? 'ok' : 'warn'); bd.textContent = g.arCond ? 'pode atender emergência' : 'só não emergencial';
+      const bd = document.createElement('span'); bd.className = 'po-badge ' + (g.arCond ? 'ok' : 'warn'); bd.textContent = g.arCond ? 'emergência' : 'não emergencial';
       h.append(t, bd);
       g.arCrew.forEach((_, j) => keys.add('arh' + j));
       const cap = document.createElement('p'); cap.className = 'po-cap';
-      cap.textContent = g.arCond ? `${g.ar} ocupantes, conduzida por QBMG-2.` : `${g.ar} ocupantes, conduzida por QBMG-1: prevenções, lavagem de pista, averiguação e captura de insetos.`;
+      cap.textContent = g.arCond ? `${g.ar} ocupantes. Condutor: QBMG-2.` : `${g.ar} ocupantes. Condutor: QBMG-1. Só prevenção, lavagem de pista e captura de insetos.`;
       el.append(icon('i-ar-lg', 'po-ill'), h, helmets(g.arCrew, prev, 'arh'), cap);
       cards.push(el);
     }
@@ -1722,7 +1850,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       h.append(t);
       g.reservaCrew.forEach((_, j) => keys.add('resh' + j));
       const cap = document.createElement('p'); cap.className = 'po-cap';
-      cap.textContent = g.reserva === 1 ? 'Não completa outra guarnição; fica de reserva na ala.' : 'Não completam outra guarnição; ficam de reserva na ala.';
+      cap.textContent = g.reserva === 1 ? 'Não completa outra guarnição. Fica de reserva.' : 'Não completam outra guarnição. Ficam de reserva.';
       el.append(h, helmets(g.reservaCrew, prev, 'resh'), cap);
       cards.push(el);
     }
@@ -1736,12 +1864,12 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     P.prevKeys = keys;
 
     const msgs = [];
-    if (!g.k && P.n < 4) msgs.push(['bad', `Com ${P.n} bombeiros a ala não ativa o ASE: o mínimo é 4, sendo 1 condutor (QBMG-2).`]);
-    else if (!g.k && cEf === 0) msgs.push(['bad', 'Sem condutor (QBMG-2) na ala, o ASE não sai.']);
-    if (g.ase.some((t) => t < 5)) msgs.push(['warn', g.k === 2 && g.ase.every((t) => t < 5) ? 'Os dois ASE saem em condição de exceção, com 4 bombeiros cada. O padrão é 5.' : 'Um ASE sai em condição de exceção, com 4 bombeiros. O padrão é 5.']);
-    if (g.ar && !g.arCond) msgs.push(['warn', 'A AR é conduzida por um QBMG-1, então fica restrita a deslocamentos não emergenciais.']);
-    if (g.falta2Cond) msgs.push(['bad', 'Há gente para o segundo ASE, mas falta um segundo condutor (QBMG-2).']);
-    if (g.k === 2 && g.ase.every((t) => t >= 5)) msgs.push(['ok', 'Configuração ideal: dois ASE com 5 bombeiros cada.']);
+    if (!g.k && P.n < 4) msgs.push(['bad', `Com ${P.n} bombeiros, a ala não ativa o ASE. Mínimo: 4, com 1 condutor (QBMG-2).`]);
+    else if (!g.k && cEf === 0) msgs.push(['bad', 'Sem condutor (QBMG-2), o ASE não sai.']);
+    if (g.ase.some((t) => t < 5)) msgs.push(['warn', g.k === 2 && g.ase.every((t) => t < 5) ? 'Os 2 ASE saem em exceção: 4 bombeiros cada. Padrão: 5.' : '1 ASE sai em exceção: 4 bombeiros. Padrão: 5.']);
+    if (g.ar && !g.arCond) msgs.push(['warn', 'Um QBMG-1 conduz a AR. A AR faz só deslocamento não emergencial.']);
+    if (g.falta2Cond) msgs.push(['bad', 'Há efetivo para o 2º ASE. Falta o 2º condutor (QBMG-2).']);
+    if (g.k === 2 && g.ase.every((t) => t >= 5)) msgs.push(['ok', 'Configuração ideal: 2 ASE com 5 bombeiros cada.']);
     if (g.k === 1 && g.ase[0] >= 5 && !g.ar && P.n === 5) msgs.push(['ok', 'ASE no padrão: 1 condutor e 4 operacionais.']);
     const ul = document.getElementById('po-msgs');
     ul.replaceChildren(...msgs.map(([cls, txt]) => { const li = document.createElement('li'); li.className = cls; li.textContent = txt; return li; }));
@@ -1993,7 +2121,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       S.resumo = resumo(S.all);
       S.frota = frota(S.all);
       S.status = 'ok';
-      document.getElementById('mo-atualizado').textContent = 'Última leitura: ' + new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
+      document.getElementById('mo-atualizado').textContent = 'Leitura: ' + new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '.';
     } catch (e) {
       S.status = 'error';
       document.getElementById('mo-status-msg').textContent = (e && e.message) || String(e);
@@ -2112,7 +2240,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     if (!sel) { nome.textContent = '—'; sub.textContent = ''; ol.replaceChildren(); tot.replaceChildren(); }
     else {
       nome.textContent = sel.gbm;
-      sub.textContent = `COMAR ${sel.comar} · como a pontuação de ${f2(sel.total)} se forma`;
+      sub.textContent = `COMAR ${sel.comar} · total: ${f2(sel.total)} pontos`;
       const b = beta && beta.length === 3 ? beta.map((o) => o.b) : null;
       const pesoTxt = (k, p) => (w[k] != null && w[k] !== 1 ? [[`${fInt(p)} pontos`, true], [classe(k, p) ? ` (${classe(k, p).toLowerCase()})` : ''], [` × peso ${fw(w[k])} = `], [fw(p * w[k]), true]] : [[`${fInt(p)} pontos`, true], [classe(k, p) ? ` (${classe(k, p).toLowerCase()})` : '']]);
       const fdp = fdP && fdP.length === 3 ? fdP.map((o) => o.w) : null;
@@ -2135,7 +2263,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       tot.replaceChildren();
       const parts = CRIT.map((c) => f2((sel[c.p] ?? 0) * (w[c.k] ?? 1))).join(' + ');
       const bt = document.createElement('b'); bt.textContent = f2(sel.total);
-      const s1 = document.createElement('span'); s1.textContent = `${parts} = pontuação total · ${nz(sel.pos, fInt)}º de ${fInt(S.risco.rows.length)}` + (sel.pos_trab != null ? ` (no trabalho original: ${fInt(sel.pos_trab)}º)` : '');
+      const s1 = document.createElement('span'); s1.textContent = `${parts} = total. Posição: ${nz(sel.pos, fInt)}º de ${fInt(S.risco.rows.length)}.` + (sel.pos_trab != null ? ` No trabalho original: ${fInt(sel.pos_trab)}º.` : '');
       tot.append(bt, s1);
     }
 
@@ -2326,12 +2454,12 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   function dsInfo(o, d) {
     const info = document.getElementById('ds-info');
     info.replaceChildren();
-    if (!o || !d || o === d || !dsMat()) { info.textContent = 'Passe o mouse ou toque em uma célula para ver ida e volta.'; return; }
+    if (!o || !d || o === d || !dsMat()) { info.textContent = 'Selecione uma célula para ver ida e volta.'; return; }
     const nomes = S.par.tempo.rows.map((r) => r.nome);
     const nm = (c) => nomes.find((n) => canon(n) === c) || c;
     const add = (t, b) => { const e = document.createElement(b ? 'b' : 'span'); e.textContent = t; info.appendChild(e); };
     const ida = [dsVal('tempo', o, d), dsVal('dist', o, d)], volta = [dsVal('tempo', d, o), dsVal('dist', d, o)];
-    add(nm(o), true); add(' → '); add(nm(d), true); add(`: ${nz(ida[0], fInt)} min · ${nz(ida[1], fInt)} km. Volta: ${nz(volta[0], fInt)} min · ${nz(volta[1], fInt)} km.`);
+    add(nm(o), true); add(' → '); add(nm(d), true); add(`: ida ${nz(ida[0], fInt)} min, ${nz(ida[1], fInt)} km. Volta ${nz(volta[0], fInt)} min, ${nz(volta[1], fInt)} km.`);
   }
   function drawDs(el, vs) {
     const W = Math.max(260, el.clientWidth), rowH = 22, barH = 13, top = 4, bottom = 22;
@@ -2396,7 +2524,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     if (!sel) { nome.textContent = '—'; sub.textContent = ''; ol.replaceChildren(); }
     else {
       nome.textContent = sel.gbm;
-      sub.textContent = `COMAR ${sel.comar} · da carga ao saldo de efetivo`;
+      sub.textContent = `COMAR ${sel.comar} · da carga ao saldo`;
       const a = S.all.find((r) => r.gbm === sel.gbm) || null;
       const efTot = d3.sum(S.all, (r) => r.efetivo_atual ?? 0);
       const ocTot = d3.sum(all, (r) => r.oc ?? 0);
@@ -2487,6 +2615,39 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       .on('mouseleave blur', () => tip.hide());
   }
 
+  /* ---- Balão de origem dos dados (botões i) ---- */
+  const tipBox = document.createElement('div');
+  tipBox.className = 'tipbox';
+  tipBox.setAttribute('role', 'tooltip');
+  tipBox.id = 'mo-tipbox';
+  tipBox.hidden = true;
+  document.body.appendChild(tipBox);
+  let tipDono = null;
+  const mostraTip = (el) => {
+    tipDono = el;
+    tipBox.textContent = el.dataset.tip;
+    tipBox.hidden = false;
+    el.setAttribute('aria-describedby', 'mo-tipbox');
+    const r = el.getBoundingClientRect(), w = tipBox.offsetWidth, h = tipBox.offsetHeight;
+    const left = Math.min(window.innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2));
+    let top = r.bottom + 8;
+    if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 8);
+    tipBox.style.left = left + 'px';
+    tipBox.style.top = top + 'px';
+  };
+  const escondeTip = () => { if (tipDono) tipDono.removeAttribute('aria-describedby'); tipDono = null; tipBox.hidden = true; };
+  document.addEventListener('mouseover', (ev) => { const el = ev.target.closest('[data-tip]'); if (el && el !== tipDono) mostraTip(el); });
+  document.addEventListener('mouseout', (ev) => { const el = ev.target.closest('[data-tip]'); if (el && !el.contains(ev.relatedTarget)) escondeTip(); });
+  document.addEventListener('focusin', (ev) => { const el = ev.target.closest('[data-tip]'); if (el) mostraTip(el); });
+  document.addEventListener('focusout', (ev) => { if (ev.target.closest('[data-tip]')) escondeTip(); });
+  document.addEventListener('click', (ev) => {
+    const el = ev.target.closest('.tip');
+    if (el) { ev.preventDefault(); ev.stopPropagation(); mostraTip(el); return; }
+    escondeTip();
+  }, true);
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') escondeTip(); });
+  window.addEventListener('scroll', escondeTip, true);
+
   /* ---- Controles ---- */
   const readHash = () => {
     decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
@@ -2503,6 +2664,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     history.replaceState(null, '', parts.length ? '#' + parts.join('-') : location.pathname + location.search);
   };
   readHash();
+  window.addEventListener('hashchange', () => { S.page = 'matriz'; readHash(); render(); });
   document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.addEventListener('click', () => { S.comar = b.dataset.comar; writeHash(); render(); }));
   document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.addEventListener('click', () => { S.page = b.dataset.page; writeHash(); render(); }));
   document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.addEventListener('click', () => { S.nat = b.dataset.nat; writeHash(); render(); }));
