@@ -325,6 +325,28 @@
   .cg-bar { display: inline-block; height: 8px; border-radius: 3px; background: var(--c, var(--accent)); min-width: 1px; }
   .mo-pgerr { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); font-size: var(--cap); color: var(--muted); }
   .mo-pgerr b { color: var(--fg); }
+  /* ---- Distâncias ---- */
+  .ds-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--cap); color: var(--muted); }
+  .ds-ctrl label { display: inline-flex; align-items: center; gap: 8px; }
+  .ds-ctrl select { font: inherit; font-size: var(--body); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 10px; max-width: 100%; }
+  .ds-ctrl input[type=range] { width: 8rem; accent-color: var(--accent); }
+  .ds-ctrl output { font-weight: 700; color: var(--fg); }
+  .ds-info { font-size: var(--cap); color: var(--muted); min-height: 1.5em; line-height: 1.5; }
+  .ds-info b { color: var(--fg); }
+  .mo-table.mo-td th, .mo-table.mo-td td { padding: 5px 6px; text-align: center; font-size: 12px; }
+  .mo-table.mo-td thead tr.mo-cols th { min-width: 2.6rem; max-width: none; white-space: nowrap; text-align: center; }
+  .mo-table.mo-td thead tr.mo-cols th:first-child { text-align: left; }
+  .mo-table.mo-td tbody th { text-align: left; font-weight: 600; white-space: nowrap; background: var(--panel); }
+  .mo-td tbody th button { appearance: none; border: 0; background: none; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+  .mo-td tbody th button:hover { text-decoration: underline; }
+  .mo-td td { cursor: pointer; font-variant-numeric: tabular-nums; }
+  .mo-table.mo-td td.is-diag { background: var(--hover); color: var(--muted); cursor: default; }
+  .mo-td tbody tr:hover td, .mo-td td.is-col { outline: 1px solid color-mix(in srgb, var(--fg) 22%, transparent); outline-offset: -1px; }
+  .mo-td tbody tr.is-sel th { box-shadow: inset 3px 0 0 var(--accent); }
+  .mo-td td.is-cel { outline: 2px solid var(--fg); outline-offset: -2px; font-weight: 700; }
+  .mo-td .ds-gs { border-left: 2px solid var(--line); }
+  #ds-vizinhos .mo-table td.l { white-space: normal; min-width: 7.5rem; }
+  .mo-td tr.ds-gt > * { border-top: 2px solid var(--line); }
   .mo-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: var(--cap); color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
   .mo-btn { appearance: none; font: inherit; font-size: var(--cap); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 12px; cursor: pointer; }
   .mo-btn:hover { background: var(--hover); }
@@ -390,6 +412,7 @@
       <button type="button" role="tab" data-page="natureza" aria-selected="false">Ranking por natureza</button>
       <button type="button" role="tab" data-page="risco" aria-selected="false">Matriz de risco</button>
       <button type="button" role="tab" data-page="carga" aria-selected="false">Carga operacional</button>
+      <button type="button" role="tab" data-page="distancias" aria-selected="false">Distâncias</button>
       <button type="button" role="tab" data-page="poder" aria-selected="false">Poder operacional</button>
     </nav>
   </header>
@@ -848,6 +871,59 @@
     </article>
   </div>
 
+  <div class="mo-page" id="pg-distancias" hidden>
+    <div class="mo-pgerr" data-pgerr="distancias" hidden><span class="mo-status-dot"></span><span><b>Não foi possível ler as distâncias.</b> <span data-pgerr-msg></span></span></div>
+    <p class="mo-lede">Distância e tempo de deslocamento entre os GBMs, da aba Parâmetros. O GBM mais isolado é o <b data-ds="iso-gbm">—</b>: o mais próximo dele, o <b data-ds="iso-viz">—</b>, fica a <b data-ds="iso-t">—</b> min. O menos isolado é o <b data-ds="perto-gbm">—</b>, a <b data-ds="perto-t">—</b> min do <b data-ds="perto-viz">—</b>.</p>
+    <div class="ds-ctrl">
+      <label for="ds-origem">Origem <select id="ds-origem"></select></label>
+      <div class="mo-tabs" role="group" aria-label="Medida">
+        <button type="button" data-ds-m="tempo" aria-pressed="true">Tempo (min)</button>
+        <button type="button" data-ds-m="dist" aria-pressed="false">Distância (km)</button>
+      </div>
+      <label for="ds-raio">Raio de apoio <input id="ds-raio" type="range" min="5" max="40" step="1" value="15"> <output id="ds-raio-out" for="ds-raio">15</output> min</label>
+    </div>
+
+    <div class="mo-row2 is-even">
+      <article class="mo-card" id="ds-saida">
+        <div class="mo-card-head">
+          <h2>Saindo do <span data-ds="origem">—</span></h2>
+          <p class="mo-note">Destinos do mais perto ao mais longe, com tempo e distância de ida. A linha tracejada marca o raio de apoio; <b data-ds="no-raio">—</b> GBMs ficam dentro dele.</p>
+        </div>
+        <div class="mo-chart" id="ch-ds"></div>
+        <div class="mo-legend">
+          <span class="ta-scale">Cor <i class="ta-grad ta-grad-dem"></i> perto → longe</span>
+          <span class="mo-key"><i class="mo-sw is-dash"></i>Raio de apoio</span>
+        </div>
+      </article>
+      <article class="mo-card" id="ds-vizinhos">
+        <div class="mo-card-head">
+          <h2>Apoio mais próximo de cada GBM</h2>
+          <p class="mo-note">Do mais isolado ao menos isolado, pelo tempo até o GBM mais próximo. A última coluna conta quantos GBMs chegam dentro do raio de apoio. Toque em um GBM para usá-lo como origem.</p>
+        </div>
+        <div class="mo-table-wrap">
+          <table class="mo-table mo-tr">
+            <thead><tr class="mo-cols"><th class="l">GBM</th><th class="l gs">Mais próximo</th><th class="n">Min</th><th class="n">Km</th><th class="l gs">2º mais próximo</th><th class="n">Min</th><th class="n gs">No raio</th></tr></thead>
+            <tbody id="ds-viz-tbody"></tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <article class="mo-card" id="ds-matriz">
+      <div class="mo-card-head">
+        <h2>Matriz de <span data-ds="medida">tempo (min)</span></h2>
+        <p class="mo-note">Cada linha é a origem e cada coluna, o destino. Da cor azul (perto) à laranja (longe). Toque em uma célula para ver a ida e a volta, ou no nome de uma linha para usá-la como origem.</p>
+      </div>
+      <p class="ds-info" id="ds-info"></p>
+      <div class="mo-table-wrap" style="max-height: 75vh">
+        <table class="mo-table mo-td" id="ds-tabela">
+          <thead id="ds-thead"></thead>
+          <tbody id="ds-tbody"></tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+
   <div class="mo-page" id="pg-poder" hidden>
     <p class="mo-lede">O que um quartel consegue colocar na rua a cada plantão. O exemplo parte do menor GBM da matriz, com <b data-po="total">69</b> bombeiros; mude o efetivo do GBM ou o número de bombeiros na ala de serviço para ver o socorro que dá para ativar.</p>
 
@@ -1292,7 +1368,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     document.querySelectorAll('.mo-tabs [data-saldo]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.saldo === S.saldo)));
     document.querySelectorAll('.mo-saldo-note').forEach((p) => { p.hidden = p.dataset.for !== S.saldo; });
     document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
-    ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
+    ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'distancias', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
     document.querySelectorAll('.mo-seg').forEach((el) => { el.hidden = S.page === 'poder'; });
     document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
@@ -1311,6 +1387,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       renderRisco();
     } else if (S.page === 'carga') {
       renderCarga();
+    } else if (S.page === 'distancias') {
+      renderDist();
     } else {
       renderPoder();
     }
@@ -1886,6 +1964,21 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     P.ofBase = numBR(kv((t) => t.startsWith('adicional oficial de dia') && t.includes('base')));
     const pct = kv((t) => t.startsWith('adicional oficial de dia') && t.includes('acrescimo'));
     P.ofPct = pct == null ? null : (numBR(pct.replace('%', '')) ?? 0) / (pct.includes('%') ? 100 : 1);
+    const matriz = (pref) => {
+      const i = grid.findIndex((r) => fold(A(r)).startsWith(pref));
+      if (i < 0 || !grid[i + 1] || norm(grid[i + 1][0]) !== 'GBM') return null;
+      const cols = grid[i + 1].slice(1).map(norm);
+      while (cols.length && !cols[cols.length - 1]) cols.pop();
+      const rows = [];
+      for (let j = i + 2; j < grid.length; j++) {
+        const nome = norm(grid[j][0]);
+        if (!nome) break;
+        rows.push({ nome, v: cols.map((_, k) => numBR(grid[j][k + 1])) });
+      }
+      return rows.length ? { cols, rows } : null;
+    };
+    P.dist = matriz('distancia entre gbms');
+    P.tempo = matriz('tempo de deslocamento entre gbms');
     return P;
   }
 
@@ -2107,6 +2200,174 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       .on('mouseleave blur', () => tip.hide());
   }
 
+  /* ---- Página: distâncias entre GBMs ---- */
+  const DS = { m: 'tempo', origem: null, raio: 15, cel: null };
+  const canon = (n) => fold(norm(n)).replace(/\s*\/\s*/g, '/');
+  const curtoGbm = (n) => { const m = norm(n).match(/^(\d+º)/); return m ? m[1] : norm(n).split('/')[0]; };
+  const comarDe = (n) => {
+    const c = canon(n);
+    const a = S.all.find((r) => canon(r.gbm) === c);
+    if (a) return a.comar;
+    const r = S.risco && S.risco.rows && S.risco.rows.find((o) => canon(o.gbm) === c);
+    return r ? r.comar : '';
+  };
+  const dsMat = () => (S.par && S.par.tempo && S.par.dist ? S.par : null);
+  const dsVal = (k, o, d) => {
+    const M = S.par && S.par[k];
+    if (!M) return null;
+    const r = M.rows.find((x) => canon(x.nome) === o);
+    const j = M.cols.findIndex((x) => canon(x) === d);
+    return r && j >= 0 ? r.v[j] : null;
+  };
+  const dsCor = (k, v) => {
+    const M = S.par && S.par[k];
+    if (v == null || !M) return '';
+    if (!M._ext) M._ext = d3.extent(M.rows.flatMap((r) => r.v).filter((x) => x != null));
+    const [lo, hi] = M._ext;
+    const t = hi === lo ? 0.5 : (v - lo) / (hi - lo);
+    const d = t - 0.5, pct = Math.round(Math.abs(d) * 2 * 58);
+    return pct < 5 ? '' : `color-mix(in srgb, var(${d > 0 ? '--hot' : '--cool'}) ${pct}%, var(--panel))`;
+  };
+  const vizinhos = (o) => {
+    const M = S.par.tempo;
+    return M.cols.map(canon).filter((d) => d !== o).map((d) => ({ d, nome: M.cols.find((x) => canon(x) === d), t: dsVal('tempo', o, d), km: dsVal('dist', o, d) }))
+      .filter((x) => x.t != null).sort((a, b) => a.t - b.t || (a.km ?? 0) - (b.km ?? 0));
+  };
+  function renderDist() {
+    const ok = !!dsMat();
+    pageErr('distancias', S.status === 'loading' ? null : ok ? null : { status: 'error', msg: S.par ? 'As tabelas "Distância entre GBMs (km)" e "Tempo de deslocamento entre GBMs (min)" não foram encontradas na aba Parâmetros.' : 'A aba Parâmetros não pôde ser lida.' });
+    const setDs = (k, txt) => document.querySelectorAll(`[data-ds="${k}"]`).forEach((el) => { el.textContent = txt; });
+    document.querySelectorAll('[data-ds-m]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dsM === DS.m)));
+    setDs('medida', DS.m === 'tempo' ? 'tempo (min)' : 'distância (km)');
+    document.getElementById('ds-raio').value = DS.raio;
+    document.getElementById('ds-raio-out').textContent = DS.raio;
+    const sel = document.getElementById('ds-origem');
+    const ids = ['ch-ds', 'ds-viz-tbody', 'ds-thead', 'ds-tbody'];
+    if (!ok) { ids.forEach((id) => document.getElementById(id).replaceChildren()); sel.replaceChildren(); ['iso-gbm', 'iso-viz', 'iso-t', 'perto-gbm', 'perto-t', 'perto-viz', 'origem', 'no-raio'].forEach((k) => setDs(k, '—')); document.getElementById('ds-info').textContent = ''; return; }
+    const T = S.par.tempo;
+    const nomes = T.rows.map((r) => r.nome);
+    const nomeDe = (c) => nomes.find((n) => canon(n) === c) || c;
+    if (!DS.origem || !nomes.some((n) => canon(n) === DS.origem)) {
+      const g = S.gbm && nomes.find((n) => canon(n) === canon(S.gbm));
+      DS.origem = canon(g || nomes[0]);
+    }
+    if (sel.options.length !== nomes.length) sel.replaceChildren(...nomes.map((n) => new Option(n, canon(n))));
+    sel.value = DS.origem;
+
+    // isolamento geral
+    const prox = nomes.map((n) => ({ n, v: vizinhos(canon(n)) })).filter((x) => x.v.length);
+    const iso = prox.reduce((a, x) => (a == null || x.v[0].t > a.v[0].t ? x : a), null);
+    const perto = prox.reduce((a, x) => (a == null || x.v[0].t < a.v[0].t ? x : a), null);
+    if (iso) { setDs('iso-gbm', iso.n); setDs('iso-viz', iso.v[0].nome); setDs('iso-t', fInt(iso.v[0].t)); }
+    if (perto) { setDs('perto-gbm', perto.n); setDs('perto-viz', perto.v[0].nome); setDs('perto-t', fInt(perto.v[0].t)); }
+
+    // saindo da origem
+    const vs = vizinhos(DS.origem);
+    setDs('origem', nomeDe(DS.origem));
+    setDs('no-raio', fInt(vs.filter((x) => x.t <= DS.raio).length));
+    drawDs(document.getElementById('ch-ds'), vs);
+
+    // vizinhos de cada GBM
+    const linhas = prox.filter((x) => S.comar === 'Todos' || comarDe(x.n) === S.comar).sort((a, b) => b.v[0].t - a.v[0].t || a.n.localeCompare(b.n, 'pt-BR'));
+    document.getElementById('ds-viz-tbody').replaceChildren(...linhas.map((x) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = canon(x.n);
+      if (canon(x.n) === DS.origem) tr.className = 'is-sel';
+      const td = (t, c, bg) => { const e = document.createElement('td'); e.className = c; e.textContent = t; if (bg) e.style.background = bg; tr.appendChild(e); };
+      const [a, b] = x.v;
+      td(x.n, 'l'); td(a.nome, 'l gs'); td(fInt(a.t), 'n', dsCor('tempo', a.t)); td(nz(a.km, fInt), 'n');
+      td(b ? b.nome : '—', 'l gs'); td(b ? fInt(b.t) : '—', 'n', b ? dsCor('tempo', b.t) : '');
+      td(fInt(x.v.filter((v) => v.t <= DS.raio).length), 'n gs');
+      return tr;
+    }));
+
+    // matriz
+    const M = S.par[DS.m];
+    const cols = M.cols;
+    const comCols = cols.map(comarDe);
+    const head = document.createElement('tr');
+    head.className = 'mo-cols';
+    const th0 = document.createElement('th'); th0.textContent = 'Origem ↓ · destino →'; head.appendChild(th0);
+    cols.forEach((c, j) => {
+      const th = document.createElement('th');
+      th.textContent = curtoGbm(c);
+      th.title = c;
+      if (j > 0 && comCols[j] !== comCols[j - 1]) th.className = 'ds-gs';
+      head.appendChild(th);
+    });
+    document.getElementById('ds-thead').replaceChildren(head);
+    let prevCom = null;
+    const rowsM = M.rows.filter((r) => S.comar === 'Todos' || comarDe(r.nome) === S.comar);
+    document.getElementById('ds-tbody').replaceChildren(...rowsM.map((r) => {
+      const tr = document.createElement('tr');
+      const o = canon(r.nome);
+      const com = comarDe(r.nome);
+      tr.className = [o === DS.origem ? 'is-sel' : '', prevCom != null && com !== prevCom ? 'ds-gt' : ''].filter(Boolean).join(' ');
+      prevCom = com;
+      const th = document.createElement('th');
+      const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = r.nome; btn.dataset.origem = o;
+      th.appendChild(btn); tr.appendChild(th);
+      r.v.forEach((v, j) => {
+        const td = document.createElement('td');
+        const d = canon(cols[j]);
+        td.dataset.c = j; td.dataset.o = o; td.dataset.d = d;
+        const cls = [];
+        if (j > 0 && comCols[j] !== comCols[j - 1]) cls.push('ds-gs');
+        if (d === o || v == null) { cls.push('is-diag'); td.textContent = '—'; }
+        else { td.textContent = fInt(v); td.style.background = dsCor(DS.m, v); }
+        if (DS.cel && DS.cel[0] === o && DS.cel[1] === d) cls.push('is-cel');
+        td.className = cls.join(' ');
+        tr.appendChild(td);
+      });
+      return tr;
+    }));
+    dsInfo(DS.cel ? DS.cel[0] : null, DS.cel ? DS.cel[1] : null);
+  }
+  function dsInfo(o, d) {
+    const info = document.getElementById('ds-info');
+    info.replaceChildren();
+    if (!o || !d || o === d || !dsMat()) { info.textContent = 'Passe o mouse ou toque em uma célula para ver ida e volta.'; return; }
+    const nomes = S.par.tempo.rows.map((r) => r.nome);
+    const nm = (c) => nomes.find((n) => canon(n) === c) || c;
+    const add = (t, b) => { const e = document.createElement(b ? 'b' : 'span'); e.textContent = t; info.appendChild(e); };
+    const ida = [dsVal('tempo', o, d), dsVal('dist', o, d)], volta = [dsVal('tempo', d, o), dsVal('dist', d, o)];
+    add(nm(o), true); add(' → '); add(nm(d), true); add(`: ${nz(ida[0], fInt)} min · ${nz(ida[1], fInt)} km. Volta: ${nz(volta[0], fInt)} min · ${nz(volta[1], fInt)} km.`);
+  }
+  function drawDs(el, vs) {
+    const W = Math.max(260, el.clientWidth), rowH = 22, barH = 13, top = 4, bottom = 22;
+    const H = top + vs.length * rowH + bottom;
+    el.style.minHeight = H + 'px';
+    const svg = makeSvg(el, W, H, 'Tempo e distância a partir do GBM de origem');
+    const nameW = Math.min(W * 0.45, measure(svg, vs.map((v) => v.nome), 'mo-t'));
+    const lab = (v) => `${fInt(v.t)} min · ${nz(v.km, fInt)} km`;
+    const valW = measure(svg, vs.map(lab), 'mo-t-muted') + 8;
+    const x0 = nameW + 12;
+    const M = S.par[DS.m];
+    if (!M._ext) M._ext = d3.extent(M.rows.flatMap((r) => r.v).filter((x) => x != null));
+    const key = DS.m === 'tempo' ? 't' : 'km';
+    const x = d3.scaleLinear([0, M._ext[1] || 1], [x0, W - valW]);
+    if (DS.m === 'tempo') {
+      svg.append('line').attr('class', 'mo-ref').attr('x1', x(DS.raio)).attr('x2', x(DS.raio)).attr('y1', 0).attr('y2', H - bottom + 4);
+      const t = `Raio ${fInt(DS.raio)} min`;
+      const lw = measure(svg, [t], 'mo-t-muted');
+      svg.append('text').attr('class', 'mo-t-muted').attr('x', Math.max(x0 + lw / 2, Math.min(W - lw / 2, x(DS.raio)))).attr('y', H - 6).attr('text-anchor', 'middle').text(t);
+    }
+    const g = svg.append('g').selectAll('g').data(vs).join('g')
+      .attr('class', 'mo-row')
+      .attr('transform', (d, i) => `translate(0,${top + i * rowH})`)
+      .attr('tabindex', 0).attr('role', 'button')
+      .attr('aria-label', (d) => `${d.nome}: ${lab(d)}. Usar como origem`);
+    g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
+    g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.nome)
+      .style('font-weight', (d) => (d.t <= DS.raio ? 600 : null));
+    g.append('rect').attr('x', x0).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', 3)
+      .attr('width', (d) => Math.max(0, x(d[key] ?? 0) - x0)).style('fill', (d) => dsCor(DS.m, d[key]) || 'color-mix(in srgb, var(--fg) 7%, var(--panel))')
+      .style('stroke', 'color-mix(in srgb, var(--fg) 18%, transparent)').style('stroke-width', 0.5);
+    g.append('text').attr('class', 'mo-t-muted').attr('x', (d) => x(d[key] ?? 0) + 6).attr('y', rowH / 2).attr('dy', '0.35em').text(lab);
+    g.on('click', (ev, d) => { DS.origem = d.d; DS.cel = null; render(); })
+      .on('keydown', (ev, d) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); DS.origem = d.d; DS.cel = null; render(); } });
+  }
+
   /* ---- Página: carga operacional ---- */
   const cgRows = () => {
     if (!S.carga || S.carga.status !== 'ok') return [];
@@ -2230,7 +2491,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   const readHash = () => {
     decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
       if (COMARS.includes(t)) S.comar = t;
-      else if (['natureza', 'tabela', 'risco', 'carga', 'poder'].includes(t)) S.page = t;
+      else if (['natureza', 'tabela', 'risco', 'carga', 'distancias', 'poder'].includes(t)) S.page = t;
       else { const n = NATS.find((o) => o.slug === t); if (n) { S.nat = n.k; S.page = 'natureza'; } }
     });
   };
@@ -2250,6 +2511,27 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   document.getElementById('mo-busca').addEventListener('input', drawAbs);
   document.getElementById('rk-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'rk-exemplo'); });
   document.getElementById('cg-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'cg-exemplo'); });
+  document.getElementById('ds-origem').addEventListener('change', (ev) => { DS.origem = ev.target.value; DS.cel = null; render(); });
+  document.querySelectorAll('[data-ds-m]').forEach((b) => b.addEventListener('click', () => { DS.m = b.dataset.dsM; render(); }));
+  document.getElementById('ds-raio').addEventListener('input', (ev) => { DS.raio = Number(ev.target.value); render(); });
+  document.getElementById('ds-viz-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { DS.origem = tr.dataset.key; DS.cel = null; render(); const c = document.getElementById('ds-saida'); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); } });
+  const dsTab = document.getElementById('ds-tabela');
+  dsTab.addEventListener('click', (ev) => {
+    const b = ev.target.closest('button[data-origem]');
+    if (b) { DS.origem = b.dataset.origem; DS.cel = null; render(); return; }
+    const td = ev.target.closest('td[data-o]');
+    if (td && td.dataset.o !== td.dataset.d) { DS.cel = [td.dataset.o, td.dataset.d]; dsTab.querySelectorAll('td.is-cel').forEach((e) => e.classList.remove('is-cel')); td.classList.add('is-cel'); dsInfo(td.dataset.o, td.dataset.d); }
+  });
+  let dsCol = null;
+  dsTab.addEventListener('mouseover', (ev) => {
+    const td = ev.target.closest('td[data-c]');
+    const c = td ? td.dataset.c : null;
+    if (c === dsCol) return;
+    dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col'));
+    dsCol = c;
+    if (c != null) { dsTab.querySelectorAll(`td[data-c="${c}"]`).forEach((e) => e.classList.add('is-col')); if (!DS.cel) dsInfo(td.dataset.o, td.dataset.d); }
+  });
+  dsTab.addEventListener('mouseleave', () => { dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col')); dsCol = null; if (!DS.cel) dsInfo(null, null); });
   document.getElementById('mo-ta-body').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; drawAbs(); } });
   document.querySelectorAll('.ta-tools [data-grp]').forEach((b) => b.addEventListener('click', () => {
     const g = b.dataset.grp;
@@ -2274,7 +2556,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     if (w === lastW) return;
     lastW = w;
     clearTimeout(rz);
-    rz = setTimeout(() => { if (S.status === 'ok' || S.page === 'poder') render(); }, 120);
+    rz = setTimeout(() => { if (S.status === 'ok' || S.page === 'poder' || S.page === 'distancias') render(); }, 120);
   }).observe(document.getElementById('mo'));
 
   load();
