@@ -18,8 +18,9 @@
     --n1: #1976d2; --n2: #dd6b20; --n3: #2e7d32; --n4: #c62828; --n5: #7b4fb8;
     --hot: #dd6b20; --cool: #1976d2;
     --k1: #1976d2; --k2: #dd6b20; --k3: #2e7d32; --k4: #7b4fb8;
-    --truck: #c62828; --truck-2: #a52020; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #1976d2;
+    --truck: #c8102e; --truck-2: #a50d26; --glass: #cfe3f2; --metal: #9aa4ae; --tire: #2b2f36; --light: #1976d2;
     --pickup: #e4e8ec; --pickup-line: #a9b2bc; --stripe: #fdc700; --helm1: #fdc700; --helm2: #dd6b20;
+    --cb-red: #c8102e; --cb-dark: #7d0a1c; --cb-glass: #cfe3f2; --cb-tire: #23272e; --cb-metal: #a7b0ba; --cb-light: #1976d2;
     --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-serif: var(--font-sans);
     --r: 6px; --cap: 0.8125rem; --body: 0.9375rem; --head: 1rem; --title: 1.75rem;
@@ -116,7 +117,7 @@
   .mo-vtr { display: grid; gap: 10px; }
   .mo-vtr-group { display: grid; gap: 6px; }
   .mo-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-  .mo-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .mo-chip { cursor: help; display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
   .mo-chip-v { font-weight: 600; }
   .mo-chip-k { font-size: var(--cap); color: var(--muted); }
   .mo-bullet { position: relative; min-height: 68px; }
@@ -191,10 +192,10 @@
   .mo-tn td:nth-child(6), .mo-tn th:nth-child(6) { border-left: 1px solid var(--line); }
   .mo-tn td.is-cur { font-weight: 700; color: var(--fg); }
   /* ---- Ícones de viatura ---- */
-  .mo-ic { display: inline-block; width: 22px; height: 13px; fill: currentColor; flex: none; }
+  .mo-ic { display: inline-block; width: 28px; height: 14px; flex: none; }
   .mo-vt { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px 2px 5px; border-radius: 999px; font-weight: 600; font-size: var(--cap); line-height: 1.3; white-space: nowrap; color: var(--fg);
     background: color-mix(in srgb, var(--vc) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--vc) 38%, var(--panel)); }
-  .mo-vt .mo-ic { color: var(--vc); }
+  .mo-vt .mo-ic { width: 26px; height: 13px; }
   .f-aph { --vc: var(--n1); } .f-agua { --vc: var(--truck); } .f-multi { --vc: var(--n2); } .f-altura { --vc: var(--n5); } .f-apoio { --vc: var(--n3); } .f-outro { --vc: var(--muted); }
   .mo-flag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cap); font-weight: 700; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)); }
 
@@ -256,7 +257,7 @@
   .po-step[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); }
   .po-step b { font-size: var(--head); font-variant-numeric: tabular-nums; }
   .po-step .po-step-ic { display: flex; gap: 2px; min-height: 13px; }
-  .po-step .po-step-ic .mo-ic.ase { color: var(--truck); } .po-step .po-step-ic .mo-ic.ar { color: var(--n2); }
+  .po-step .po-step-ic .mo-ic { width: 22px; height: 11px; }
   .po-step small { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .po-stage { display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch; min-height: 16rem; }
   .po-veh { flex: 1 1 15rem; max-width: 24rem; display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg); }
@@ -382,7 +383,7 @@
   .mo-btn.is-primary:hover { filter: brightness(1.08); color: #fff; }
   .mo-btn.is-yellow { background: var(--yellow); border-color: var(--yellow); color: #1f2937; border-radius: 4px; text-transform: uppercase; letter-spacing: .03em; padding: 8px 18px; }
   .mo-btn.is-yellow:hover { filter: brightness(1.04); color: #1f2937; }
-  .mo-vt { background: var(--chip); border: 0; color: #3b4252; font-weight: 500; }
+  .mo-vt { background: var(--chip); border: 0; color: #2b2f36; font-weight: 700; letter-spacing: .02em; gap: 6px; padding: 2px 9px 2px 6px; cursor: help; }
   .po-badge { color: #fff; background: var(--bc); font-weight: 600; border-radius: 999px; padding: 2px 10px; }
   .po-badge.warn { --bc: var(--yellow); color: #1f2937; }
   .mo-flag { background: var(--ok); color: #fff; border-radius: 4px; }
@@ -408,21 +409,22 @@
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <symbol id="i-ur" viewBox="0 0 24 14"><path d="M1 2.5h14v9H1z"/><path d="M15.5 4.5h3.6l3.4 3.4v3.6h-7z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><path d="M7.2 4.2h1.6v2.1h2.1v1.6H8.8V10H7.2V7.9H5.1V6.3h2.1z" style="fill:var(--panel)"/></symbol>
-    <symbol id="i-ase" viewBox="0 0 24 14"><path d="M1 3.6h15v7.9H1z"/><path d="M16.5 5h3l3 3v3.5h-6z"/><path d="M2 1.2h12.5v1.3H2z"/><path d="M3 5.4h3.2v4H3zM7.4 5.4h3.2v4H7.4zM11.8 5.4H15v4h-3.2z" style="fill:var(--panel);opacity:.45"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
-    <symbol id="i-abt" viewBox="0 0 24 14"><rect x="1" y="3" width="15" height="7.4" rx="3.7"/><path d="M1 9.3h15.5v2.2H1z"/><path d="M17 4.6h2.6l2.9 3.1v3.8H17z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
-    <symbol id="i-absl" viewBox="0 0 24 14"><path d="M1 1.8h14.6v9.7H1z"/><path d="M16.1 4.4h3.2l3.2 3.3v3.8h-6.4z"/><path d="M16.9 3h3.2v1h-3.2z"/><path d="M2.4 5.5h11.8v1.6H2.4z" style="fill:var(--panel);opacity:.5"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
-    <symbol id="i-ar" viewBox="0 0 24 14"><path d="M1 7h10.6v4.5H1z"/><path d="M11.6 11.5V4.6q0-1.1 1.1-1.1h4.4l3 3.4h1.4q1 0 1 1v3.6z"/><path d="M13 4.6h3.6l2.1 2.3H13z" style="fill:var(--panel);opacity:.6"/><path d="M13 1.9h4.4v.9H13z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
-    <symbol id="i-aem" viewBox="0 0 24 14"><path d="M1 6.2h15v5.3H1z"/><path d="M16.5 6.2h3l3 2.6v2.7h-6z"/><path d="M2.4 5.4 17.3.7l.5 1.4-15 4.7z"/><circle cx="5" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.6" cy="11.8" r="2" style="stroke:var(--panel);stroke-width:1"/></symbol>
-    <symbol id="i-at" viewBox="0 0 24 14"><rect x="1" y="3.6" width="14" height="6.4" rx="3.2"/><path d="M1 9.4h14.6v1.6H1z"/><path d="M16 5h3.3l3.2 3v3.5H16z"/><circle cx="4" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/><circle cx="9.6" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/><circle cx="18.8" cy="11.8" r="1.9" style="stroke:var(--panel);stroke-width:1"/></symbol>
+    <symbol id="i-ur" viewBox="0 0 32 16"><rect x="1.5" y="1.8" width="19" height="10.7" rx=".9" style="fill:var(--cb-red)"/><path d="M20.5 4.4h3.9l3.2 3.3 2 .7q.9.3.9 1.2v2.9H20.5z" style="fill:var(--cb-red)"/><path d="M21.4 5.2h2.6l2.5 2.6h-5.1z" style="fill:var(--cb-glass)"/><path d="M9.9 3.3h2.2v2h2v2.2h-2v2h-2.2v-2h-2V5.3h2z" style="fill:#fff"/><rect x="3" y=".7" width="4" height="1.1" style="fill:var(--cb-light)"/><rect x="1.5" y="10.2" width="29.0" height="1.1" style="fill:#fff"/><circle cx="7" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="7" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="25.2" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="25.2" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-ase" viewBox="0 0 32 16"><rect x="1" y="3" width="21" height="9.5" rx=".8" style="fill:var(--cb-red)"/><path d="M22 5h4.5l4 3.6v3.9H22z" style="fill:var(--cb-red)"/><path d="M23.1 6h2.9l2.6 2.5h-5.5z" style="fill:var(--cb-glass)"/><rect x="23.3" y="4.1" width="3" height=".9" style="fill:var(--cb-light)"/><path d="M3 4.4h5v4.8H3zM9.2 4.4h5v4.8H9.2zM15.4 4.4h5v4.8h-5z" style="fill:var(--cb-dark);opacity:.45"/><rect x="2" y="1.3" width="17" height="1" style="fill:var(--cb-metal)"/><rect x="1" y="9.8" width="29.5" height="1.3" style="fill:#fff"/><circle cx="6.5" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="6.5" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="26" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="26" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-abt" viewBox="0 0 32 16"><rect x="1" y="2.6" width="21" height="9.9" rx=".8" style="fill:var(--cb-red)"/><path d="M22 4.2h4.8l3.7 3.9v4.4H22z" style="fill:var(--cb-red)"/><path d="M23.1 5.2h3.2l2.7 2.9h-5.9z" style="fill:var(--cb-glass)"/><rect x="23.2" y="3.3" width="3" height=".9" style="fill:var(--cb-light)"/><rect x="3" y=".7" width="15.5" height="2.4" rx="1.2" style="fill:var(--cb-metal)"/><path d="M3 4.3h17.5v4.2H3z" style="fill:var(--cb-dark);opacity:.35"/><rect x="1" y="9.8" width="29.5" height="1.3" style="fill:#fff"/><circle cx="5.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="5.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="10.4" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="10.4" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="26.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="26.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-absl" viewBox="0 0 32 16"><path d="M1.5 3.1Q1.5 2 2.6 2H20q1.9 0 3.2 1.7l2.7 3.6 3.6 1.3q.9.3.9 1.2v2.7H1.5z" style="fill:var(--cb-red)"/><path d="M20.6 3.1h1.7l2.7 3.8h-4.4z" style="fill:var(--cb-glass)"/><path d="M13.6 3.3h5.4v3.6h-5.4z" style="fill:var(--cb-glass);opacity:.9"/><path d="M3.5 1.5h11" style="stroke:var(--cb-metal);stroke-width:1"/><rect x="17.5" y="1" width="3" height="1" style="fill:var(--cb-light)"/><rect x="1.5" y="8.7" width="29.0" height="1.2" style="fill:#fff"/><circle cx="7" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="7" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="25.2" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="25.2" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-ar" viewBox="0 0 32 16"><path d="M1.5 7h12v5.5h-12z" style="fill:var(--cb-red)"/><path d="M13.5 12.5V5q0-1.2 1.2-1.2h7l3.5 3.4h3.4q1.4 0 1.4 1.4v3.9z" style="fill:var(--cb-red)"/><path d="M15 4.9h6.4l2.5 2.4H15z" style="fill:var(--cb-glass)"/><rect x="16" y="2.4" width="4.6" height="1" style="fill:var(--cb-light)"/><path d="M3 7V4.7h9V7" style="fill:none;stroke:var(--cb-metal);stroke-width:.9"/><rect x="1.5" y="9.1" width="29.0" height="1.2" style="fill:#fff"/><circle cx="6.5" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="6.5" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="25.2" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="25.2" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-aem" viewBox="0 0 32 16"><rect x="1" y="6" width="21" height="6.5" rx=".8" style="fill:var(--cb-red)"/><path d="M22 5h4.5l4 3.6v3.9H22z" style="fill:var(--cb-red)"/><path d="M23.1 6h2.9l2.6 2.5h-5.5z" style="fill:var(--cb-glass)"/><rect x="23.3" y="4.1" width="3" height=".9" style="fill:var(--cb-light)"/><path d="M2.6 5.7 21 1" style="stroke:var(--cb-metal);stroke-width:2.2"/><path d="M5.5 4.9 5.2 3.9M9 4 8.7 3M12.5 3.1l-.3-1M16 2.2l-.3-1" style="stroke:#fff;stroke-width:.5"/><rect x="1" y="9.6" width="29.5" height="1.3" style="fill:#fff"/><circle cx="5.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="5.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="10.4" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="10.4" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="26.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="26.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-at" viewBox="0 0 32 16"><rect x="1" y="2.8" width="21" height="8.6" rx="4.2" style="fill:var(--cb-red)"/><path d="M22.6 4.6h4l3.9 3.6v4.3h-7.9z" style="fill:var(--cb-red)"/><path d="M23.6 5.5h2.6l2.4 2.4h-5z" style="fill:var(--cb-glass)"/><rect x="1.5" y="10.6" width="21.5" height="1.7" style="fill:var(--cb-dark)"/><rect x="1" y="6.6" width="29.5" height="1.2" style="fill:#fff"/><circle cx="5.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="5.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="10.4" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="10.4" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="26.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="26.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
+    <symbol id="i-apsg" viewBox="0 0 32 16"><rect x="1" y="7.2" width="21" height="5.3" rx=".8" style="fill:var(--cb-red)"/><path d="M22 5h4.5l4 3.6v3.9H22z" style="fill:var(--cb-red)"/><path d="M23.1 6h2.9l2.6 2.5h-5.5z" style="fill:var(--cb-glass)"/><rect x="23.3" y="4.1" width="3" height=".9" style="fill:var(--cb-light)"/><path d="M6 7.2 17.5 2.6" style="stroke:var(--cb-metal);stroke-width:1.6"/><rect x="16.5" y=".8" width="4" height="2.6" rx=".4" style="fill:var(--cb-metal)"/><rect x="1" y="9.8" width="29.5" height="1.3" style="fill:#fff"/><circle cx="5.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="5.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="10.4" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="10.4" cy="12.8" r=".9" style="fill:var(--cb-metal)"/><circle cx="26.3" cy="12.8" r="2.3" style="fill:var(--cb-tire)"/><circle cx="26.3" cy="12.8" r=".9" style="fill:var(--cb-metal)"/></symbol>
     <symbol id="i-helm" viewBox="0 0 24 20"><path d="M4 13.4a8 8 0 0 1 16 0z"/><path d="M1 13.2q11 3.8 22 0v2.4q-11 3.8-22 0z"/><path d="M10.2 6.2h3.6v5.2h-3.6z" style="fill:var(--panel);opacity:.4"/></symbol>
     <symbol id="i-ase-lg" viewBox="0 0 128 60">
       <rect x="4" y="13" width="86" height="34" rx="3" style="fill:var(--truck)"/>
       <path d="M90 21h17l13 15v11H90z" style="fill:var(--truck)"/>
       <path d="M95 24h10.5l10 12H95z" style="fill:var(--glass)"/>
-      <rect x="9" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/><rect x="36" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/><rect x="63" y="18" width="23" height="21" rx="1.5" style="fill:var(--truck-2)"/>
-      <path d="M9 23h23M9 28h23M9 33h23M36 23h23M36 28h23M36 33h23M63 23h23M63 28h23M63 33h23" style="stroke:var(--truck);stroke-width:1;opacity:.7"/>
-      <rect x="4" y="41" width="118" height="3" style="fill:var(--stripe)"/>
+      <rect x="9" y="17" width="23" height="20" rx="1.5" style="fill:var(--truck-2)"/><rect x="36" y="17" width="23" height="20" rx="1.5" style="fill:var(--truck-2)"/><rect x="63" y="17" width="23" height="20" rx="1.5" style="fill:var(--truck-2)"/>
+      <path d="M9 22h23M9 27h23M9 32h23M36 22h23M36 27h23M36 32h23M63 22h23M63 27h23M63 32h23" style="stroke:var(--truck);stroke-width:1;opacity:.7"/>
+      <rect x="4" y="39.5" width="118" height="5.5" style="fill:#fff"/><text x="47" y="44" text-anchor="middle" style="fill:var(--cb-red);font:700 5px -apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.6px">ASE · CBMDF</text>
       <rect x="8" y="6" width="74" height="3" rx="1" style="fill:var(--metal)"/>
       <path d="M14 6v7M26 6v7M38 6v7M50 6v7M62 6v7M74 6v7" style="stroke:var(--metal);stroke-width:2"/>
       <rect x="95" y="16.5" width="14" height="4" rx="1.5" style="fill:var(--light)"/>
@@ -431,12 +433,12 @@
       <circle cx="104" cy="49" r="8" style="fill:var(--tire)"/><circle cx="104" cy="49" r="3.4" style="fill:var(--metal)"/>
     </symbol>
     <symbol id="i-ar-lg" viewBox="0 0 128 60">
-      <path d="M6 28h58v18H6z" style="fill:var(--pickup);stroke:var(--pickup-line);stroke-width:1"/>
-      <path d="M64 46V17q0-4 4-4h22l13 14h15q4 0 4 4v15z" style="fill:var(--pickup);stroke:var(--pickup-line);stroke-width:1"/>
+      <path d="M6 28h58v18H6z" style="fill:var(--truck)"/>
+      <path d="M64 46V17q0-4 4-4h22l13 14h15q4 0 4 4v15z" style="fill:var(--truck)"/>
       <path d="M70 17h19l9.5 10H70z" style="fill:var(--glass)"/>
-      <rect x="83" y="17" width="2.5" height="10" style="fill:var(--pickup)"/>
+      <rect x="83" y="17" width="2.5" height="10" style="fill:var(--truck)"/>
       <rect x="72" y="8" width="20" height="4" rx="1.5" style="fill:var(--light)"/>
-      <rect x="6" y="35" width="116" height="3" style="fill:var(--truck)"/>
+      <rect x="6" y="33.5" width="116" height="5.5" style="fill:#fff"/><text x="35" y="38" text-anchor="middle" style="fill:var(--cb-red);font:700 5px -apple-system,Segoe UI,Arial,sans-serif;letter-spacing:.6px">AR · CBMDF</text>
       <path d="M14 28v-8h40v8" style="fill:none;stroke:var(--metal);stroke-width:2.5"/>
       <rect x="118" y="38" width="7" height="6" rx="1" style="fill:var(--metal)"/>
       <circle cx="28" cy="47" r="8" style="fill:var(--tire)"/><circle cx="28" cy="47" r="3.4" style="fill:var(--metal)"/>
@@ -547,21 +549,21 @@ O cálculo está na aba «Matriz de risco» deste painel.">i</button></h2>
         <div class="mo-vtr-group">
           <p class="mo-sub">Socorro base</p>
           <ul class="mo-chips">
-            <li class="mo-chip" data-chip="ur" hidden><span class="mo-chip-v" data-src="gbm" data-col="ur" data-fmt="text">—</span><span class="mo-chip-k">VAPH</span></li>
-            <li class="mo-chip" data-chip="ur_gsv" hidden><span class="mo-chip-v" data-src="gbm" data-col="ur_gsv" data-fmt="text">—</span><span class="mo-chip-k">VAPH reforço</span></li>
-            <li class="mo-chip" data-chip="vme" hidden><span class="mo-chip-v" data-src="gbm" data-col="vme" data-fmt="text">—</span><span class="mo-chip-k">VME</span></li>
-            <li class="mo-chip" data-chip="vme2" hidden><span class="mo-chip-v" data-src="gbm" data-col="vme2" data-fmt="text">—</span><span class="mo-chip-k">2ª VME</span></li>
-            <li class="mo-chip" data-chip="apoio_ar" hidden><span class="mo-chip-v" data-src="gbm" data-col="apoio_ar" data-fmt="text">—</span><span class="mo-chip-k">Apoio sem efetivo</span></li>
+            <li class="mo-chip" data-chip="ur" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="ur" data-fmt="text">—</span><span class="mo-chip-k">VAPH</span></li>
+            <li class="mo-chip" data-chip="ur_gsv" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="ur_gsv" data-fmt="text">—</span><span class="mo-chip-k">VAPH reforço</span></li>
+            <li class="mo-chip" data-chip="vme" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="vme" data-fmt="text">—</span><span class="mo-chip-k">VME</span></li>
+            <li class="mo-chip" data-chip="vme2" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="vme2" data-fmt="text">—</span><span class="mo-chip-k">2ª VME</span></li>
+            <li class="mo-chip" data-chip="apoio_ar" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="apoio_ar" data-fmt="text">—</span><span class="mo-chip-k">Apoio sem efetivo</span></li>
           </ul>
         </div>
         <div class="mo-vtr-group">
           <p class="mo-sub">Intermediário</p>
           <ul class="mo-chips">
-            <li class="mo-chip" data-chip="vci" hidden><span class="mo-chip-v" data-src="gbm" data-col="vci" data-fmt="text">—</span><span class="mo-chip-k">VCI</span></li>
-            <li class="mo-chip" data-chip="vs" hidden><span class="mo-chip-v" data-src="gbm" data-col="vs" data-fmt="text">—</span><span class="mo-chip-k">VS</span></li>
-            <li class="mo-chip" data-chip="vpa" hidden><span class="mo-chip-v" data-src="gbm" data-col="vpa" data-fmt="text">—</span><span class="mo-chip-k">VPA</span></li>
-            <li class="mo-chip" data-chip="ve" hidden><span class="mo-chip-v" data-src="gbm" data-col="ve" data-fmt="text">—</span><span class="mo-chip-k">VE</span></li>
-            <li class="mo-chip" data-chip="apoio" hidden><span class="mo-chip-v" data-src="gbm" data-col="apoio" data-fmt="text">—</span><span class="mo-chip-k">Apoio</span></li>
+            <li class="mo-chip" data-chip="vci" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="vci" data-fmt="text">—</span><span class="mo-chip-k">VCI</span></li>
+            <li class="mo-chip" data-chip="vs" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="vs" data-fmt="text">—</span><span class="mo-chip-k">VS</span></li>
+            <li class="mo-chip" data-chip="vpa" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="vpa" data-fmt="text">—</span><span class="mo-chip-k">VPA</span></li>
+            <li class="mo-chip" data-chip="ve" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="ve" data-fmt="text">—</span><span class="mo-chip-k">VE</span></li>
+            <li class="mo-chip" data-chip="apoio" hidden><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><span class="mo-chip-v" data-src="gbm" data-col="apoio" data-fmt="text">—</span><span class="mo-chip-k">Apoio</span></li>
           </ul>
           <p class="mo-sub" id="mo-vtr-none" hidden>Sem viaturas no intermediário.</p>
         </div>
@@ -784,7 +786,7 @@ Fonte: aba Absoluto (rankings e viaturas).">i</button></h2>
       <div class="ta-legend">
         <span class="ta-scale">Saldo: déficit <i class="ta-grad ta-grad-saldo"></i> sobra</span>
         <span class="ta-scale">Demanda: menor <i class="ta-grad ta-grad-dem"></i> maior</span>
-        <span class="ta-vlegend"><span class="mo-vt f-aph"><svg class="mo-ic" aria-hidden="true"><use href="#i-ur"></use></svg>UR</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE</span><span class="mo-vt f-agua"><svg class="mo-ic" aria-hidden="true"><use href="#i-abt"></use></svg>ABT</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-absl"></use></svg>ABSL</span><span class="mo-vt f-multi"><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>AR</span><span class="mo-vt f-altura"><svg class="mo-ic" aria-hidden="true"><use href="#i-aem"></use></svg>AEM</span><span class="mo-vt f-apoio"><svg class="mo-ic" aria-hidden="true"><use href="#i-at"></use></svg>AT-APSG</span></span>
+        <span class="ta-vlegend"><span class="mo-vt f-cbm" data-tip="UR: Unidade de Resgate"><svg class="mo-ic" aria-hidden="true"><use href="#i-ur"></use></svg>UR</span><span class="mo-vt f-cbm" data-tip="ASE: Auto Salvamento e Extinção"><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE</span><span class="mo-vt f-cbm" data-tip="ABT: Auto Bomba Tanque"><svg class="mo-ic" aria-hidden="true"><use href="#i-abt"></use></svg>ABT</span><span class="mo-vt f-cbm" data-tip="ABSL: Auto Busca e Salvamento Leve"><svg class="mo-ic" aria-hidden="true"><use href="#i-absl"></use></svg>ABSL</span><span class="mo-vt f-cbm" data-tip="AR: Auto Rápido"><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>AR</span><span class="mo-vt f-cbm" data-tip="AEM: Auto Escada Mecânica"><svg class="mo-ic" aria-hidden="true"><use href="#i-aem"></use></svg>AEM</span><span class="mo-vt f-cbm" data-tip="AT: Auto Tanque"><svg class="mo-ic" aria-hidden="true"><use href="#i-at"></use></svg>AT</span><span class="mo-vt f-cbm" data-tip="APSG: Auto Plataforma de Serviços Gerais"><svg class="mo-ic" aria-hidden="true"><use href="#i-apsg"></use></svg>APSG</span></span>
       </div>
       <div class="mo-table-wrap mo-ta-wrap">
         <table class="mo-table mo-ta" id="mo-ta">
@@ -1070,10 +1072,10 @@ O resto vai para as 4 alas.">i</button></h2>
     <article class="mo-card" id="po-regras">
       <div class="mo-card-head"><h2>Regras de guarnição</h2></div>
       <dl class="mo-crit">
-        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE no padrão</dt><dd><b>5 bombeiros</b>: 1 condutor (QBMG-2) e 4 operacionais (QBMG-1).</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--warn)" aria-hidden="true"><use href="#i-ase"></use></svg>ASE em exceção</dt><dd><b>4 bombeiros</b>: 1 condutor (QBMG-2) e 3 operacionais (QBMG-1). É o mínimo para o ASE.</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--n2)" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Um QBMG-1 pode conduzir a AR só em deslocamento não emergencial: prevenção, lavagem de pista e captura de insetos.</dd></div>
-        <div><dt><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" style="color: var(--truck)" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>. O ideal é <b>10</b>. Cada ASE precisa de 1 condutor (QBMG-2).</dd></div>
+        <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE no padrão</dt><dd><b>5 bombeiros</b>: 1 condutor (QBMG-2) e 4 operacionais (QBMG-1).</dd></div>
+        <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>ASE em exceção</dt><dd><b>4 bombeiros</b>: 1 condutor (QBMG-2) e 3 operacionais (QBMG-1). É o mínimo para o ASE.</dd></div>
+        <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Um QBMG-1 pode conduzir a AR só em deslocamento não emergencial: prevenção, lavagem de pista e captura de insetos.</dd></div>
+        <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>. O ideal é <b>10</b>. Cada ASE precisa de 1 condutor (QBMG-2).</dd></div>
       </dl>
       <p class="mo-note">Ordem: 1 ASE. Com 6 ou 7, ASE e AR. Com 8 ou mais, 2º ASE. O resto completa os ASE e depois a AR. Um condutor pode ocupar a vaga de operacional. As escalas do intermediário (VCI, VS, VPA, VE) não entram nesta conta.</p>
     </article>
@@ -1266,7 +1268,14 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     document.querySelectorAll('.mo-rec').forEach((s) => { s.hidden = (s.dataset.rec === 'todos') !== (S.comar === 'Todos'); });
     const semDeficit = ok && !!res && (res.pior_saldo_carga == null || res.pior_saldo_carga >= 0);
     document.querySelectorAll('.mo-pior').forEach((s) => { s.hidden = (s.dataset.pior === 'nao') !== semDeficit; });
-    document.querySelectorAll('.mo-chip[data-chip]').forEach((li) => { li.hidden = !(ok && g && g[li.dataset.chip]); });
+    document.querySelectorAll('.mo-chip[data-chip]').forEach((li) => {
+      const m = ok && g ? g[li.dataset.chip] : null;
+      li.hidden = !m;
+      if (!m) return;
+      const u = li.querySelector('.mo-ic use');
+      if (u) u.setAttribute('href', '#' + modelo(m).ic);
+      li.dataset.tip = nomeViatura(m);
+    });
     const none = document.getElementById('mo-vtr-none');
     if (none) none.hidden = !(ok && g) || INTER.some((k) => g[k]);
   }
@@ -1539,16 +1548,22 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   const DEMANDA = new Set(['matriz_risco', 'carga_atual', 'carga_atualizada', 'coef_ajuste']);
   const RANKS = new Set(GRUPOS[5].cols);
   const SOMA = new Set(['efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'cotas_gsv', 'saldo_considerado', 'novo_efetivo', 'saldo_carga']);
+  /* Siglas e nomes das viaturas do CBMDF (fonte: cbm.df.gov.br, "Viaturas, aeronaves e embarcações do CBMDF"). */
+  const SIGLAS = {
+    UR: 'Unidade de Resgate', ASE: 'Auto Salvamento e Extinção', ABT: 'Auto Bomba Tanque', ABSL: 'Auto Busca e Salvamento Leve',
+    AR: 'Auto Rápido', AEM: 'Auto Escada Mecânica', AT: 'Auto Tanque', APSG: 'Auto Plataforma de Serviços Gerais',
+  };
+  const ICONE = { UR: 'i-ur', ASE: 'i-ase', ABT: 'i-abt', ABSL: 'i-absl', AR: 'i-ar', AEM: 'i-aem', AT: 'i-at', APSG: 'i-apsg' };
+  const siglasDe = (m) => String(m).toUpperCase().replace(/\(.*?\)/g, ' ').split(/[^A-Z]+/).filter((x) => SIGLAS[x]);
   const modelo = (m) => {
-    const u = String(m).toUpperCase();
-    if (u.startsWith('UR')) return { ic: 'i-ur', fam: 'aph' };
-    if (u === 'ASE') return { ic: 'i-ase', fam: 'agua' };
-    if (u === 'ABT') return { ic: 'i-abt', fam: 'agua' };
-    if (u === 'ABSL') return { ic: 'i-absl', fam: 'multi' };
-    if (u === 'AR') return { ic: 'i-ar', fam: 'multi' };
-    if (u === 'AEM') return { ic: 'i-aem', fam: 'altura' };
-    if (u.startsWith('AT')) return { ic: 'i-at', fam: 'apoio' };
-    return { ic: 'i-ase', fam: 'outro' };
+    const sg = siglasDe(m);
+    return { ic: ICONE[sg[0]] || 'i-ase', fam: 'cbm' };
+  };
+  const nomeViatura = (m) => {
+    const sg = siglasDe(m);
+    const linhas = sg.map((x) => `${x}: ${SIGLAS[x]}`);
+    if (/GSV/i.test(m)) linhas.push('Guarnição por GSV (reforço).');
+    return linhas.length ? linhas.join('\n') : String(m);
   };
   const icon = (id, cls) => {
     const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -1563,6 +1578,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     const { ic, fam } = modelo(m);
     const sp = document.createElement('span');
     sp.className = 'mo-vt f-' + fam;
+    sp.dataset.tip = nomeViatura(m);
     sp.append(icon(ic, 'mo-ic'), document.createTextNode(m));
     return sp;
   };
