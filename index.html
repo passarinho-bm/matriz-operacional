@@ -313,6 +313,45 @@
   .cg-bar { display: inline-block; height: 8px; border-radius: 3px; background: var(--c, var(--accent)); min-width: 1px; }
   .mo-pgerr { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); font-size: var(--cap); color: var(--muted); }
   .mo-pgerr b { color: var(--fg); }
+  /* ---- Visão espacial ---- */
+  .ge-wrap { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .mo-card.ge-mapa-card { padding: 0; order: -1; }
+  .ge-mapa { height: 62vh; min-height: 340px; width: 100%; background: #e8ecf0; }
+  @container (min-width: 56rem) {
+    .ge-wrap { grid-template-columns: 21rem minmax(0, 1fr); }
+    .mo-card.ge-mapa-card { order: 0; position: sticky; top: 12px; }
+    .ge-mapa { height: min(78vh, 780px); }
+  }
+  .ge-camadas { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .ge-cam { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 2px 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .ge-cam input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+  .ge-cam label { font-weight: 600; font-size: var(--cap); cursor: pointer; }
+  .ge-cam label span { color: var(--muted); font-weight: 400; }
+  .ge-cam .ge-desc { grid-column: 3 / -1; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .ge-sw { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 35%, transparent); }
+  .ge-sw.is-ponto { border-radius: 50%; background: var(--cb-red); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--cb-red); }
+  .ge-so { appearance: none; border: 1px solid var(--outline); background: var(--panel); color: var(--outline); border-radius: 999px; padding: 2px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  .ge-so:hover { color: var(--fg); border-color: var(--fg); }
+  .ge-so[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ge-bloco { display: grid; gap: 6px; }
+  .ge-bloco > p { font-size: var(--cap); font-weight: 600; }
+  .ge-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ge-itens { list-style: none; margin: 0; padding: 0; max-height: 15rem; overflow: auto; border: 1px solid var(--line); border-radius: 4px; }
+  .ge-itens li button { appearance: none; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: var(--panel); padding: 6px 10px; font: inherit; font-size: var(--cap); color: var(--fg); cursor: pointer; }
+  .ge-itens li:last-child button { border-bottom: 0; }
+  .ge-itens li button:hover { background: var(--hover); }
+  .ge-pop { font: 400 12.5px/1.45 var(--font-sans); color: var(--fg); min-width: 13rem; }
+  .ge-pop-t { margin: 0; font-size: 14px; font-weight: 700; }
+  .ge-pop-s { margin: 0 0 6px; color: var(--muted); font-size: 12px; }
+  .ge-pop dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; margin: 0; max-height: 14rem; overflow: auto; }
+  .ge-pop dt { color: var(--muted); }
+  .ge-pop dd { margin: 0; font-weight: 600; word-break: break-word; }
+  .ge-pop .ge-pop-m { margin: 8px 0 0; padding-top: 6px; border-top: 1px solid var(--line); }
+  .ge-pop .ge-pop-m b { font-weight: 700; }
+  .ge-pop button { margin-top: 6px; appearance: none; border: 0; border-radius: 4px; background: var(--primary); color: #fff; font: 600 12px var(--font-sans); padding: 5px 10px; cursor: pointer; }
+  .ge-pop a { color: var(--accent); }
+  .leaflet-container { font-family: var(--font-sans); }
+  .ge-rotulo { background: rgba(255, 255, 255, .92); border: 0; box-shadow: 0 1px 2px rgba(0, 0, 0, .25); font: 600 11px var(--font-sans); color: var(--fg); padding: 1px 5px; }
   /* ---- Distâncias ---- */
   .ds-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: var(--cap); color: var(--muted); }
   .ds-ctrl label { display: inline-flex; align-items: center; gap: 8px; }
@@ -457,7 +496,7 @@
     <h1 class="sr">Matriz Operacional — <span id="mo-periodo">novembro de 2026</span></h1>
     <nav class="crumbs" aria-label="Local">
       <svg viewBox="0 0 24 20" aria-hidden="true"><path d="M12 1 1 10h3v9h6v-6h4v6h6v-9h3z"/></svg>
-      <span class="sep">›</span><span>Matriz Operacional</span><span class="sep">›</span><span>Novembro de 2026</span><span class="sep">›</span><b id="mo-crumb">Matriz operacional</b>
+      <span class="sep">›</span><span>Matriz Operacional</span><span class="sep">›</span><span>Novembro de 2026</span><span class="sep">›</span><b id="mo-crumb">Matriz</b>
     </nav>
     <div class="filtro">
       <span class="filtro-k">COMAR:</span>
@@ -470,12 +509,13 @@
       </div>
     </div>
     <nav class="mo-pages" role="tablist" aria-label="Páginas">
-      <button type="button" role="tab" data-page="matriz" aria-selected="true">Matriz operacional</button>
-      <button type="button" role="tab" data-page="tabela" aria-selected="false">Tabela Absoluto</button>
+      <button type="button" role="tab" data-page="tabela" aria-selected="true">Matriz</button>
+      <button type="button" role="tab" data-page="matriz" aria-selected="false">Visão geral</button>
       <button type="button" role="tab" data-page="natureza" aria-selected="false">Ranking por natureza</button>
       <button type="button" role="tab" data-page="risco" aria-selected="false">Matriz de risco</button>
       <button type="button" role="tab" data-page="carga" aria-selected="false">Carga operacional</button>
       <button type="button" role="tab" data-page="distancias" aria-selected="false">Distâncias</button>
+      <button type="button" role="tab" data-page="espacial" aria-selected="false">Visão espacial</button>
       <button type="button" role="tab" data-page="poder" aria-selected="false">Poder operacional</button>
     </nav>
   </header>
@@ -1023,6 +1063,39 @@ Ida e volta podem ter valores diferentes.">i</button></h2>
     </article>
   </div>
 
+  <div class="mo-page" id="pg-espacial" hidden>
+    <div class="mo-pgerr" data-pgerr="espacial" hidden><span class="mo-status-dot"></span><span><b>O mapa não carregou.</b> <span data-pgerr-msg></span></span></div>
+    <p class="mo-lede">Camadas do arquivo <b id="ge-doc">EMOPE – Plano de Emprego – Áreas de Atuação</b>. Ligue ou desligue cada camada. Selecione um item no mapa para ver os dados. <span id="ge-aviso"></span></p>
+    <div class="ge-wrap">
+      <article class="mo-card" id="ge-painel">
+        <div class="mo-card-head">
+          <h2>Camadas <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: arquivo KMZ «Cópia de EMOPE – Plano de Emprego – Areas de Atuação».
+O filtro de COMAR vale para as camadas ligadas a um GBM. As regiões administrativas não têm COMAR.">i</button></h2>
+          <p class="mo-note">Marque para mostrar. «Só esta» isola a camada.</p>
+        </div>
+        <ul class="ge-camadas" id="ge-camadas"></ul>
+        <div class="ge-acoes"><button type="button" class="mo-btn" id="ge-todas">Mostrar todas</button><button type="button" class="mo-btn" id="ge-enquadrar">Enquadrar</button></div>
+        <div class="ge-bloco">
+          <p>Cor das áreas de atuação</p>
+          <div class="mo-tabs" role="group" aria-label="Cor das áreas de atuação"><button type="button" data-ge-cor="arquivo" aria-pressed="true">Cores do arquivo</button><button type="button" data-ge-cor="comar" aria-pressed="false">Por COMAR</button></div>
+        </div>
+        <div class="ge-bloco">
+          <p>Mapa base</p>
+          <div class="mo-tabs" role="group" aria-label="Mapa base"><button type="button" data-ge-base="mapa" aria-pressed="true">Mapa</button><button type="button" data-ge-base="satelite" aria-pressed="false">Satélite</button></div>
+        </div>
+        <div class="ge-bloco">
+          <p>Itens da camada</p>
+          <select id="ge-lista-camada" class="mo-search" aria-label="Camada da lista"></select>
+          <input class="mo-search" id="ge-busca" type="search" placeholder="Buscar item" aria-label="Buscar item da camada">
+          <ul class="ge-itens" id="ge-itens"></ul>
+        </div>
+      </article>
+      <article class="mo-card ge-mapa-card">
+        <div class="ge-mapa" id="ge-mapa" role="region" aria-label="Mapa das camadas"></div>
+      </article>
+    </div>
+  </div>
+
   <div class="mo-page" id="pg-poder" hidden>
     <p class="mo-lede">Veja quantas viaturas a ala de serviço pode ativar. O exemplo usa o menor GBM: <b data-po="total">69</b> bombeiros. Mude o efetivo do GBM ou o efetivo da ala.</p>
 
@@ -1211,7 +1284,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   }
 
   /* ---- Estado ---- */
-  const S = { all: [], resumo: [], frota: [], status: 'loading', page: 'matriz', nat: 'rk_ur', comar: 'Todos', saldo: 'saldo_considerado', gbm: null, sort: { field: null, dir: null } };
+  const S = { all: [], resumo: [], frota: [], status: 'loading', page: 'tabela', nat: 'rk_ur', comar: 'Todos', saldo: 'saldo_considerado', gbm: null, sort: { field: null, dir: null } };
 
   /* ---- Naturezas de ocorrência e viaturas que cada uma orienta ---- */
   const POSTO = { ur: 'UR', ur_gsv: 'UR reforço', vme: 'VME', vme2: '2ª VME', vci: 'VCI', vs: 'VS', vpa: 'VPA', ve: 'VE', apoio: 'Apoio' };
@@ -1478,7 +1551,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.page === S.page)));
     const ativa = document.querySelector(`.mo-pages [data-page="${S.page}"]`);
     document.getElementById('mo-crumb').textContent = ativa ? ativa.textContent : '';
-    ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'distancias', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
+    ['matriz', 'tabela', 'natureza', 'risco', 'carga', 'distancias', 'espacial', 'poder'].forEach((pg) => { document.getElementById('pg-' + pg).hidden = S.page !== pg; });
     document.querySelectorAll('.filtro').forEach((el) => { el.hidden = S.page === 'poder'; });
     document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nat === S.nat)));
     fillValues();
@@ -1499,6 +1572,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       renderCarga();
     } else if (S.page === 'distancias') {
       renderDist();
+    } else if (S.page === 'espacial') {
+      renderEspacial();
     } else {
       renderPoder();
     }
@@ -2512,6 +2587,238 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       .on('keydown', (ev, d) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); DS.origem = d.d; DS.cel = null; render(); } });
   }
 
+  /* ---- Página: visão espacial (KMZ convertido em mapa.json) ---- */
+  const LEAF_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  const LEAF_JS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+  const MAPA_URL = 'mapa.json';
+  const COR_COMAR = { I: '#1976d2', II: '#dd6b20', III: '#2e7d32', IV: '#7b4fb8' };
+  const CAM = {
+    previa_atuacao_dos_gbms_2025_gbms_area_atuaoshp: { nome: 'Áreas de atuação dos GBMs', desc: 'Prévia 2025. Uma área por GBM.', z: 430, on: true, campos: { COMAR: 'COMAR' } },
+    grupamentos_cbmdf: { nome: 'Quartéis', desc: 'Localização de cada GBM.', z: 460, on: true, ponto: true, campos: { seg_sigla: 'Sigla', seg_unidad: 'Unidade', seg_atuali: 'Atualização do cadastro' } },
+    isochrones_6_min_de_deslocamento: { nome: 'Isócronas de deslocamento', desc: 'Área que o quartel alcança de carro. O nome da camada diz 6 min; o atributo diz o tempo usado.', z: 420, on: false, campos: { AA_MINS: 'Tempo (min)', AA_MODE: 'Modo', TOTAL_POP: 'População na área', CENTER_LAT: 'Latitude do centro', CENTER_LON: 'Longitude do centro' } },
+    voronoi_polygons: { nome: 'Polígonos de Voronoi', desc: 'Região mais próxima de cada quartel, em linha reta.', z: 410, on: false, campos: { seg_sigla: 'Sigla', seg_unidad: 'Unidade', seg_endere: 'Endereço', seg_telefo: 'Telefone', seg_ra: 'Nº da RA', seg_tipo_u: 'Tipo' } },
+    regioes_administrativasshp: { nome: 'Regiões administrativas', desc: 'Limites das RAs do DF.', z: 400, on: false, campos: { ra_codigo: 'Código', ra_nome: 'Nome', st_area_sh: 'Área (km²)', ra_path: 'Monografia' } },
+  };
+  const OCULTOS = new Set(['fid', 'descrição', 'st_length_', 'ra_cira', 'seg_orgao', 'seg_ende_1', 'seg_end_ca', 'seg_cpr', 'seg_georef']);
+  const GE = { dados: null, mapa: null, base: 'mapa', cor: 'arquivo', grupos: {}, on: {}, lista: null, iniciando: null, erro: null, bases: {} };
+  const camOrdem = () => (GE.dados ? GE.dados.camadas.slice().sort((a, b) => (CAM[b.id] || {}).z - (CAM[a.id] || {}).z) : []);
+  const numGbm = (t) => { t = norm(t); if (/sierra/i.test(t)) return 'sierra'; const m = t.match(/(\d+)/); return m ? m[1] : null; };
+  const gbmDaMatriz = (sig) => { const k = numGbm(sig); if (!k) return null; return S.all.find((r) => (k === 'sierra' ? /sierra/i.test(r.gbm) : numGbm(r.gbm) === k)) || null; };
+  const siglaDe = (cid, f) => {
+    const a = f.properties.attrs || {};
+    if (cid.startsWith('previa')) return f.properties.nome;
+    return a.seg_sigla || f.properties._gbm || null;
+  };
+  const comarDeFeat = (cid, f) => {
+    if (cid.startsWith('regioes')) return null;
+    const sig = siglaDe(cid, f);
+    const k = sig ? numGbm(sig) : null;
+    if (k && GE.comarPorNum && GE.comarPorNum[k]) return GE.comarPorNum[k];
+    const g = sig ? gbmDaMatriz(sig) : null;
+    return g ? g.comar : null;
+  };
+  const rotuloDe = (cid, f) => {
+    const a = f.properties.attrs || {};
+    if (cid.startsWith('previa')) return f.properties.nome || 'Área';
+    if (cid.startsWith('grupa') || cid.startsWith('voronoi')) return a.seg_sigla || 'GBM';
+    if (cid.startsWith('isochrones')) return 'Isócrona' + (f.properties._gbm ? ' · ' + f.properties._gbm : '');
+    if (cid.startsWith('regioes')) return [a.ra_codigo, a.ra_nome].filter(Boolean).join(' · ') || 'RA';
+    return f.properties.nome || 'Item';
+  };
+  const carregaLeaflet = () => new Promise((ok, falha) => {
+    if (window.L && window.L.map) { ok(); return; }
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = LEAF_CSS; document.head.appendChild(css);
+    const js = document.createElement('script'); js.src = LEAF_JS; js.onload = () => ok(); js.onerror = () => falha(new Error('A biblioteca do mapa (Leaflet) não carregou.'));
+    document.head.appendChild(js);
+  });
+  async function iniciaMapa() {
+    await carregaLeaflet();
+    const res = await fetch(MAPA_URL, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('O arquivo do mapa não carregou (código ' + res.status + ').');
+    GE.dados = await res.json();
+    const pts = (GE.dados.camadas.find((c) => c.id.startsWith('grupa')) || { features: [] }).features;
+    GE.dados.camadas.filter((c) => c.id.startsWith('isochrones')).forEach((c) => c.features.forEach((f) => {
+      const a = f.properties.attrs || {}, lon = Number(a.CENTER_LON), lat = Number(a.CENTER_LAT);
+      let best = null, bd = Infinity;
+      pts.forEach((p) => { const [x, y] = p.geometry.coordinates; const d = (x - lon) ** 2 + (y - lat) ** 2; if (d < bd) { bd = d; best = p; } });
+      if (best) f.properties._gbm = best.properties.attrs.seg_sigla;
+    }));
+    GE.comarPorNum = {};
+    GE.dados.camadas.filter((c) => c.id.startsWith('previa')).forEach((c) => c.features.forEach((f) => {
+      const k = numGbm(f.properties.nome), cm = semComar((f.properties.attrs || {}).COMAR || '');
+      if (k && cm) GE.comarPorNum[k] = cm;
+    }));
+    const L = window.L;
+    const m = L.map('ge-mapa', { zoomControl: true, preferCanvas: false, zoomSnap: 0.25, zoomDelta: 0.5 }).setView([-15.79, -47.88], 10);
+    GE.bases.mapa = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', attribution: '&copy; OpenStreetMap &copy; CARTO' });
+    GE.bases.satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagens &copy; Esri' });
+    GE.bases.mapa.addTo(m);
+    L.control.scale({ imperial: false }).addTo(m);
+    GE.dados.camadas.forEach((c) => {
+      const d = CAM[c.id] || { nome: c.nomeOriginal, z: 405, on: false };
+      CAM[c.id] = d;
+      const pane = m.createPane('p_' + c.id); pane.style.zIndex = d.z;
+      GE.on[c.id] = !!d.on;
+    });
+    GE.mapa = m;
+    GE.lista = (GE.dados.camadas.find((c) => c.id.startsWith('previa')) || GE.dados.camadas[0]).id;
+    document.getElementById('ge-doc').textContent = GE.dados.documento.replace(/^Cópia de\s*/i, '');
+    document.getElementById('ge-aviso').textContent = GE.dados.descricao ? 'Aviso do arquivo: ' + GE.dados.descricao : '';
+    construirCamadas();
+  }
+  const estiloDe = (cid, f) => {
+    const e = f.properties.estilo || {};
+    if (/Point/.test((f.geometry || {}).type || '')) return { radius: 6, color: '#fff', weight: 2, opacity: 1, fillColor: '#c8102e', fillOpacity: 1 };
+    const st = { color: e.color || '#555', weight: Math.max(1, Math.min(4, e.weight || 1.5)), opacity: e.opacity ?? 1, fillColor: e.fillColor || e.color || '#555', fillOpacity: e.fillOpacity ?? 0.25 };
+    if (cid.startsWith('previa') && GE.cor === 'comar') {
+      const c = COR_COMAR[comarDeFeat(cid, f)] || '#6b7280';
+      Object.assign(st, { color: c, fillColor: c, fillOpacity: 0.3, weight: 1.5 });
+    }
+    if (cid.startsWith('regioes')) Object.assign(st, { weight: 2, fillOpacity: 0 });
+    if (cid.startsWith('voronoi')) Object.assign(st, { weight: 1.5, dashArray: '4 3', fillOpacity: 0 });
+    return st;
+  };
+  function popupDe(cid, f) {
+    const d = CAM[cid] || {}, a = f.properties.attrs || {};
+    const box = document.createElement('div'); box.className = 'ge-pop';
+    const t = document.createElement('p'); t.className = 'ge-pop-t'; t.textContent = rotuloDe(cid, f);
+    const s2 = document.createElement('p'); s2.className = 'ge-pop-s'; s2.textContent = d.nome || cid;
+    const dl = document.createElement('dl');
+    const add = (k, v, link) => {
+      const dt = document.createElement('dt'); dt.textContent = k;
+      const dd = document.createElement('dd');
+      if (link && /^https:\/\//.test(v)) { const aa = document.createElement('a'); aa.href = v; aa.target = '_blank'; aa.rel = 'noopener'; aa.textContent = 'Abrir PDF'; dd.appendChild(aa); }
+      else dd.textContent = v;
+      dl.append(dt, dd);
+    };
+    const fmtCampo = (k, v) => {
+      if (k === 'TOTAL_POP') return fmt('int', Number(v));
+      if (k === 'st_area_sh') return f1(Number(v) / 1e6);
+      if (k === 'CENTER_LAT' || k === 'CENTER_LON') return Number(v).toFixed(5).replace('.', ',');
+      if (k === 'AA_MODE') return v === 'driving-car' ? 'carro' : v;
+      return v;
+    };
+    if (cid.startsWith('isochrones') && f.properties._gbm) add('Quartel mais próximo do centro', f.properties._gbm);
+    Object.entries(d.campos || {}).forEach(([k, lab]) => { if (a[k] != null && a[k] !== '') add(lab, fmtCampo(k, a[k]), k === 'ra_path'); });
+    Object.entries(a).forEach(([k, v]) => { if (!(d.campos || {})[k] && !OCULTOS.has(k)) add(k, v); });
+    box.append(t, s2);
+    if (dl.children.length) box.appendChild(dl);
+    const sig = siglaDe(cid, f);
+    const g = sig ? gbmDaMatriz(sig) : null;
+    if (g) {
+      const pm = document.createElement('p'); pm.className = 'ge-pop-m';
+      const part = (lab, v) => { pm.append(document.createTextNode(lab + ': ')); const b = document.createElement('b'); b.textContent = v; pm.appendChild(b); pm.appendChild(document.createElement('br')); };
+      pm.append(document.createTextNode('Na matriz (' + g.gbm + ')')); pm.appendChild(document.createElement('br'));
+      part('Efetivo atual', fmt('int', g.efetivo_atual)); part('Saldo considerado', fmt('signed', g.saldo_considerado)); part('Matriz de risco', fmt('dec2', g.matriz_risco));
+      const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = 'Abrir na Visão geral';
+      bt.addEventListener('click', () => { S.gbm = g.gbm; S.page = 'matriz'; writeHash(); render(); window.scrollTo({ top: 0 }); });
+      box.append(pm, bt);
+    } else if (sig && (cid.startsWith('previa') || cid.startsWith('grupa'))) {
+      const pm = document.createElement('p'); pm.className = 'ge-pop-m'; pm.textContent = 'Este GBM não está na aba Absoluto.'; box.appendChild(pm);
+    }
+    return box;
+  }
+  function construirCamadas() {
+    const L = window.L, m = GE.mapa;
+    Object.values(GE.grupos).forEach((g) => m.removeLayer(g));
+    GE.grupos = {};
+    GE.dados.camadas.forEach((c) => {
+      const d = CAM[c.id];
+      const passa = (f) => S.comar === 'Todos' || c.id.startsWith('regioes') || comarDeFeat(c.id, f) === S.comar;
+      const g = L.geoJSON({ type: 'FeatureCollection', features: c.features }, {
+        pane: 'p_' + c.id,
+        filter: passa,
+        style: (f) => estiloDe(c.id, f),
+        pointToLayer: (f, ll) => L.circleMarker(ll, { pane: 'p_' + c.id, radius: 6, color: '#fff', weight: 2, fillColor: '#c8102e', fillOpacity: 1 }),
+        onEachFeature: (f, lyr) => {
+          lyr.bindPopup(() => popupDe(c.id, f), { maxWidth: 320 });
+          lyr.bindTooltip(rotuloDe(c.id, f), d.ponto ? { direction: 'top', offset: [0, -6], className: 'ge-rotulo' } : { sticky: true, className: 'ge-rotulo' });
+          if (!d.ponto) {
+            lyr.on('mouseover', () => { const st = estiloDe(c.id, f); lyr.setStyle({ weight: st.weight + 2, fillOpacity: Math.min(0.6, (st.fillOpacity || 0) + 0.15) }); });
+            lyr.on('mouseout', () => lyr.setStyle(estiloDe(c.id, f)));
+          }
+          f.properties._lyr = lyr;
+        },
+      });
+      GE.grupos[c.id] = g;
+      if (GE.on[c.id]) g.addTo(m);
+    });
+  }
+  function enquadrar() {
+    const L = window.L;
+    const b = L.latLngBounds([]);
+    const ids = Object.keys(GE.grupos).filter((id) => GE.on[id] && GE.grupos[id].getLayers().length);
+    const semRa = ids.filter((id) => !id.startsWith('regioes'));
+    (S.comar !== 'Todos' && semRa.length ? semRa : ids).forEach((id) => b.extend(GE.grupos[id].getBounds()));
+    if (b.isValid()) GE.mapa.fitBounds(b, { padding: [20, 20] });
+  }
+  function painelEspacial() {
+    const ul = document.getElementById('ge-camadas');
+    const sozinha = (() => { const ligadas = Object.keys(GE.on).filter((k) => GE.on[k]); return ligadas.length === 1 ? ligadas[0] : null; })();
+    ul.replaceChildren(...camOrdem().map((c) => {
+      const d = CAM[c.id];
+      const li = document.createElement('li'); li.className = 'ge-cam';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'ge-cb-' + c.id; cb.checked = !!GE.on[c.id];
+      cb.addEventListener('change', () => { GE.on[c.id] = cb.checked; if (cb.checked) GE.grupos[c.id].addTo(GE.mapa); else GE.mapa.removeLayer(GE.grupos[c.id]); painelEspacial(); });
+      const sw = document.createElement('i'); sw.className = 'ge-sw' + (d.ponto ? ' is-ponto' : '');
+      const f0 = c.features.find((f) => f.properties.estilo && (f.properties.estilo.color || f.properties.estilo.fillColor));
+      if (!d.ponto) sw.style.setProperty('--c', (f0 && (f0.properties.estilo.color || f0.properties.estilo.fillColor)) || '#6b7280');
+      const lb = document.createElement('label'); lb.htmlFor = cb.id; lb.textContent = d.nome + ' ';
+      const n = document.createElement('span'); n.textContent = `(${fInt(GE.grupos[c.id] ? GE.grupos[c.id].getLayers().length : c.features.length)})`; lb.appendChild(n);
+      const so = document.createElement('button'); so.type = 'button'; so.className = 'ge-so'; so.textContent = 'Só esta'; so.setAttribute('aria-pressed', String(sozinha === c.id));
+      so.addEventListener('click', () => {
+        Object.keys(GE.on).forEach((k) => { GE.on[k] = k === c.id; if (GE.on[k]) GE.grupos[k].addTo(GE.mapa); else GE.mapa.removeLayer(GE.grupos[k]); });
+        GE.lista = c.id; painelEspacial(); enquadrar();
+      });
+      const ds = document.createElement('p'); ds.className = 'ge-desc'; ds.textContent = d.desc || c.nomeOriginal;
+      li.append(cb, sw, lb, so, ds);
+      return li;
+    }));
+    document.querySelectorAll('[data-ge-cor]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.geCor === GE.cor)));
+    document.querySelectorAll('[data-ge-base]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.geBase === GE.base)));
+    const sel = document.getElementById('ge-lista-camada');
+    if (sel.options.length !== GE.dados.camadas.length) sel.replaceChildren(...camOrdem().map((c) => new Option(CAM[c.id].nome, c.id)));
+    sel.value = GE.lista;
+    const q = fold(document.getElementById('ge-busca').value).trim();
+    const cam = GE.dados.camadas.find((c) => c.id === GE.lista);
+    const itens = cam ? GE.grupos[cam.id].getLayers().map((l) => ({ l, f: l.feature, r: rotuloDe(cam.id, l.feature) })) : [];
+    const lista = itens.filter((x) => !q || fold(x.r + ' ' + Object.values(x.f.properties.attrs || {}).join(' ')).includes(q))
+      .sort((a, b) => a.r.localeCompare(b.r, 'pt-BR', { numeric: true }));
+    document.getElementById('ge-itens').replaceChildren(...lista.map((x) => {
+      const li = document.createElement('li');
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = x.r;
+      b.addEventListener('click', () => {
+        if (!GE.on[cam.id]) { GE.on[cam.id] = true; GE.grupos[cam.id].addTo(GE.mapa); painelEspacial(); }
+        if (x.l.getBounds) GE.mapa.fitBounds(x.l.getBounds(), { padding: [30, 30], maxZoom: 14 }); else GE.mapa.setView(x.l.getLatLng(), 14);
+        x.l.openPopup();
+        const card = document.getElementById('ge-mapa');
+        if (card.getBoundingClientRect().top < 0) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
+      li.appendChild(b);
+      return li;
+    }));
+  }
+  function renderEspacial() {
+    pageErr('espacial', GE.erro ? { status: 'error', msg: GE.erro } : null);
+    if (GE.erro) return;
+    if (!GE.mapa) {
+      if (!GE.iniciando) GE.iniciando = iniciaMapa().then(() => { if (S.page === 'espacial') renderEspacial(); }).catch((e) => { GE.erro = (e && e.message) || String(e); render(); });
+      return;
+    }
+    if (GE.comarAplicado !== S.comar) {
+      const mudou = GE.comarAplicado != null;
+      GE.comarAplicado = S.comar;
+      construirCamadas();
+      if (mudou) enquadrar();
+    }
+    painelEspacial();
+    setTimeout(() => {
+      if (!GE.mapa) return;
+      GE.mapa.invalidateSize();
+      if (!GE.enquadrado) { GE.enquadrado = true; enquadrar(); }
+    }, 0);
+  }
+
   /* ---- Página: carga operacional ---- */
   const cgRows = () => {
     if (!S.carga || S.carga.status !== 'ok') return [];
@@ -2668,19 +2975,22 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   const readHash = () => {
     decodeURIComponent(location.hash.slice(1)).split('-').filter(Boolean).forEach((t) => {
       if (COMARS.includes(t)) S.comar = t;
-      else if (['natureza', 'tabela', 'risco', 'carga', 'distancias', 'poder'].includes(t)) S.page = t;
+      else if (t === 'geral') S.page = 'matriz';
+      else if (t === 'matriz') S.page = 'tabela';
+      else if (['natureza', 'tabela', 'risco', 'carga', 'distancias', 'espacial', 'poder'].includes(t)) S.page = t;
       else { const n = NATS.find((o) => o.slug === t); if (n) { S.nat = n.k; S.page = 'natureza'; } }
     });
   };
   const writeHash = () => {
     const parts = [];
     if (S.page === 'natureza') parts.push(S.nat === NATS[0].k ? 'natureza' : natOf(S.nat).slug);
-    else if (S.page !== 'matriz') parts.push(S.page);
+    else if (S.page === 'matriz') parts.push('geral');
+    else if (S.page !== 'tabela') parts.push(S.page);
     if (S.comar !== 'Todos') parts.push(S.comar);
     history.replaceState(null, '', parts.length ? '#' + parts.join('-') : location.pathname + location.search);
   };
   readHash();
-  window.addEventListener('hashchange', () => { S.page = 'matriz'; readHash(); render(); });
+  window.addEventListener('hashchange', () => { S.page = 'tabela'; readHash(); render(); });
   document.querySelectorAll('.mo-seg [data-comar]').forEach((b) => b.addEventListener('click', () => { S.comar = b.dataset.comar; writeHash(); render(); }));
   document.querySelectorAll('.mo-pages [data-page]').forEach((b) => b.addEventListener('click', () => { S.page = b.dataset.page; writeHash(); render(); }));
   document.querySelectorAll('.mo-tabs [data-nat]').forEach((b) => b.addEventListener('click', () => { S.nat = b.dataset.nat; writeHash(); render(); }));
@@ -2690,6 +3000,15 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   document.getElementById('rk-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'rk-exemplo'); });
   document.getElementById('cg-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) pickTo(tr.dataset.key, 'cg-exemplo'); });
   document.getElementById('ds-origem').addEventListener('change', (ev) => { DS.origem = ev.target.value; DS.cel = null; render(); });
+  document.querySelectorAll('[data-ge-cor]').forEach((b) => b.addEventListener('click', () => { GE.cor = b.dataset.geCor; if (GE.mapa) { construirCamadas(); painelEspacial(); } }));
+  document.querySelectorAll('[data-ge-base]').forEach((b) => b.addEventListener('click', () => {
+    GE.base = b.dataset.geBase;
+    if (GE.mapa) { Object.entries(GE.bases).forEach(([k, l]) => { if (k === GE.base) l.addTo(GE.mapa); else GE.mapa.removeLayer(l); }); painelEspacial(); }
+  }));
+  document.getElementById('ge-todas').addEventListener('click', () => { if (!GE.mapa) return; Object.keys(GE.on).forEach((k) => { GE.on[k] = true; GE.grupos[k].addTo(GE.mapa); }); painelEspacial(); enquadrar(); });
+  document.getElementById('ge-enquadrar').addEventListener('click', () => { if (GE.mapa) enquadrar(); });
+  document.getElementById('ge-lista-camada').addEventListener('change', (ev) => { GE.lista = ev.target.value; painelEspacial(); });
+  document.getElementById('ge-busca').addEventListener('input', () => { if (GE.mapa) painelEspacial(); });
   document.querySelectorAll('[data-ds-m]').forEach((b) => b.addEventListener('click', () => { DS.m = b.dataset.dsM; render(); }));
   document.getElementById('ds-raio').addEventListener('input', (ev) => { DS.raio = Number(ev.target.value); render(); });
   document.getElementById('ds-viz-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { DS.origem = tr.dataset.key; DS.cel = null; render(); const c = document.getElementById('ds-saida'); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); } });
@@ -2734,7 +3053,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     if (w === lastW) return;
     lastW = w;
     clearTimeout(rz);
-    rz = setTimeout(() => { if (S.status === 'ok' || S.page === 'poder' || S.page === 'distancias') render(); }, 120);
+    rz = setTimeout(() => { if (S.page === 'espacial') { if (GE.mapa) GE.mapa.invalidateSize(); return; } if (S.status === 'ok' || S.page === 'poder' || S.page === 'distancias') render(); }, 120);
   }).observe(document.getElementById('mo'));
 
   load();
