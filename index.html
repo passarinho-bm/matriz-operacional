@@ -188,8 +188,8 @@
   .mo-band-v { grid-column: 2; font-size: var(--cap); color: var(--muted); font-variant-numeric: tabular-nums; }
   .mo-band-v b { color: var(--fg); font-weight: 600; }
   .mo-tn td:nth-child(2), .mo-tn th:nth-child(2) { font-weight: 700; }
-  .mo-tn td:nth-child(3), .mo-tn th:nth-child(3), .mo-tn td:nth-child(4), .mo-tn th:nth-child(4) { text-align: left; }
-  .mo-tn td:nth-child(6), .mo-tn th:nth-child(6) { border-left: 1px solid var(--line); }
+  .mo-tn td:nth-child(3), .mo-tn th:nth-child(3) { text-align: left; }
+  .mo-tn td:nth-child(4), .mo-tn th:nth-child(4) { border-left: 1px solid var(--line); }
   .mo-tn td.is-cur { font-weight: 700; color: var(--fg); }
   /* ---- Ícones de viatura ---- */
   .mo-ic { display: inline-block; width: 28px; height: 14px; flex: none; }
@@ -217,6 +217,7 @@
   .mo-ta thead tr.mo-groups th:first-child { position: sticky; left: 0; z-index: 3; }
   .mo-ta .t-l { text-align: left; }
   .mo-ta td.g-start, .mo-ta th.g-start { border-left: 1px solid var(--line); }
+  .mo-ta td.g-sep, .mo-ta th.g-sep { border-left: 2px solid #8a94a6; }
   .mo-ta td.is-saldo { font-weight: 700; }
   .mo-ta tfoot td { position: sticky; bottom: 0; background: var(--bg); font-weight: 700; border-top: 2px solid var(--line); z-index: 1; }
   .mo-ta tfoot td.c-gbm { z-index: 2; }
@@ -294,7 +295,8 @@
   .rk-cls th { text-align: left; font-weight: 500; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
   .rk-cls td { padding: 4px 8px; border-bottom: 1px solid var(--line); }
   .rk-cls .n { text-align: right; }
-  .rk-cls tr.is-on td { background: color-mix(in srgb, var(--c) 18%, var(--panel)); font-weight: 700; }
+  .rk-cls tr.is-on td, .rk-cls td.is-on { background: color-mix(in srgb, var(--c) 18%, var(--panel)); font-weight: 700; }
+  .rk-cls tr.rk-cls-sub th { padding-top: 12px; }
   .rk-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
   .rk-steps li { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 2px 10px; }
   .rk-steps li::before { content: ""; grid-row: 1 / span 3; width: 10px; height: 10px; margin-top: 4px; border-radius: 50%; background: var(--c, var(--fg)); }
@@ -785,7 +787,8 @@ Fonte: aba Absoluto (rankings e viaturas).">i</button></h2>
 
     <article class="mo-card" id="nat-tabela">
       <div class="mo-card-head">
-        <h2>Ranking e frota <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Absoluto, colunas de ranking e de viaturas.">i</button></h2>
+        <h2>Ranking <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Posição de cada GBM em cada natureza de ocorrência, nos últimos 12 meses. 1º = GBM com mais ocorrências.
+Fonte: aba Absoluto, colunas de ranking.">i</button></h2>
         <p class="mo-note">Ordem da natureza escolhida. Cor mais forte = posição mais alta.</p>
       </div>
       <div class="mo-table-wrap">
@@ -795,8 +798,6 @@ Fonte: aba Absoluto (rankings e viaturas).">i</button></h2>
               <th>GBM</th>
               <th>Posição</th>
               <th>COMAR</th>
-              <th>Viaturas relacionadas</th>
-              <th>Qtd.</th>
               <th>Ocorrências (total)</th>
               <th>UR</th>
               <th>Multiemprego</th>
@@ -811,7 +812,7 @@ Fonte: aba Absoluto (rankings e viaturas).">i</button></h2>
   </div>
 
   <div class="mo-page" id="pg-tabela" hidden>
-    <p class="mo-lede">Todas as colunas da aba Absoluto. Selecione um cabeçalho para ordenar. Selecione o <b>i</b> para ver a origem da coluna.</p>
+    <p class="mo-lede">Todas as colunas da aba Absoluto. Selecione um cabeçalho para ordenar. Selecione o <b>i</b> para ver o que a coluna mostra.</p>
     <article class="mo-card" id="tabela-absoluto">
       <div class="ta-tools">
         <input class="mo-search" id="mo-busca" type="search" placeholder="Buscar GBM ou viatura" aria-label="Buscar GBM ou viatura">
@@ -911,8 +912,7 @@ Limites e pesos: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk=
 
     <article class="mo-card" id="rk-tabela">
       <div class="mo-card-head">
-        <h2>Valores e pontos <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco.
-«No trabalho» = posição na Tabela 5 do trabalho original.">i</button></h2>
+        <h2>Valores e pontos <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Matriz de Risco.">i</button></h2>
         <p class="mo-note">Valor medido e pontos de cada critério. Cor mais forte = mais pontos.</p>
       </div>
       <div class="mo-table-wrap">
@@ -924,7 +924,7 @@ Limites e pesos: aba Parâmetros.">i</button></h2><span class="rk-peso" data-rk=
               <th class="n gs">Apoio (s)</th><th>Pts</th>
               <th class="n gs">PDO</th><th>Pts</th>
               <th class="n gs">Riscos (fator D)</th>
-              <th class="n gs">Total</th><th class="n">Posição</th><th class="n">No trabalho</th>
+              <th class="n gs">Total</th><th class="n">Posição</th>
             </tr>
           </thead>
           <tbody id="rk-tbody"></tbody>
@@ -1015,7 +1015,7 @@ A soma das naturezas passa do total de ocorrências.">i</button></h2>
         <button type="button" data-ds-m="tempo" aria-pressed="true">Tempo (min)</button>
         <button type="button" data-ds-m="dist" aria-pressed="false">Distância (km)</button>
       </div>
-      <label for="ds-raio">Raio de apoio <input id="ds-raio" type="range" min="5" max="40" step="1" value="15"> <output id="ds-raio-out" for="ds-raio">15</output> min</label>
+      <label for="ds-raio">Raio de apoio <input id="ds-raio" type="range" min="5" max="40" step="1" value="15"> <output id="ds-raio-out" for="ds-raio">15</output> <span id="ds-raio-un">min</span></label>
     </div>
 
     <div class="mo-row2 is-even">
@@ -1049,15 +1049,30 @@ Fonte: aba Parâmetros.">i</button></h2>
 
     <article class="mo-card" id="ds-matriz">
       <div class="mo-card-head">
-        <h2>Matriz de <span data-ds="medida">tempo (min)</span> <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Parâmetros, tabelas «Distância entre GBMs (km)» e «Tempo de deslocamento entre GBMs (min)».
+        <h2>Matriz de distância (km) <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Parâmetros, tabela «Distância entre GBMs (km)».
 Ida e volta podem ter valores diferentes.">i</button></h2>
         <p class="mo-note">Linha = origem. Coluna = destino. Azul = perto. Laranja = longe.</p>
       </div>
-      <p class="ds-info" id="ds-info"></p>
+      <p class="ds-info" data-ds-info></p>
       <div class="mo-table-wrap" style="max-height: 75vh">
-        <table class="mo-table mo-td" id="ds-tabela">
-          <thead id="ds-thead"></thead>
-          <tbody id="ds-tbody"></tbody>
+        <table class="mo-table mo-td" data-ds-tab="dist">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="mo-card" id="ds-matriz-tempo">
+      <div class="mo-card-head">
+        <h2>Matriz de tempo (min) <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Fonte: aba Parâmetros, tabela «Tempo de deslocamento entre GBMs (min)».
+Ida e volta podem ter valores diferentes.">i</button></h2>
+        <p class="mo-note">Linha = origem. Coluna = destino. Azul = perto. Laranja = longe.</p>
+      </div>
+      <p class="ds-info" data-ds-info></p>
+      <div class="mo-table-wrap" style="max-height: 75vh">
+        <table class="mo-table mo-td" data-ds-tab="tempo">
+          <thead></thead>
+          <tbody></tbody>
         </table>
       </div>
     </article>
@@ -1097,7 +1112,7 @@ O filtro de COMAR vale para as camadas ligadas a um GBM. As regiões administrat
   </div>
 
   <div class="mo-page" id="pg-poder" hidden>
-    <p class="mo-lede">Veja quantas viaturas a ala de serviço pode ativar. O exemplo usa o menor GBM: <b data-po="total">69</b> bombeiros. Mude o efetivo do GBM ou o efetivo da ala.</p>
+    <p class="mo-lede">Veja quantas viaturas a ala de serviço pode ativar. O exemplo usa o menor GBM: <b data-po="total">69</b> bombeiros. Mude o efetivo do GBM ou o efetivo da ala. Os bombeiros da ala <b>não incluem o militar de serviço de adjunto</b>.</p>
 
     <article class="mo-card" id="po-composicao">
       <div class="mo-card-head">
@@ -1117,15 +1132,16 @@ O resto vai para as 4 alas.">i</button></h2>
 
     <article class="mo-card" id="po-simulador">
       <div class="mo-card-head">
-        <h2>Viaturas da ala de serviço <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Regras de guarnição do Comando Operacional. Veja o cartão «Regras de guarnição».">i</button></h2>
-        <p class="mo-note">Mova o controle ou selecione uma faixa. Capacete laranja = condutor (QBMG-2). Capacete amarelo = operacional (QBMG-1).</p>
+        <h2>Viaturas da ala de serviço <button type="button" class="tip" aria-label="Origem dos dados" data-tip="Regras de guarnição do Comando Operacional. Veja o cartão «Regras de guarnição».
+O número de bombeiros da ala não inclui o militar de serviço de adjunto.">i</button></h2>
+        <p class="mo-note">Bombeiros da ala para as viaturas, sem o adjunto de serviço. Mova o controle ou selecione uma faixa. Capacete laranja = condutor (QBMG-2). Capacete amarelo = operacional (QBMG-1).</p>
       </div>
       <div class="po-ctrl">
         <div class="po-n-row">
-          <div class="po-n-big"><output id="po-n-out" for="po-n">10</output><span>bombeiros na ala</span></div>
+          <div class="po-n-big"><output id="po-n-out" for="po-n">10</output><span>bombeiros na ala<br>(sem o adjunto)</span></div>
           <p class="po-headline" id="po-headline">—</p>
         </div>
-        <input class="po-range" id="po-n" type="range" min="2" max="14" step="1" value="10" aria-label="Bombeiros na ala de serviço">
+        <input class="po-range" id="po-n" type="range" min="2" max="14" step="1" value="10" aria-label="Bombeiros na ala de serviço, sem o adjunto">
         <div class="po-steps" id="po-steps" role="group" aria-label="Faixas de efetivo"></div>
         <div class="po-sub">
           <label for="po-c">Condutores (QBMG-2) na ala <input id="po-c" type="range" min="0" max="3" step="1" value="2"> <output id="po-c-out" for="po-c">2</output></label>
@@ -1150,7 +1166,7 @@ O resto vai para as 4 alas.">i</button></h2>
         <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ar"></use></svg>Caminhonete AR</dt><dd><b>2 a 4 ocupantes</b>. Um QBMG-1 pode conduzir a AR só em deslocamento não emergencial: prevenção, lavagem de pista e captura de insetos.</dd></div>
         <div><dt><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg><svg class="mo-ic" aria-hidden="true"><use href="#i-ase"></use></svg>Dois ASE</dt><dd>A partir de <b>8 bombeiros</b>. O ideal é <b>10</b>. Cada ASE precisa de 1 condutor (QBMG-2).</dd></div>
       </dl>
-      <p class="mo-note">Ordem: 1 ASE. Com 6 ou 7, ASE e AR. Com 8 ou mais, 2º ASE. O resto completa os ASE e depois a AR. Um condutor pode ocupar a vaga de operacional. As escalas do intermediário (VCI, VS, VPA, VE) não entram nesta conta.</p>
+      <p class="mo-note">Ordem: 1 ASE. Com 6 ou 7, ASE e AR. Com 8 ou mais, 2º ASE. O resto completa os ASE e depois a AR. Um condutor pode ocupar a vaga de operacional. O adjunto de serviço e as escalas do intermediário (VCI, VS, VPA, VE) não entram nesta conta.</p>
     </article>
   </div>
 
@@ -1582,7 +1598,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   /* ---- Página: tabela Absoluto ---- */
   const GRUPOS = [
     { id: 'id', nome: '', cols: ['numero', 'gbm', 'comar'] },
-    { id: 'viat', nome: 'Viaturas', cols: ['ur', 'ur_gsv', 'vme', 'vme2', 'apoio_ar', 'vci', 'vs', 'vpa', 've', 'apoio'] },
+    { id: 'viat', nome: 'Viaturas', cols: ['ur', 'ur_gsv', 'vme', 'vme2', 'vci', 'vs', 'vpa', 've', 'apoio'],
+      sub: [{ nome: 'Socorro base', cols: ['ur', 'ur_gsv', 'vme', 'vme2'] }, { nome: 'Socorro intermediário', cols: ['vci', 'vs', 'vpa', 've', 'apoio'], sep: true }] },
     { id: 'efet', nome: 'Efetivo e saldos', cols: ['efetivo_necessario', 'efetivo_atual', 'saldo_efetivo', 'oficial_dia', 'cotas_gsv', 'saldo_considerado'] },
     { id: 'equal', nome: 'Equalização de efetivo', cols: ['ralvo', 'coef_ajuste', 'novo_efetivo', 'saldo_carga'] },
     { id: 'risco', nome: 'Risco e carga', cols: ['matriz_risco', 'carga_atual', 'carga_atualizada'] },
@@ -1598,26 +1615,42 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   };
   const ABS_COLS = GRUPOS.flatMap((g) => g.cols);
   const COLTIP = {
-    numero: 'Número do GBM. Coluna «#».', gbm: 'Nome do GBM. Coluna «GBM».', comar: 'COMAR do GBM. Coluna «COMAR».',
-    ur: 'Viatura de APH. Coluna «UR».', ur_gsv: 'UR extra, guarnecida por GSV. Coluna «UR (GSV) / Reforço».',
-    vme: 'Viatura multiemprego principal. Coluna «VME».', vme2: 'Segunda viatura multiemprego. Coluna «2ª VME».', apoio_ar: 'AR de apoio, sem efetivo próprio. Coluna «Apoio AR».',
-    vci: 'Viatura do socorro intermediário. Coluna «VCI».', vs: 'Viatura do socorro intermediário. Coluna «VS».', vpa: 'Viatura do socorro intermediário. Coluna «VPA».', ve: 'Viatura do socorro intermediário. Coluna «VE».',
-    apoio: 'Viatura de apoio do intermediário (AT/APSG). Coluna «Apoio».',
-    efetivo_necessario: 'Militares para as viaturas da matriz, com 30% de afastamento. Coluna «Efetivo Necessário (com 30% de afast.)».',
-    efetivo_atual: 'Militares do GBM hoje. Coluna «Efetivo Atual».', saldo_efetivo: 'Efetivo atual − efetivo necessário. Coluna «Saldo Efetivo».',
-    oficial_dia: 'SIM = o GBM tem oficial de dia. Coluna «Oficial de Dia».', cotas_gsv: 'Cotas diárias de GSV de 12 h. Coluna «Cotas diárias de GSV 12h».',
-    saldo_considerado: 'Saldo efetivo + oficial de dia + cotas de GSV. Coluna «Saldo Considerado».',
-    ralvo: 'Ocorrências por militar de referência. Coluna «Relação Alvo (Ralvo)».', coef_ajuste: 'Carga do GBM ÷ Ralvo. Coluna «Coeficiente de Ajuste».',
-    novo_efetivo: 'Ocorrências ÷ Ralvo. Mínimo: 69. Coluna «Novo Efetivo Necessário».', saldo_carga: 'Efetivo atual − novo efetivo necessário. Coluna «Saldo Efetivo pelo Índice de Carga Operacional».',
-    matriz_risco: 'Pontos da matriz de risco. Coluna «Matriz de Risco».', carga_atual: 'Ocorrências ÷ militares lotados. Coluna «Carga Operacional com Efetivo Atual».',
-    carga_atualizada: 'Ocorrências ÷ efetivo necessário com reforços. Coluna «Carga Operacional - Atualizada».',
-    rk_ocorrencias: 'Posição em todas as ocorrências (12 meses). 1º = mais ocorrências. Coluna «Ranking Ocorrências». Dados: aba Parâmetros (GESINT).',
-    rk_ur: 'Posição em UR (12 meses). 1º = mais ocorrências. Coluna «Ranking UR». Dados: aba Parâmetros (GESINT).',
-    rk_multiemprego: 'Posição em multiemprego (12 meses). Coluna «Ranking Multiemprego». Dados: aba Parâmetros (GESINT).',
-    rk_multiemprego_florestal: 'Posição em multiemprego com florestal (12 meses). Coluna «Ranking Multiemprego c/ florestal». Dados: aba Parâmetros (GESINT).',
-    rk_incendio: 'Posição em incêndio estrutural (12 meses). Coluna «Ranking Incêndio estrutural». Dados: aba Parâmetros (GESINT).',
+    numero: 'Número do GBM, tirado do nome. Serve para ordenar a tabela. O Sierra III recebe 37,1.',
+    gbm: 'Nome do GBM ou da unidade destacada, com a cidade da sede.',
+    comar: 'Comando de Área (COMAR I a IV) ao qual o GBM pertence.',
+    ur: 'Unidade de Resgate. Viatura de atendimento pré-hospitalar (APH) e de acidente de trânsito. Tem guarnição fixa do GBM.',
+    ur_gsv: 'UR extra de reforço. Militares em serviço voluntário (GSV) fazem a guarnição. Não entra no efetivo necessário.',
+    vme: 'Viatura multiemprego principal (ASE, ABT ou ABSL). Atende incêndio e salvamento. É a base do socorro do GBM.',
+    vme2: 'Segunda viatura multiemprego. Permite atender duas ocorrências de incêndio ou salvamento ao mesmo tempo.',
+    apoio_ar: 'Auto Rápido de apoio, sem guarnição própria.',
+    vci: 'Viatura de combate a incêndio (por exemplo, ABT). Socorro intermediário: reforça o socorro base em incêndios maiores.',
+    vs: 'Viatura de salvamento (por exemplo, ABSL), com equipamentos de desencarceramento e salvamento. Socorro intermediário.',
+    vpa: 'Viatura de proteção ambiental, com tração 4x4. Atende incêndio florestal e áreas de vegetação. Socorro intermediário.',
+    ve: 'Viatura especial para altura (por exemplo, AEM). Atende edificações altas e salvamentos complexos. Socorro intermediário.',
+    apoio: 'Viatura pesada de apoio (AT ou APSG). Leva água e faz apoio logístico na ocorrência. Socorro intermediário.',
+    efetivo_necessario: 'Militares que o GBM precisa ter. Soma as guarnições das viaturas da matriz, a SECOM e o serviço interno, mais 30% para afastamentos (férias, licenças e dispensas). Depois soma o expediente.',
+    efetivo_atual: 'Bombeiros militares lotados hoje no GBM.',
+    saldo_efetivo: 'Efetivo atual − efetivo necessário. Negativo (vermelho) = faltam militares. Positivo (verde) = sobram militares.',
+    oficial_dia: 'SIM = o GBM tem escala de oficial de dia (unidade polo do COMAR). O oficial de dia entra no saldo considerado e na carga atualizada.',
+    cotas_gsv: 'Cotas diárias de 12 h de serviço voluntário (GSV) do GBM. As cotas reforçam o efetivo e entram no saldo considerado.',
+    saldo_considerado: 'Saldo efetivo + reforço do oficial de dia + reforço das cotas de GSV, arredondado. Mostra o saldo com os reforços.',
+    ralvo: 'Relação alvo: total de ocorrências ÷ total do efetivo atual do CBMDF. É a carga média por militar. O valor é o mesmo para todos os GBMs.',
+    coef_ajuste: '(Ocorrências do GBM ÷ efetivo atual) ÷ Ralvo. Maior que 1 = carga acima da média. Menor que 1 = carga abaixo da média.',
+    novo_efetivo: 'Ocorrências do GBM ÷ Ralvo, arredondado. Mínimo de 69. É o efetivo que deixa o GBM na carga média.',
+    saldo_carga: 'Efetivo atual − novo efetivo necessário. Negativo = o GBM precisa de mais militares para ficar na carga média.',
+    matriz_risco: 'Pontos de risco da área do GBM. Soma 4 critérios: demanda operacional (peso 2), isolamento, potencial demográfico e econômico, e riscos estruturais. Mais pontos = mais risco.',
+    carga_atual: 'Ocorrências do GBM ÷ efetivo atual. Mostra quantas ocorrências cada militar atende hoje.',
+    carga_atualizada: 'Ocorrências do GBM ÷ (efetivo necessário + oficial de dia + cotas de GSV). Mostra a carga com o efetivo da matriz.',
+    rk_ocorrencias: 'Posição do GBM no total de ocorrências dos últimos 12 meses. 1º = GBM com mais ocorrências.',
+    rk_ur: 'Posição do GBM nas ocorrências de UR dos últimos 12 meses: APH, suporte básico de vida e acidente de trânsito. 1º = mais ocorrências.',
+    rk_multiemprego: 'Posição do GBM nas ocorrências de incêndio e salvamento dos últimos 12 meses, sem emergência médica. 1º = mais ocorrências.',
+    rk_multiemprego_florestal: 'Posição do GBM nas ocorrências multiemprego dos últimos 12 meses, com incêndio florestal e em vegetação. 1º = mais ocorrências.',
+    rk_incendio: 'Posição do GBM nas ocorrências de incêndio em edificações dos últimos 12 meses (residencial, comercial, industrial e institucional). 1º = mais ocorrências.',
   };
+
   const GRP_OF = Object.fromEntries(GRUPOS.flatMap((g) => g.cols.map((c, i) => [c, { g: g.id, first: i === 0 }])));
+  GRUPOS.forEach((g) => (g.sub || []).forEach((sg) => { if (sg.sep) GRP_OF[sg.cols[0]].sep = true; }));
+  const clsCol = (c) => { const gi = GRP_OF[c]; return ['c-' + c, 'g-' + gi.g, gi.first && gi.g !== 'id' ? 'g-start' : '', gi.sep ? 'g-sep' : '', VIATS.has(c) || c === 'comar' || c === 'oficial_dia' ? 't-l' : '']; };
   const VIATS = new Set(GRUPOS[1].cols);
   const SALDOS = new Set(['saldo_efetivo', 'saldo_considerado', 'saldo_carga']);
   const DEMANDA = new Set(['matriz_risco', 'carga_atual', 'carga_atualizada', 'coef_ajuste']);
@@ -1664,18 +1697,19 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     const trg = document.createElement('tr');
     trg.className = 'mo-groups';
     GRUPOS.forEach((g) => {
-      const th = document.createElement('th');
-      th.colSpan = g.cols.length;
-      th.className = 'g-' + g.id + (g.id !== 'id' ? ' g-start' : '');
-      th.textContent = g.nome;
-      trg.appendChild(th);
+      (g.sub || [{ nome: g.nome, cols: g.cols }]).forEach((sg, i) => {
+        const th = document.createElement('th');
+        th.colSpan = sg.cols.length;
+        th.className = ['g-' + g.id, g.id !== 'id' && i === 0 ? 'g-start' : '', sg.sep ? 'g-sep' : ''].filter(Boolean).join(' ');
+        th.textContent = sg.nome;
+        trg.appendChild(th);
+      });
     });
     const trc = document.createElement('tr');
     trc.className = 'mo-cols';
     ABS_COLS.forEach((c) => {
       const th = document.createElement('th');
-      const gi = GRP_OF[c];
-      th.className = ['c-' + c, 'g-' + gi.g, gi.first && gi.g !== 'id' ? 'g-start' : '', VIATS.has(c) || c === 'comar' || c === 'oficial_dia' ? 't-l' : ''].filter(Boolean).join(' ');
+      th.className = clsCol(c).filter(Boolean).join(' ');
       th.dataset.field = c;
       th.setAttribute('aria-sort', 'none');
       const b = document.createElement('button');
@@ -1696,8 +1730,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       if (COLTIP[c]) {
         const tp = document.createElement('button');
         tp.type = 'button'; tp.className = 'tip'; tp.textContent = 'i';
-        tp.setAttribute('aria-label', 'Origem dos dados');
-        tp.dataset.tip = 'Fonte: aba Absoluto.\n' + COLTIP[c];
+        tp.setAttribute('aria-label', 'O que a coluna mostra');
+        tp.dataset.tip = COLTIP[c];
         th.appendChild(tp);
       }
       trc.appendChild(th);
@@ -1739,8 +1773,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     const bgSaldo = (c, v) => (v == null || v === 0 ? '' : `color-mix(in srgb, var(${v < 0 ? '--bad' : '--ok'}) ${Math.round(14 + 50 * Math.abs(v) / maxAbs[c])}%, var(--panel))`);
     const cell = (c, cls) => {
       const td = document.createElement('td');
-      const gi = GRP_OF[c];
-      td.className = ['c-' + c, 'g-' + gi.g, gi.first && gi.g !== 'id' ? 'g-start' : '', VIATS.has(c) || c === 'comar' || c === 'oficial_dia' ? 't-l' : '', cls || ''].filter(Boolean).join(' ');
+      td.className = [...clsCol(c), cls || ''].filter(Boolean).join(' ');
       return td;
     };
     const sel = selGbm();
@@ -2063,10 +2096,8 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       const tr = document.createElement('tr');
       tr.dataset.key = r.gbm;
       if (r.gbm === sel) tr.className = 'is-sel';
-      const rel = relacionadas(r, nat);
       const cells = [
         [r.gbm], [fmt('ord', r[nat.k])], [r.comar],
-        [rel.length ? rel.map((v) => `${v.m} (${POSTO[v.col]})`).join(' · ') : 'nenhuma'], [fmt('int', rel.length)],
         [fmt('ord', r.rk_ocorrencias), heat(r.rk_ocorrencias, '--ref')],
         ...NATS.map((n) => [fmt('ord', r[n.k]), heat(r[n.k], n.cor), n.k === nat.k]),
       ];
@@ -2303,14 +2334,21 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       const k = tb.dataset.rkCls;
       tb.replaceChildren();
       const head = (cols) => { const tr = document.createElement('tr'); cols.forEach(([t, n]) => { const th = document.createElement('th'); th.textContent = t; if (n) th.className = 'n'; tr.appendChild(th); }); tb.appendChild(tr); };
-      const row = (cells, on) => { const tr = document.createElement('tr'); if (on) tr.className = 'is-on'; cells.forEach(([t, n]) => { const td = document.createElement('td'); td.textContent = t; if (n) td.className = 'n'; tr.appendChild(td); }); tb.appendChild(tr); };
+      const row = (cells, on) => { const tr = document.createElement('tr'); if (on) tr.className = 'is-on'; cells.forEach(([t, n, hit]) => { const td = document.createElement('td'); td.textContent = t; td.className = [n ? 'n' : '', hit ? 'is-on' : ''].filter(Boolean).join(' '); tr.appendChild(td); }); tb.appendChild(tr); };
       if (k === 'fd') {
         const lim = S.par && S.par.fdLim;
         if (!lim) return;
+        const pe = sel ? sel.p_ext : null, pb = sel ? sel.p_edif : null;
         head([['Pontos'], ['Extensão (ha) a partir de', 1], ['Edificações a partir de', 1]]);
-        lim.forEach((c) => row([[fInt(c.p)], [fInt(Math.round(c.ext))], [fInt(Math.round(c.edif))]], false));
+        lim.forEach((c) => row([[fInt(c.p), 0, c.p === pe || c.p === pb], [fInt(Math.round(c.ext)), 1, c.p === pe], [fInt(Math.round(c.edif)), 1, c.p === pb]], false));
         const rn = S.par.riscoNivel;
-        if (rn && rn.length) row([['Risco'], [`nível 1 a ${fInt(rn.length)} vale ${fInt(rn[0].p)} a ${fInt(rn[rn.length - 1].p)} pontos`], ['']], false);
+        if (rn && rn.length) {
+          const tr = document.createElement('tr'); tr.className = 'rk-cls-sub';
+          [['Risco da área'], ['Nível', 1], ['Pontos', 1]].forEach(([t, n]) => { const th = document.createElement('th'); th.textContent = t; if (n) th.className = 'n'; tr.appendChild(th); });
+          tb.appendChild(tr);
+          const nv = sel ? sel.risco : null;
+          rn.forEach((c) => row([[''], [fInt(c.n), 1], [Number.isInteger(c.p) ? fInt(c.p) : f2(c.p), 1]], c.n === nv));
+        }
         return;
       }
       if (!cls) return;
@@ -2354,7 +2392,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       tot.replaceChildren();
       const parts = CRIT.map((c) => f2((sel[c.p] ?? 0) * (w[c.k] ?? 1))).join(' + ');
       const bt = document.createElement('b'); bt.textContent = f2(sel.total);
-      const s1 = document.createElement('span'); s1.textContent = `${parts} = total. Posição: ${nz(sel.pos, fInt)}º de ${fInt(S.risco.rows.length)}.` + (sel.pos_trab != null ? ` No trabalho original: ${fInt(sel.pos_trab)}º.` : '');
+      const s1 = document.createElement('span'); s1.textContent = `${parts} = total. Posição: ${nz(sel.pos, fInt)}º de ${fInt(S.risco.rows.length)}.`;
       tot.append(bt, s1);
     }
 
@@ -2371,7 +2409,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
         [nz(r.tapoio, fInt), 'n gs'], [nz(r.p_iso, fInt), 'pt', heat(r.p_iso, '--k2')],
         [nz(r.pdo, f2), 'n gs'], [nz(r.p_pdo, fInt), 'pt', heat(r.p_pdo, '--k3')],
         [nz(r.fd, f2), 'pt gs', heat(r.fd, '--k4')],
-        [f2(r.total), 'n gs'], [r.pos != null ? fInt(r.pos) + 'º' : '—', 'n'], [r.pos_trab != null ? fInt(r.pos_trab) + 'º' : '—', 'n'],
+        [f2(r.total), 'n gs'], [r.pos != null ? fInt(r.pos) + 'º' : '—', 'n'],
       ];
       cells.forEach(([t, c, bg]) => { const td = document.createElement('td'); td.textContent = t; td.className = c; if (bg) td.style.background = bg; tr.appendChild(td); });
       return tr;
@@ -2420,7 +2458,16 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   }
 
   /* ---- Página: distâncias entre GBMs ---- */
-  const DS = { m: 'tempo', origem: null, raio: 15, cel: null };
+  const DS = { m: 'tempo', origem: null, raio: { tempo: 15, dist: 10 }, cel: null };
+  const DS_UN = { tempo: 'min', dist: 'km' };
+  const DS_KEY = { tempo: 't', dist: 'km' };
+  const raioCfg = (m) => {
+    if (m === 'tempo') return { min: 5, max: 40, step: 1 };
+    const M = S.par && S.par.dist;
+    const hi = M ? d3.max(M.rows.flatMap((r) => r.v).filter((x) => x != null)) : null;
+    return { min: 1, max: Math.max(10, Math.min(100, Math.ceil((hi || 50) / 5) * 5)), step: 1 };
+  };
+  const noRaio = (v) => { const x = v[DS_KEY[DS.m]]; return x != null && x <= DS.raio[DS.m]; };
   const canon = (n) => fold(norm(n)).replace(/\s*\/\s*/g, '/');
   const curtoGbm = (n) => { const m = norm(n).match(/^(\d+º)/); return m ? m[1] : norm(n).split('/')[0]; };
   const comarDe = (n) => {
@@ -2457,12 +2504,14 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     pageErr('distancias', S.status === 'loading' ? null : ok ? null : { status: 'error', msg: S.par ? 'As tabelas "Distância entre GBMs (km)" e "Tempo de deslocamento entre GBMs (min)" não foram encontradas na aba Parâmetros.' : 'A aba Parâmetros não pôde ser lida.' });
     const setDs = (k, txt) => document.querySelectorAll(`[data-ds="${k}"]`).forEach((el) => { el.textContent = txt; });
     document.querySelectorAll('[data-ds-m]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.dsM === DS.m)));
-    setDs('medida', DS.m === 'tempo' ? 'tempo (min)' : 'distância (km)');
-    document.getElementById('ds-raio').value = DS.raio;
-    document.getElementById('ds-raio-out').textContent = DS.raio;
+    const rg = document.getElementById('ds-raio'), cfg = raioCfg(DS.m);
+    DS.raio[DS.m] = Math.max(cfg.min, Math.min(cfg.max, DS.raio[DS.m]));
+    rg.min = cfg.min; rg.max = cfg.max; rg.step = cfg.step; rg.value = DS.raio[DS.m];
+    document.getElementById('ds-raio-out').textContent = fInt(DS.raio[DS.m]);
+    document.getElementById('ds-raio-un').textContent = DS_UN[DS.m];
     const sel = document.getElementById('ds-origem');
-    const ids = ['ch-ds', 'ds-viz-tbody', 'ds-thead', 'ds-tbody'];
-    if (!ok) { ids.forEach((id) => document.getElementById(id).replaceChildren()); sel.replaceChildren(); ['iso-gbm', 'iso-viz', 'iso-t', 'perto-gbm', 'perto-t', 'perto-viz', 'origem', 'no-raio'].forEach((k) => setDs(k, '—')); document.getElementById('ds-info').textContent = ''; return; }
+    const ids = ['ch-ds', 'ds-viz-tbody'];
+    if (!ok) { ids.forEach((id) => document.getElementById(id).replaceChildren()); document.querySelectorAll('[data-ds-tab] thead, [data-ds-tab] tbody').forEach((e) => e.replaceChildren()); sel.replaceChildren(); ['iso-gbm', 'iso-viz', 'iso-t', 'perto-gbm', 'perto-t', 'perto-viz', 'origem', 'no-raio'].forEach((k) => setDs(k, '—')); document.querySelectorAll('[data-ds-info]').forEach((e) => { e.textContent = ''; }); return; }
     const T = S.par.tempo;
     const nomes = T.rows.map((r) => r.nome);
     const nomeDe = (c) => nomes.find((n) => canon(n) === c) || c;
@@ -2483,7 +2532,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     // saindo da origem
     const vs = vizinhos(DS.origem);
     setDs('origem', nomeDe(DS.origem));
-    setDs('no-raio', fInt(vs.filter((x) => x.t <= DS.raio).length));
+    setDs('no-raio', fInt(vs.filter(noRaio).length));
     drawDs(document.getElementById('ch-ds'), vs);
 
     // vizinhos de cada GBM
@@ -2496,12 +2545,16 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       const [a, b] = x.v;
       td(x.n, 'l'); td(a.nome, 'l gs'); td(fInt(a.t), 'n', dsCor('tempo', a.t)); td(nz(a.km, fInt), 'n');
       td(b ? b.nome : '—', 'l gs'); td(b ? fInt(b.t) : '—', 'n', b ? dsCor('tempo', b.t) : '');
-      td(fInt(x.v.filter((v) => v.t <= DS.raio).length), 'n gs');
+      td(fInt(x.v.filter(noRaio).length), 'n gs');
       return tr;
     }));
 
-    // matriz
-    const M = S.par[DS.m];
+    // matrizes: distância e tempo
+    document.querySelectorAll('[data-ds-tab]').forEach((tab) => drawDsMatriz(tab, tab.dataset.dsTab));
+    dsInfo(DS.cel ? DS.cel[0] : null, DS.cel ? DS.cel[1] : null);
+  }
+  function drawDsMatriz(tab, k) {
+    const M = S.par[k];
     const cols = M.cols;
     const comCols = cols.map(comarDe);
     const head = document.createElement('tr');
@@ -2514,10 +2567,10 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       if (j > 0 && comCols[j] !== comCols[j - 1]) th.className = 'ds-gs';
       head.appendChild(th);
     });
-    document.getElementById('ds-thead').replaceChildren(head);
+    tab.tHead.replaceChildren(head);
     let prevCom = null;
     const rowsM = M.rows.filter((r) => S.comar === 'Todos' || comarDe(r.nome) === S.comar);
-    document.getElementById('ds-tbody').replaceChildren(...rowsM.map((r) => {
+    tab.tBodies[0].replaceChildren(...rowsM.map((r) => {
       const tr = document.createElement('tr');
       const o = canon(r.nome);
       const com = comarDe(r.nome);
@@ -2533,24 +2586,24 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
         const cls = [];
         if (j > 0 && comCols[j] !== comCols[j - 1]) cls.push('ds-gs');
         if (d === o || v == null) { cls.push('is-diag'); td.textContent = '—'; }
-        else { td.textContent = fInt(v); td.style.background = dsCor(DS.m, v); }
+        else { td.textContent = fInt(v); td.style.background = dsCor(k, v); }
         if (DS.cel && DS.cel[0] === o && DS.cel[1] === d) cls.push('is-cel');
         td.className = cls.join(' ');
         tr.appendChild(td);
       });
       return tr;
     }));
-    dsInfo(DS.cel ? DS.cel[0] : null, DS.cel ? DS.cel[1] : null);
   }
   function dsInfo(o, d) {
-    const info = document.getElementById('ds-info');
-    info.replaceChildren();
-    if (!o || !d || o === d || !dsMat()) { info.textContent = 'Selecione uma célula para ver ida e volta.'; return; }
-    const nomes = S.par.tempo.rows.map((r) => r.nome);
-    const nm = (c) => nomes.find((n) => canon(n) === c) || c;
-    const add = (t, b) => { const e = document.createElement(b ? 'b' : 'span'); e.textContent = t; info.appendChild(e); };
-    const ida = [dsVal('tempo', o, d), dsVal('dist', o, d)], volta = [dsVal('tempo', d, o), dsVal('dist', d, o)];
-    add(nm(o), true); add(' → '); add(nm(d), true); add(`: ida ${nz(ida[0], fInt)} min, ${nz(ida[1], fInt)} km. Volta ${nz(volta[0], fInt)} min, ${nz(volta[1], fInt)} km.`);
+    document.querySelectorAll('[data-ds-info]').forEach((info) => {
+      info.replaceChildren();
+      if (!o || !d || o === d || !dsMat()) { info.textContent = 'Selecione uma célula para ver ida e volta.'; return; }
+      const nomes = S.par.tempo.rows.map((r) => r.nome);
+      const nm = (c) => nomes.find((n) => canon(n) === c) || c;
+      const add = (t, b) => { const e = document.createElement(b ? 'b' : 'span'); e.textContent = t; info.appendChild(e); };
+      const ida = [dsVal('dist', o, d), dsVal('tempo', o, d)], volta = [dsVal('dist', d, o), dsVal('tempo', d, o)];
+      add(nm(o), true); add(' → '); add(nm(d), true); add(`: ida ${nz(ida[0], fInt)} km, ${nz(ida[1], fInt)} min. Volta ${nz(volta[0], fInt)} km, ${nz(volta[1], fInt)} min.`);
+    });
   }
   function drawDs(el, vs) {
     const W = Math.max(260, el.clientWidth), rowH = 22, barH = 13, top = 4, bottom = 22;
@@ -2563,14 +2616,12 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     const x0 = nameW + 12;
     const M = S.par[DS.m];
     if (!M._ext) M._ext = d3.extent(M.rows.flatMap((r) => r.v).filter((x) => x != null));
-    const key = DS.m === 'tempo' ? 't' : 'km';
-    const x = d3.scaleLinear([0, M._ext[1] || 1], [x0, W - valW]);
-    if (DS.m === 'tempo') {
-      svg.append('line').attr('class', 'mo-ref').attr('x1', x(DS.raio)).attr('x2', x(DS.raio)).attr('y1', 0).attr('y2', H - bottom + 4);
-      const t = `Raio ${fInt(DS.raio)} min`;
-      const lw = measure(svg, [t], 'mo-t-muted');
-      svg.append('text').attr('class', 'mo-t-muted').attr('x', Math.max(x0 + lw / 2, Math.min(W - lw / 2, x(DS.raio)))).attr('y', H - 6).attr('text-anchor', 'middle').text(t);
-    }
+    const key = DS_KEY[DS.m], raio = DS.raio[DS.m];
+    const x = d3.scaleLinear([0, Math.max(M._ext[1] || 1, raio)], [x0, W - valW]);
+    svg.append('line').attr('class', 'mo-ref').attr('x1', x(raio)).attr('x2', x(raio)).attr('y1', 0).attr('y2', H - bottom + 4);
+    const t = `Raio ${fInt(raio)} ${DS_UN[DS.m]}`;
+    const lw = measure(svg, [t], 'mo-t-muted');
+    svg.append('text').attr('class', 'mo-t-muted').attr('x', Math.max(x0 + lw / 2, Math.min(W - lw / 2, x(raio)))).attr('y', H - 6).attr('text-anchor', 'middle').text(t);
     const g = svg.append('g').selectAll('g').data(vs).join('g')
       .attr('class', 'mo-row')
       .attr('transform', (d, i) => `translate(0,${top + i * rowH})`)
@@ -2578,7 +2629,7 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
       .attr('aria-label', (d) => `${d.nome}: ${lab(d)}. Usar como origem`);
     g.append('rect').attr('class', 'mo-hit').attr('width', W).attr('height', rowH).attr('rx', 4);
     g.append('text').attr('class', 'mo-t').attr('x', 2).attr('y', rowH / 2).attr('dy', '0.35em').text((d) => d.nome)
-      .style('font-weight', (d) => (d.t <= DS.raio ? 600 : null));
+      .style('font-weight', (d) => (noRaio(d) ? 600 : null));
     g.append('rect').attr('x', x0).attr('y', (rowH - barH) / 2).attr('height', barH).attr('rx', 3)
       .attr('width', (d) => Math.max(0, x(d[key] ?? 0) - x0)).style('fill', (d) => dsCor(DS.m, d[key]) || 'color-mix(in srgb, var(--fg) 7%, var(--panel))')
       .style('stroke', 'color-mix(in srgb, var(--fg) 18%, transparent)').style('stroke-width', 0.5);
@@ -3021,25 +3072,31 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
   document.getElementById('ge-lista-camada').addEventListener('change', (ev) => { GE.lista = ev.target.value; painelEspacial(); });
   document.getElementById('ge-busca').addEventListener('input', () => { if (GE.mapa) painelEspacial(); });
   document.querySelectorAll('[data-ds-m]').forEach((b) => b.addEventListener('click', () => { DS.m = b.dataset.dsM; render(); }));
-  document.getElementById('ds-raio').addEventListener('input', (ev) => { DS.raio = Number(ev.target.value); render(); });
+  document.getElementById('ds-raio').addEventListener('input', (ev) => { DS.raio[DS.m] = Number(ev.target.value); render(); });
   document.getElementById('ds-viz-tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { DS.origem = tr.dataset.key; DS.cel = null; render(); const c = document.getElementById('ds-saida'); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); } });
-  const dsTab = document.getElementById('ds-tabela');
-  dsTab.addEventListener('click', (ev) => {
-    const b = ev.target.closest('button[data-origem]');
-    if (b) { DS.origem = b.dataset.origem; DS.cel = null; render(); return; }
-    const td = ev.target.closest('td[data-o]');
-    if (td && td.dataset.o !== td.dataset.d) { DS.cel = [td.dataset.o, td.dataset.d]; dsTab.querySelectorAll('td.is-cel').forEach((e) => e.classList.remove('is-cel')); td.classList.add('is-cel'); dsInfo(td.dataset.o, td.dataset.d); }
+  document.querySelectorAll('[data-ds-tab]').forEach((dsTab) => {
+    dsTab.addEventListener('click', (ev) => {
+      const b = ev.target.closest('button[data-origem]');
+      if (b) { DS.origem = b.dataset.origem; DS.cel = null; render(); return; }
+      const td = ev.target.closest('td[data-o]');
+      if (td && td.dataset.o !== td.dataset.d) {
+        DS.cel = [td.dataset.o, td.dataset.d];
+        document.querySelectorAll('[data-ds-tab] td.is-cel').forEach((e) => e.classList.remove('is-cel'));
+        document.querySelectorAll('[data-ds-tab]').forEach((t) => { const c = t.querySelector(`td[data-o="${td.dataset.o}"][data-d="${td.dataset.d}"]`); if (c) c.classList.add('is-cel'); });
+        dsInfo(td.dataset.o, td.dataset.d);
+      }
+    });
+    let dsCol = null;
+    dsTab.addEventListener('mouseover', (ev) => {
+      const td = ev.target.closest('td[data-c]');
+      const c = td ? td.dataset.c : null;
+      if (c === dsCol) return;
+      dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col'));
+      dsCol = c;
+      if (c != null) { dsTab.querySelectorAll(`td[data-c="${c}"]`).forEach((e) => e.classList.add('is-col')); if (!DS.cel) dsInfo(td.dataset.o, td.dataset.d); }
+    });
+    dsTab.addEventListener('mouseleave', () => { dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col')); dsCol = null; if (!DS.cel) dsInfo(null, null); });
   });
-  let dsCol = null;
-  dsTab.addEventListener('mouseover', (ev) => {
-    const td = ev.target.closest('td[data-c]');
-    const c = td ? td.dataset.c : null;
-    if (c === dsCol) return;
-    dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col'));
-    dsCol = c;
-    if (c != null) { dsTab.querySelectorAll(`td[data-c="${c}"]`).forEach((e) => e.classList.add('is-col')); if (!DS.cel) dsInfo(td.dataset.o, td.dataset.d); }
-  });
-  dsTab.addEventListener('mouseleave', () => { dsTab.querySelectorAll('td.is-col').forEach((e) => e.classList.remove('is-col')); dsCol = null; if (!DS.cel) dsInfo(null, null); });
   document.getElementById('mo-ta-body').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-key]'); if (tr) { S.gbm = tr.dataset.key; drawAbs(); } });
   document.querySelectorAll('.ta-tools [data-grp]').forEach((b) => b.addEventListener('click', () => {
     const g = b.dataset.grp;
