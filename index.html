@@ -2650,8 +2650,19 @@ const ABAS = { absoluto: 1977235102, risco: 1061038218, carga: 1948092177, param
     }));
     const L = window.L;
     const m = L.map('ge-mapa', { zoomControl: true, preferCanvas: false, zoomSnap: 0.25, zoomDelta: 0.5 }).setView([-15.79, -47.88], 10);
-    GE.bases.mapa = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd', attribution: '&copy; OpenStreetMap &copy; CARTO' });
+    GE.bases.mapa = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' });
     GE.bases.satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Imagens &copy; Esri' });
+    // Se o mapa OpenStreetMap não carregar, usa só a imagem de satélite.
+    let okMapa = 0, erroMapa = 0;
+    GE.bases.mapa.on('tileload', () => { okMapa++; });
+    GE.bases.mapa.on('tileerror', () => {
+      erroMapa++;
+      if (okMapa || erroMapa < 4 || GE.semMapa) return;
+      GE.semMapa = true; GE.base = 'satelite';
+      m.removeLayer(GE.bases.mapa); GE.bases.satelite.addTo(m);
+      const bt = document.querySelector('[data-ge-base="mapa"]'); if (bt) bt.hidden = true;
+      painelEspacial();
+    });
     GE.bases.mapa.addTo(m);
     L.control.scale({ imperial: false }).addTo(m);
     GE.dados.camadas.forEach((c) => {
