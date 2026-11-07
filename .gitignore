@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+.env.production
+# Dados locais de teste (não ficam no repositório)
+t-*.csv
+!tests/fixtures/t-*.csv
