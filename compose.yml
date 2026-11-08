@@ -1,0 +1,14 @@
+services:
+  matriz:
+    build: .
+    image: matriz-operacional:1.0
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    # Copie .env.example para .env.production e ajuste. O arquivo não vai para o repositório.
+    env_file:
+      - path: .env.production
+        required: false
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 3001

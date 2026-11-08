@@ -16,6 +16,16 @@ Painel público da Matriz Operacional do CBMDF (Comando Operacional), sem login.
 - Ícones de viatura no padrão do CBMDF: símbolos SVG `i-ur`, `i-ase`, `i-abt`, `i-absl`, `i-ar`, `i-aem`, `i-at`, `i-apsg` (corpo vermelho com faixa branca).
 - O layout precisa funcionar no celular (390 px) sem rolagem lateral da página.
 
+## Dois sistemas no repositório
+
+- **Painel original** (`index.html`, `mapa.json`, `tools/`): é o que o GitHub Pages publica. Tudo abaixo, nas seções «Arquivos» a «Testar e publicar», vale para ele.
+- **Sistema novo** (`app/`, `server/`, `shared/`, `docs/ARQUITETURA.md`): React + Vite no front e NestJS na API. É uma reescrita do painel, com as mesmas abas, fórmulas e visual (o CSS é o mesmo, em `app/src/styles.css`).
+  - A API lê a planilha do Google (Fase 1) pela interface `MatrizDataSource`. Na Fase 2, `SqlServerDataSource` entra no lugar de `GoogleSheetDataSource` em `server/app.module.ts`.
+  - Todo código de CSV, `gid` e cabeçalho fica em `server/matriz/sheet/`. Colunas são achadas pelo nome do cabeçalho.
+  - Regras: `server/matriz/calculo.ts` (agregados por COMAR e frota) e `shared/poder.ts` (guarnição). As fórmulas da matriz vêm calculadas pela planilha.
+  - Rodar: `pnpm dev`. Testar: `pnpm test` e `pnpm typecheck`. Dados fictícios em `tests/fixtures/` (`SHEET_LOCAL_DIR`).
+  - Mudou uma regra ou um texto no painel original? Aplique a mesma mudança no sistema novo (e vice-versa) até o corte oficial.
+
 ## Arquivos
 
 - `index.html`: o site inteiro. CSS no `<style>`, páginas em `<div class="mo-page" id="pg-...">` e um único `<script>` (IIFE) no fim. Sem React e sem etapa de compilação.
